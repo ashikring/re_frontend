@@ -321,7 +321,7 @@ function AdminCarrier({ colorThem }) {
     },
     {
       field: "reg_type",
-      headerName: "Reg Type",
+      headerName: "Register Type",
       headerClassName: "custom-header",
       headerAlign: "center",
       width: 150,
@@ -338,7 +338,7 @@ function AdminCarrier({ colorThem }) {
 
     {
       field: "sip_server",
-      headerName: "Sip Server",
+      headerName: "SIP Server",
       headerClassName: "custom-header",
       headerAlign: "center",
       width: 250,

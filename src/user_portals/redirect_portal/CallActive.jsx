@@ -1,9 +1,14 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import "../../../src/style.css";
-import { Box, createTheme, ThemeProvider } from '@mui/material';
+import { Box, Button, createTheme, ThemeProvider } from '@mui/material';
 import { DataGrid, GridToolbar, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarFilterButton } from '@mui/x-data-grid';
 import { getAdminCallActive } from '../../redux/actions/adminPortal_callActiveAction';
 import { useDispatch, useSelector } from 'react-redux';
+import PhoneDisabledIcon from '@mui/icons-material/PhoneDisabled';
+import { IconBase } from 'react-icons/lib';
+import { api } from '../../mockData';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 const theme = createTheme({
   components: {
     MuiDataGrid: {
@@ -35,6 +40,7 @@ function CallActive(){
   const state = useSelector((state) => state);
   const [timeStamp, setTimeStamp] = useState([]);
   const [timeDifference, setTimeDifference] = useState([]);
+  
   const current_user = localStorage.getItem("current_user");
   const user = JSON.parse(localStorage.getItem(`user_${current_user}`));
   
@@ -86,6 +92,44 @@ function CallActive(){
   useEffect(() => {
     dispatch(getAdminCallActive());
   }, [dispatch]); // Empty dependency array ensures this effect runs once on mount
+
+ const handleHangup = async (data) => {
+  const current_user = localStorage.getItem("current_user");
+  const token = JSON.parse(localStorage.getItem(`user_${current_user}`));
+    let values = JSON.stringify({
+      CallReference: data.CallReference,
+    });
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token.access_token} `,
+        },
+      };
+      const { data } = await axios.post(
+        `${api.dev}/api/callhangup`,
+        values,
+        config
+      );
+      if (data?.status === 200) {
+        toast.success(data?.message, {
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 1500,
+        });
+      } else {
+        toast.error(data?.message, {
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 2500,
+        });
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message, {
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 2500,
+      });
+    }
+  };
+
   const columns = [
     {
       field: "DIDNumber",
@@ -236,9 +280,9 @@ function CallActive(){
           var day = date.getUTCDate();
           var month = date.getUTCMonth() + 1; // Month starts from 0
           var year = date.getUTCFullYear();
-          var hours = date.getUTCHours();
-          var minutes = date.getUTCMinutes();
-          var seconds = date.getUTCSeconds();
+          var hours = date.getHours();
+          var minutes = date.getMinutes();
+          var seconds = date.getSeconds();
 
           // Formatting single-digit day/month with leading zero if needed
           day = (day < 10 ? "0" : "") + day;
@@ -311,42 +355,44 @@ function CallActive(){
     //   headerAlign: "center",
     //   align: "center",
     // },
-    // {
-    //   field: "barging",
-    //   headerName: "Barge",
-    //   width: 120,
-    //   headerClassName: "custom-header",
-    //   headerAlign: "center",
-    //   align: "center",
-    //   renderCell: (params) => {
-    //     return (
-    //       <div className="d-flex justify-content-between align-items-center">
-    //         {params.row.Status === "ANSWER" && (
-    //           <Button
-    //             // variant="outlined"
-    //             sx={{
-    //               ":hover": {
-    //                 bgcolor: "error.main",
-    //                 color: "white",
-    //               },
-    //               padding: "2px",
-    //               textTransform: "capitalize",
-    //               fontSize: "14px",
-    //               color: "error.main",
-    //               borderColor: "error.main",
-    //               border: "1px solid #d32f2f",
-    //             }}
-    //             onClick={(e) => {
-    //               handleBarging(params.row.Channel);
-    //             }}
-    //           >
-    //             Barge
-    //           </Button>
-    //         )}
-    //       </div>
-    //     );
-    //   },
-    // },
+    {
+      field: "hangup",
+      headerName: "Hangup",
+      width: 120,
+      headerClassName: "custom-header",
+      headerAlign: "center",
+      align: "center",
+      renderCell: (params) => {
+        return (
+          <div className="d-flex justify-content-between align-items-center">
+            {params.row.Status === "ANSWER" && (
+              <Button
+                // variant="outlined"
+                sx={{
+                  ":hover": {
+                    bgcolor: "error.main",
+                    color: "white",
+                  },
+                  padding: "2px",
+                  textTransform: "capitalize",
+                  fontSize: "14px",
+                  color: "error.main",
+                  borderColor: "error.main",
+                  border: "1px solid #d32f2f",
+                }}
+                onClick={(e) => {
+                 handleHangup(params.row);
+                }}
+              >
+                <IconBase>
+                  <PhoneDisabledIcon/>
+                </IconBase>
+              </Button>
+            )}
+          </div>
+        );
+      },
+    },
     // {
     //   field: "id",
     //   headerName: "Options",
@@ -387,7 +433,7 @@ function CallActive(){
           id: key,
           ...state?.getAdminCallActive?.callactive[key],
         }))
-        .filter((item) => item.Status === "ANSWER" && item.UserId === user.uid);
+        .filter((item) => item.UserId === user.uid);
     }else {
       return [];
     }
@@ -402,6 +448,9 @@ function CallActive(){
   
     setTimeStamp(formattedTimeStamps);
   }, [mockDataTeam]);
+
+  
+
   
 return (<>
 <div className="main">
@@ -415,9 +464,18 @@ return (<>
             <div className="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
               {/* <!--role-contet--> */}
               <div className="tab_cntnt_box">
-                <div className="cntnt_title">
+                <div className="cntnt_title"
+                   style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <div>
                   <h3>Active Calls</h3>
                   <p>Use this to monitor and interact with the active calls.</p>
+                  </div>
+                  
                 </div>
                 <div className="row">
                 <ThemeProvider theme={theme}>

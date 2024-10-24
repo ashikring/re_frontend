@@ -573,9 +573,9 @@ function DID_TFN_number({ colorThem }) {
     },
     {
       field: "redirect_group_name",
-      headerName: "Group Name",
+      headerName: "Campaign Name",
       headerClassName: "custom-header",
-      width: 100,
+      width: 120,
       headerAlign: "center",
       align: "center",
     },
@@ -1226,12 +1226,12 @@ function DID_TFN_number({ colorThem }) {
                                         }}
                                       >
                                         <InputLabel id="demo-multiple-checkbox-label">
-                                          Redirect groups
+                                          Campaign Name
                                         </InputLabel>
                                         <Select
                                           style={{ textAlign: "left" }}
                                           labelId="demo-multiple-checkbox-label"
-                                          label="Redirect groups"
+                                          label="Campaign Name"
                                           id="demo-multiple-checkbox"
                                           fullWidth
                                           value={redirectGroup}
@@ -1239,7 +1239,7 @@ function DID_TFN_number({ colorThem }) {
                                             setRedirectGroup(e.target.value)
                                           }
                                           input={
-                                            <OutlinedInput label="Redirect groups" />
+                                            <OutlinedInput label=" Campaign Name" />
                                           }
                                           MenuProps={MenuProps}
                                         >
@@ -1675,12 +1675,12 @@ function DID_TFN_number({ colorThem }) {
                                         }}
                                       >
                                         <InputLabel id="demo-multiple-checkbox-label">
-                                          Redirect groups
+                                        Campaign Name
                                         </InputLabel>
                                         <Select
                                           style={{ textAlign: "left" }}
                                           labelId="demo-multiple-checkbox-label"
-                                          label="Redirect groups"
+                                          label="Campaign Name"
                                           id="demo-multiple-checkbox"
                                           fullWidth
                                           value={redirectGroup}
@@ -1688,7 +1688,7 @@ function DID_TFN_number({ colorThem }) {
                                             setRedirectGroup(e.target.value)
                                           }
                                           input={
-                                            <OutlinedInput label="Redirect groups" />
+                                            <OutlinedInput label="Campaign Name" />
                                           }
                                           MenuProps={MenuProps}
                                         >

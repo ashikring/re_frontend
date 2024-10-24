@@ -760,6 +760,11 @@ background-color: #ff7a00;
 color: #fff;
 border-radius: 4px;
 }
+.MuiBox-root.css-1xz3wz4 {
+  background: linear-gradient(
+179deg
+, #254336 -12%, #fff 62%) !important;
+}
 .tab_sub_cntnt form button:hover{
 box-shadow: 0px 2px 3px -1px #000;
 }

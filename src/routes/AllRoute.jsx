@@ -6,6 +6,7 @@ import PrivateRoute from "./PrivateRoute";
 import Login from "../components/login/Login";
 import ForgotPassword from "../components/forgot_password/ForgotPassword";
 import { useSelector } from "react-redux";
+import SendEmail from "../components/email/SendEmail";
 function All_Route() {
   const state = useSelector((state) => state);
 
@@ -152,7 +153,8 @@ function All_Route() {
           <>
             {/* <Route path={Router.HOME} element={<Home />} /> */}
             <Route exact path={Router.LOGIN} element={<Login />} />
-            <Route exact path="/forgot_password" element={<ForgotPassword />} />
+            <Route exact path="/send_email" element={<SendEmail />} />
+            <Route exact path="/reset-password" element={<ForgotPassword />} />
           </>
           {/* ) : (  */}
           <>

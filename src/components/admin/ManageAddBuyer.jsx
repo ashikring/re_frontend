@@ -283,7 +283,7 @@ function ManageAddBuyer({ colorThem }) {
     setFollowWorkTime(false);
   };
 
-  const handleEdit = (data) => {
+  const handleEdit = useCallback((data) => {
     handleEditrOpen();
     setForwardNumber(data?.forward_number);
     setBuyerName(data?.buyer_name);
@@ -293,10 +293,10 @@ function ManageAddBuyer({ colorThem }) {
     setStatus(data?.status);
     setBuyerId(data?.buyer_id);
     setRedirectId(data?.redirect_group_id);
-    setFromDate(data.working_start_time);
-    setToDate(data.working_end_time);
-    setFollowWorkTime(data.follow_working_time === false ? "f" : "t");
-  };
+    setFromDate(data?.working_start_time);
+    setToDate(data?.working_end_time);
+    setFollowWorkTime(data?.follow_working_time === false ? "f" : "t");
+  },[setFromDate, setToDate]);
 
   const handleFromDateChange = (date) => {
     if (dayjs(date, "HH:mm", true).isValid()) {
@@ -557,6 +557,46 @@ function ManageAddBuyer({ colorThem }) {
       headerAlign: "center",
       width: 100,
       align: "center",
+    },
+
+    {
+      field: "follow_working_time",
+      headerName: "Follow Working Time",
+      width: 150,
+      headerAlign: "center",
+      align: "center",
+      headerClassName: "custom-header",
+      renderCell: (params) => {
+        return (
+          <>
+            {params.row.follow_working_time === true ? (
+              <>
+                <div
+                  className="d-flex justify-content-between align-items-center"
+                  style={{
+                    color: "green",
+                    padding: "5px 4.5px",
+                  }}
+                >
+                  Yes
+                </div>
+              </>
+            ) : (
+              <>
+                <div
+                  className="d-flex justify-content-between align-items-center"
+                  style={{
+                    color: "red",
+                    padding: "5px 4.5px",
+                  }}
+                >
+                  No
+                </div>
+              </>
+            )}
+          </>
+        );
+      },
     },
 
     {
@@ -879,13 +919,13 @@ function ManageAddBuyer({ colorThem }) {
                                       labelId="demo-simple-select-label"
                                       id="demo-simple-select"
                                       label="Follow Work Time"
-                                      value={followWorkTime === false ? "f" : "t"}
+                                      value={followWorkTime}
                                       onChange={(e) =>
                                         setFollowWorkTime(e.target.value)
                                       }
                                     >
-                                      <MenuItem value={"t"}>True</MenuItem>
-                                      <MenuItem value={"f"}>False</MenuItem>
+                                      <MenuItem value={true}>True</MenuItem>
+                                      <MenuItem value={false}>False</MenuItem>
                                     </Select>
                                   </FormControl>
                                   <LocalizationProvider
@@ -1208,31 +1248,38 @@ function ManageAddBuyer({ colorThem }) {
                                   </FormControl>
 
                                   <LocalizationProvider
-                                    dateAdapter={AdapterDayjs}
-                                    className={classes.formControl}
-                                  >
-                                    <DemoContainer
-                                      components={["TimePicker"]}
-                                      sx={{ width: "100%" }}
-                                    >
-                                      <MobileTimePicker
-                                        className="frm_date"
-                                        label="Working Start Time"
-                                        value={
-                                          fromDate
-                                            ? dayjs(fromDate, "HH:mm")
-                                            : null
-                                        } // Convert selectedDate to a dayjs object
-                                        onChange={handleFromDateChange}
-                                        renderInput={(props) => (
-                                          <TextField
-                                            {...props}
-                                            style={{ width: "100%" }}
-                                          /> // Ensures TextField takes full width
-                                        )}
-                                      />
-                                    </DemoContainer>
-                                  </LocalizationProvider>
+  dateAdapter={AdapterDayjs}
+  className={classes.formControl}
+>
+  <DemoContainer
+    components={["TimePicker"]}
+    sx={{ width: "100%" }}
+  >
+    <MobileTimePicker
+      className="frm_date"
+      label="Working Start Time"
+      value={
+        fromDate
+          ? dayjs().hour(parseInt(fromDate.split(":")[0], 10))
+                  .minute(parseInt(fromDate.split(":")[1], 10))
+                  .second(0) // Set the time using the stored string (11:00:00)
+          : null
+      }
+      onChange={(newValue) => {
+        // Save only the time in "HH:mm:ss" format when the user changes the time
+        handleFromDateChange(newValue ? dayjs(newValue).format("HH:mm:ss") : null);
+      }}
+      renderInput={(props) => (
+        <TextField
+          {...props}
+          style={{ width: "100%" }}
+        />
+      )}
+    />
+  </DemoContainer>
+</LocalizationProvider>
+
+
 
                                   <LocalizationProvider
                                     dateAdapter={AdapterDayjs}
@@ -1246,7 +1293,11 @@ function ManageAddBuyer({ colorThem }) {
                                         className="frm_date"
                                         label="Working End Time"
                                         value={
-                                          toDate ? dayjs(toDate, "HH:mm") : null
+                                          toDate
+          ? dayjs().hour(parseInt(toDate.split(":")[0], 10))
+                  .minute(parseInt(toDate.split(":")[1], 10))
+                  .second(0) // Set the time using the stored string (11:00:00)
+          : null
                                         } // Convert selectedDate to a dayjs object
                                         onChange={handleToDateChange}
                                         renderInput={(props) => (

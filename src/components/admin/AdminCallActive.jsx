@@ -1,9 +1,6 @@
 import {
   Box,
   Button,
-  FormControl,
-  MenuItem,
-  Select,
 } from "@mui/material";
 import React, { useEffect, useMemo, useState } from "react";
 import {
@@ -18,10 +15,12 @@ import "../../Switcher.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { getAdminCallActive } from "../../redux/actions/adminPortal_callActiveAction";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { toast } from "react-toastify";
-import { api } from "../../mockData";
-import axios from "axios";
 import { makeStyles } from "@mui/styles";
+import PhoneDisabledIcon from '@mui/icons-material/PhoneDisabled';
+import { IconBase } from "react-icons/lib";
+import { toast } from "react-toastify";
+import axios from "axios";
+import { api } from "../../mockData";
 const drawerWidth = 240;
 
 const useStyles = makeStyles({
@@ -117,7 +116,6 @@ function CustomToolbar() {
 function AdminCallActive({ colorThem }) {
   const dispatch = useDispatch();
   const state = useSelector((state) => state);
-  const [option, setOption] = useState("L");
   const [timeStamp, setTimeStamp] = useState([]);
   const [timeDifference, setTimeDifference] = useState([]);
   
@@ -171,42 +169,41 @@ function AdminCallActive({ colorThem }) {
     dispatch(getAdminCallActive());
   }, [dispatch]); // Empty dependency array ensures this effect runs once on mount
 
-  // const handleBarging = async (data) => {
-  //   const token = JSON.parse(localStorage.getItem("admin"));
-  //   let values = JSON.stringify({
-  //     channel: data,
-  //     option: option,
-  //   });
-  //   try {
-  //     const config = {
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Authorization: `Bearer ${token.access_token} `,
-  //       },
-  //     };
-  //     const { data } = await axios.post(
-  //       `${api.dev}/api/callbarge`,
-  //       values,
-  //       config
-  //     );
-  //     if (data?.status === 200) {
-  //       toast.success(data?.message, {
-  //         position: toast.POSITION.TOP_RIGHT,
-  //         autoClose: 1500,
-  //       });
-  //     } else {
-  //       toast.error(data?.message, {
-  //         position: toast.POSITION.TOP_RIGHT,
-  //         autoClose: 2500,
-  //       });
-  //     }
-  //   } catch (error) {
-  //     toast.error(error?.response?.data?.message, {
-  //       position: toast.POSITION.TOP_RIGHT,
-  //       autoClose: 2500,
-  //     });
-  //   }
-  // };
+  const handleHangup = async (data) => {
+    const token = JSON.parse(localStorage.getItem("admin"));
+    let values = JSON.stringify({
+      CallReference: data.CallReference,
+    });
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token.access_token} `,
+        },
+      };
+      const { data } = await axios.post(
+        `${api.dev}/api/callhangup`,
+        values,
+        config
+      );
+      if (data?.status === 200) {
+        toast.success(data?.message, {
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 1500,
+        });
+      } else {
+        toast.error(data?.message, {
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 2500,
+        });
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message, {
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 2500,
+      });
+    }
+  };
 
   const columns = [
     {
@@ -366,9 +363,9 @@ function AdminCallActive({ colorThem }) {
           var day = date.getUTCDate();
           var month = date.getUTCMonth() + 1; // Month starts from 0
           var year = date.getUTCFullYear();
-          var hours = date.getUTCHours();
-          var minutes = date.getUTCMinutes();
-          var seconds = date.getUTCSeconds();
+          var hours = date.getHours();
+          var minutes = date.getMinutes();
+          var seconds = date.getSeconds();
 
           // Formatting single-digit day/month with leading zero if needed
           day = (day < 10 ? "0" : "") + day;
@@ -441,42 +438,44 @@ function AdminCallActive({ colorThem }) {
     //   headerAlign: "center",
     //   align: "center",
     // },
-    // {
-    //   field: "barging",
-    //   headerName: "Barge",
-    //   width: 120,
-    //   headerClassName: "custom-header",
-    //   headerAlign: "center",
-    //   align: "center",
-    //   renderCell: (params) => {
-    //     return (
-    //       <div className="d-flex justify-content-between align-items-center">
-    //         {params.row.Status === "ANSWER" && (
-    //           <Button
-    //             // variant="outlined"
-    //             sx={{
-    //               ":hover": {
-    //                 bgcolor: "error.main",
-    //                 color: "white",
-    //               },
-    //               padding: "2px",
-    //               textTransform: "capitalize",
-    //               fontSize: "14px",
-    //               color: "error.main",
-    //               borderColor: "error.main",
-    //               border: "1px solid #d32f2f",
-    //             }}
-    //             onClick={(e) => {
-    //               handleBarging(params.row.Channel);
-    //             }}
-    //           >
-    //             Barge
-    //           </Button>
-    //         )}
-    //       </div>
-    //     );
-    //   },
-    // },
+    {
+      field: "hangup",
+      headerName: "Hangup",
+      width: 120,
+      headerClassName: "custom-header",
+      headerAlign: "center",
+      align: "center",
+      renderCell: (params) => {
+        return (
+          <div className="d-flex justify-content-between align-items-center">
+            {params.row.Status === "ANSWER" && (
+              <Button
+                // variant="outlined"
+                sx={{
+                  ":hover": {
+                    bgcolor: "error.main",
+                    color: "white",
+                  },
+                  padding: "2px",
+                  textTransform: "capitalize",
+                  fontSize: "14px",
+                  color: "error.main",
+                  borderColor: "error.main",
+                  border: "1px solid #d32f2f",
+                }}
+                onClick={(e) => {
+                  handleHangup(params.row);
+                }}
+              >
+                <IconBase>
+                  <PhoneDisabledIcon/>
+                </IconBase>
+              </Button>
+            )}
+          </div>
+        );
+      },
+    },
     // {
     //   field: "id",
     //   headerName: "Options",
@@ -518,7 +517,6 @@ function AdminCallActive({ colorThem }) {
           id: key,
           ...state?.getAdminCallActive?.callactive[key],
         }))
-        .filter((item) => item.Status === "ANSWER");
     }else {
       return [];
     }

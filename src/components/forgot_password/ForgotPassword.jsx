@@ -152,7 +152,7 @@ function ForgotPassword() {
                         onChange={(e) => {
                           setOldPassword(e.target.value);
                         }}
-                        label="Old Password"
+                        label="New Password"
                         className="oldPassword"
                         name="oldPassword"
                         type="text"
@@ -173,7 +173,7 @@ function ForgotPassword() {
                         onChange={(e) => {
                           setNewPassword(e.target.value);
                         }}
-                        label="New Password"
+                        label="Confirm Password"
                         className="password"
                         name="newPassword"
                         type="text"

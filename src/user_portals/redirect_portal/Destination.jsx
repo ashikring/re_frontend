@@ -3,6 +3,10 @@ import "../../../src/style.css";
 import {
   Box,
   createTheme,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Fade,
   FormControl,
   IconButton,
@@ -12,6 +16,7 @@ import {
   OutlinedInput,
   Select,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import {
@@ -23,7 +28,7 @@ import {
   GridToolbarFilterButton,
 } from "@mui/x-data-grid";
 import { ThemeProvider } from "@mui/styles";
-import { Close } from "@mui/icons-material";
+import { Close, Edit } from "@mui/icons-material";
 import Button from "@mui/material/Button";
 import Backdrop from "@mui/material/Backdrop";
 import { getDid } from "../../redux/actions/destinationAction";
@@ -34,6 +39,7 @@ import {
   getUserRedirectGroups,
   updateRedirectDestination,
 } from "../../redux/actions/redirectPortal/redirectPortal_destinationAction";
+import { IconBase } from "react-icons/lib";
 const style = {
   position: "absolute",
   top: "50%",
@@ -96,7 +102,9 @@ function Destination() {
   const [ivrAuthentication, setIvrAuthentication] = useState("");
   const [redirectGroup, setRedirectGroup] = useState("");
   const [redirectGroupData, setRedirectGroupData] = useState([]);
+  const [status, setStatus] = useState("")
   const [response, setResponse] = useState("");
+  
   const state = useSelector((state) => state);
   const dispatch = useDispatch();
   const handleEditOpen = () => setEdit(true);
@@ -108,6 +116,7 @@ function Destination() {
     setDescription("");
     setIvrAuthentication("");
     setRedirectGroup("");
+    setStatus("");
   };
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -130,6 +139,7 @@ function Destination() {
     setDescription(data?.description);
     setDestination(data?.didnumber);
     setDestinationId(data?.destinationId);
+    setStatus(data?.status);
   };
 
   useMemo(() => {
@@ -143,6 +153,7 @@ function Destination() {
       description: description,
       ivr_authendication: ivrAuthentication,
       redirect_group_id: redirectGroup,
+      status: status === true ? "t" : "f",
     });
     dispatch(updateRedirectDestination(data, setResponse, handleEditClose));
   };
@@ -158,7 +169,7 @@ function Destination() {
       headerName: "Destination",
       headerClassName: "redirect_custom-header",
       headerAlign: "center",
-      flex: 1,
+      width: 130,
       align: "center",
     },
 
@@ -169,6 +180,22 @@ function Destination() {
       width: 130,
       headerAlign: "center",
       align: "center",
+    },
+    {
+      field: "redirect_group_name",
+      headerName: "Campaign Name",
+      headerClassName: "custom-header",
+      width: 100,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "carrier_name",
+      headerName: "Carrier Name",
+      headerClassName: "custom-header",
+      width: 100,
+      headerAlign: "left",
+      align: "left",
     },
     {
       field: "recording",
@@ -218,11 +245,12 @@ function Destination() {
     {
       field: "description",
       headerName: "Description",
-      flex: 1,
+      width: 200,
       headerClassName: "redirect_custom-header",
       headerAlign: "center",
       align: "center",
     },
+
     {
       field: "status",
       headerName: "Status",
@@ -269,14 +297,14 @@ function Destination() {
     {
       field: "edit",
       headerName: "Action",
-      flex: 1,
+      width: 100,
       headerClassName: "redirect_custom-header",
       headerAlign: "center",
       align: "center",
       renderCell: (params) => {
         return (
           <div className="d-flex justify-content-between align-items-center">
-            <IconButton
+            {/* <IconButton
               onClick={() => handleEdit(params.row)}
               style={{
                 border: "1px solid #04255C",
@@ -287,7 +315,17 @@ function Destination() {
               }}
             >
               Edit
+            </IconButton> */}
+             <Tooltip title="edit" disableInteractive interactive>
+            <IconButton onClick={() => handleEdit(params.row)} style={{
+              fontSize:'22px'
+            }}>
+            <Edit
+                index={params.row.id}
+                style={{ cursor: "pointer", color: "#42765f"}}
+              />
             </IconButton>
+            </Tooltip>
           </div>
         );
       },
@@ -310,6 +348,9 @@ function Destination() {
           username: item?.username,
           destinationId: item?.id,
           ivr_authendication: item?.ivr_authendication,
+          carrier_name: item.carrier_name,
+          group_name: item.group_name,
+          redirect_group_name: item.redirect_group_name
         });
       }
     );
@@ -360,47 +401,36 @@ function Destination() {
                           </div>
                         </ThemeProvider>
 
-                        {/* -----   Edit Campaign Modal Start   ----- */}
-                        <Modal
-                          aria-labelledby="transition-modal-title"
-                          aria-describedby="transition-modal-description"
-                          open={edit}
-                          closeAfterTransition
-                          slots={{ backdrop: Backdrop }}
-                          slotProps={{
-                            backdrop: {
-                              timeout: 500,
-                            },
-                          }}
-                        >
-                          <Fade in={edit}>
-                            <Box
-                              sx={style}
-                              borderRadius="10px"
-                              textAlign="center"
+
+                          {/* -----   Edit Campaign Modal Start   ----- */}
+                             
+
+                          <Dialog
+                            open={edit}
+                            sx={{ textAlign: "center" }}
+                          >
+                          <Box>
+                            <IconButton
+                              onClick={handleEditClose}
+                              sx={{
+                                float: "inline-end",
+                                display: "flex",
+                                justifyContent: "end",
+                                margin: "10px 10px 0px 0px",
+                              }}
                             >
-                              <IconButton
-                                onClick={handleEditClose}
-                                sx={{ float: "inline-end" }}
-                              >
-                                <Close />
-                              </IconButton>
-                              <br />
-                              <Typography
-                                id="transition-modal-title"
-                                variant="h6"
-                                component="h2"
-                                color={"#092b5f"}
-                                fontSize={"18px"}
-                                fontWeight={"600"}
-                                marginBottom={"16px"}
-                              >
-                                Update Destination
-                              </Typography>
-                              <Typography
-                                id="transition-modal-description"
-                                sx={{ mt: 2 }}
-                              ></Typography>
+                              <Close />
+                            </IconButton>
+                          </Box>
+                          <DialogTitle
+                            sx={{ color: "#07285d", fontWeight: "600", width: "500px" }}
+                          >
+                          
+                          Update Destination
+                          </DialogTitle>
+                            <DialogContent>
+                              <form>
+
                               <form style={{ textAlign: "center" }}>
                                 <TextField
                                   style={{
@@ -440,6 +470,33 @@ function Destination() {
                                     <MenuItem value={"false"}>false</MenuItem>
                                   </Select>
                                 </FormControl>
+
+                                <FormControl
+                                    fullWidth
+                                    style={{
+                                      width: "100%",
+                                      margin: "7px 0",
+                                    }}
+                                  >
+                                    <InputLabel id="demo-simple-select-label">
+                                      Status
+                                    </InputLabel>
+                                    <Select
+                                      labelId="demo-simple-select-label"
+                                      id="demo-simple-select"
+                                      label="Status"
+                                      helperText="Select the language."
+                                      style={{ textAlign: "left" }}
+                                      value={status}
+                                    onChange={(e) =>
+                                      setStatus(e.target.value)
+                                    }
+                                      required
+                                    >
+                                      <MenuItem value={true}>Active</MenuItem>
+                                      <MenuItem value={false}>Deactive</MenuItem>
+                                    </Select>
+                                  </FormControl>
 
                                 <FormControl
                                         style={{
@@ -514,20 +571,54 @@ function Destination() {
                                   onChange={handleChange}
                                   padding={"0px 0 !important"}
                                 />
-                                <br />
-
+                              </form>
+                              </form>
+                            </DialogContent>
+                            <DialogActions
+                              sx={{
+                                display: "flex",
+                                justifyContent: "center",
+                                paddingBottom: "20px",
+                              }}
+                            >
+                               <Button
+                                  variant="contained"
+                                  sx={{
+                                    fontSize: "16px !impotant",
+                                    background:
+                                      "linear-gradient(180deg, #0E397F 0%, #001E50 100%) !important",
+                                    marginTop: "20px",
+                                    marginLeft: "0px !important",
+                                    padding: "10px 20px !important",
+                                    textTransform: "capitalize !important",
+                                  }}
+                                  className="all_button_clr"
+                                  color="info"
+                                  onClick={handleEditClose}
+                                  autoFocus
+                                >
+                                  Cancel
+                                </Button>
                                 <Button
+                                  className="all_button_clr"
+                                  sx={{
+                                    fontSize: "16px !impotant",
+                                    marginTop: "20px",
+                                    marginLeft: "0px !important",
+                                    padding: "10px 20px !important",
+                                    textTransform: "capitalize !important",
+                                  }}
                                   variant="contained"
                                   color="primary"
                                   onClick={handleUpdate}
                                 >
                                   Update
                                 </Button>
-                              </form>
-                            </Box>
-                          </Fade>
-                        </Modal>
-                        {/* -----   Edit Campaign Modal End   ----- */}
+                            </DialogActions>
+                          </Dialog>
+
+
+                          {/* -----   Edit Campaign Modal End   ----- */}
                       </div>
                     </div>
                   </div>

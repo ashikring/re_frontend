@@ -17,6 +17,7 @@ import { api } from "../../mockData";
 function Header() {
   const [selectedValue, setSelectedValue] = useState(""); // State to hold the selected value
   const [number, setNumber] = useState(0);
+  const [minutest, setMinutest] = useState([]);
   const current_user = localStorage.getItem("current_user");
   const user = JSON.parse(localStorage.getItem(`user_${current_user}`));
   const navigate = useNavigate();
@@ -101,7 +102,41 @@ function Header() {
     //   });
   };
 
+  const minutes = async() =>{
+    const current_user = localStorage.getItem("current_user");
+    const token = JSON.parse(localStorage.getItem(`user_${current_user}`));
+    try {
+      let config = {
+        method: "get",
+        maxBodyLength: Infinity,
+        url: `${api.dev}/api/userminute`,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization" : `Bearer ${token.access_token} `
+        },
+      };
+       await axios
+        .request(config)
+        .then((response) => {
+          setMinutest(response.data.data)
+        })
+        .catch((error) => {
+          let errorMessage = "An error occurred while fetching data.";
+          if (error.response) {
+            if (error.response.status === 403) {
+              errorMessage = "Permission Denied";
+            } else if (error.response.status === 400 || error.response.status === 401 || error.response.status === 500) {
+              errorMessage = error.response.data.message || "Bad Request";
+            }
+          }
+        });
+    } catch (error) {
+      console.log('error', error)
+    }
+  }
+
   useEffect(() => {
+    minutes();
     if (selectedValue === "Manage") {
       navigate("/manage");
     }
@@ -129,6 +164,9 @@ function Header() {
             </Typography>
 
             <div className="manage_rgiht_bdr d-flex align-items-center">
+            <p style={{color: "#fff",
+                      textTransform: "capitalize",
+                      fontSize: "14px",margin:'0'}}>R. Minutes: <span style={{fontSize:'17px',fontWeight:'600'}}>{minutest[0]?.remaining_minutes}</span></p>
               <IconButton
                 size="large"
                 aria-label="account of current user"
@@ -172,7 +210,7 @@ function Header() {
                 </ul>
               </div>
 
-              {user?.user_type === "admin" ? (
+              {/* {user?.user_type === "admin" ? (
                 <></>
               ) : (
                 <>
@@ -212,7 +250,7 @@ function Header() {
                     </Dropdown.Menu>
                   </Dropdown>
                 </>
-              )}
+              )} */}
 
               <IconButton
                 size="large"

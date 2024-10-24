@@ -60,6 +60,10 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { makeStyles } from "@mui/styles";
 import DeleteIcon from "@mui/icons-material/Delete";
+import Menu from '@mui/material/Menu';
+// import MenuItem from '@mui/material/MenuItem';
+import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 const useStyles = makeStyles({
   borderedGreen: {
@@ -238,7 +242,6 @@ function BuyerView() {
   const [weightage, setWeightage] = useState("");
   const [dailyLimit, setDailyLimit] = useState("");
   const [redirectId, setRedirectId] = useState("");
-  const [deleteRow, setDeleteRow] = useState("");
   const [fromDate, setFromDate] = useState(null);
   const [toDate, setToDate] = useState(null);
   const [followWorkTime, setFollowWorkTime] = useState(false);
@@ -255,6 +258,7 @@ function BuyerView() {
     setCc("");
     setFromDate(null);
     setToDate(null);
+    setFollowWorkTime(false);
   };
   const handleAlertClose = () => {
     setAlertMessage(false);
@@ -344,7 +348,7 @@ function BuyerView() {
       daily_limit: dailyLimit,
       working_start_time: fromDate,
       working_end_time: toDate,
-      follow_working_time: followWorkTime,
+      follow_working_time: followWorkTime === false ? "f" : "t",
     });
     dispatch(createRedirectBuyer(data, setResponse, handleAddBuyerClose));
   };
@@ -524,14 +528,6 @@ function BuyerView() {
       align: "center",
     },
     {
-      field: "current_daily_limit",
-      headerName: "Current Daily Limit",
-      headerClassName: "custom-header",
-      headerAlign: "center",
-      width: 150,
-      align: "center",
-    },
-    {
       field: "daily_limit",
       headerName: "Daily Limit",
       headerClassName: "custom-header",
@@ -539,6 +535,55 @@ function BuyerView() {
       width: 100,
       align: "center",
     },
+    {
+      field: "current_daily_limit",
+      headerName: "Current Daily Limit",
+      headerClassName: "custom-header",
+      headerAlign: "center",
+      width: 150,
+      align: "center",
+    },
+
+    {
+      field: "follow_working_time",
+      headerName: "Follow Working Time",
+      width: 150,
+      headerAlign: "center",
+      align: "center",
+      headerClassName: "custom-header",
+      renderCell: (params) => {
+        return (
+          <>
+            {params.row.follow_working_time === true ? (
+              <>
+                <div
+                  className="d-flex justify-content-between align-items-center"
+                  style={{
+                    color: "green",
+                    padding: "5px 4.5px",
+                  }}
+                >
+                  Yes
+                </div>
+              </>
+            ) : (
+              <>
+                <div
+                  className="d-flex justify-content-between align-items-center"
+                  style={{
+                    color: "red",
+                    padding: "5px 4.5px",
+                  }}
+                >
+                  No
+                </div>
+              </>
+            )}
+          </>
+        );
+      },
+    },
+
     {
       field: "weightage",
       headerName: "Weightage",
@@ -587,6 +632,7 @@ function BuyerView() {
         weightage: item.weightage,
         working_end_time: item.working_end_time,
         working_start_time: item.working_start_time,
+        follow_working_time: item.follow_working_time,
       });
     });
   return (
@@ -614,6 +660,7 @@ function BuyerView() {
                             display: "flex",
                             justifyContent: "space-between",
                             alignItems: "center",
+                            
                           }}
                         >
                           <h3 style={{ margin: "0px" }}>Buyer View</h3>
@@ -653,12 +700,35 @@ function BuyerView() {
                             display: "flex",
                             justifyContent: "space-between",
                             alignItems: "end",
-                            marginBottom: "40px",
+                            marginBottom: "0px",
                           }}
                         >
                           <p style={{ fontSize: "17px", color: "#000" }}>
                             <b className="fnt_bld"> Campaign Name:</b>{" "}
-                            {location.state.data.group_name}
+                            {location.state.data.group_name} 
+
+                            {/* <PopupState variant="popover" popupId="demo-popup-menu" >
+      {(popupState) => (
+        <React.Fragment>
+          <Button variant="contained" {...bindTrigger(popupState)} className="redirect_all_button_clr"
+            endIcon={<KeyboardArrowDownIcon />}
+            style={{marginLeft:'10px'}}>
+            Campaign Number
+          </Button>
+          <Menu {...bindMenu(popupState)}>
+            <MenuItem onClick={popupState.close}>+91234567898</MenuItem>
+            <MenuItem onClick={popupState.close}>+91234567898</MenuItem>
+            <MenuItem onClick={popupState.close}>+91234567898</MenuItem>
+            <MenuItem onClick={popupState.close}>+91234567898</MenuItem>
+            <MenuItem onClick={popupState.close}>+91234567898</MenuItem>
+            <MenuItem onClick={popupState.close}>+91234567898</MenuItem>
+            <MenuItem onClick={popupState.close}>+91234567898</MenuItem>
+            <MenuItem onClick={popupState.close}>+91234567898</MenuItem>
+            <MenuItem onClick={popupState.close}>+91234567898</MenuItem>
+          </Menu>
+        </React.Fragment>
+      )}
+    </PopupState> */}
                           </p>
 
                           <div>
@@ -705,6 +775,21 @@ function BuyerView() {
                             </IconButton>
                           </div>
                         </div>
+
+                        {/* <div style={{display:'flex',flexWrap:'wrap',width:'90%', marginBottom: "40px",marginTop:'5px'}}>
+                              <span style={{ fontSize: "16px", color: "#000",fontWeight:'600' }}>+91123456788, </span>
+                              <span style={{ fontSize: "16px", color: "#000",fontWeight:'600' }}>+91123456788, </span>
+                              <span style={{ fontSize: "16px", color: "#000",fontWeight:'600' }}>+91123456788, </span>
+                              <span style={{ fontSize: "16px", color: "#000",fontWeight:'600' }}>+91123456788, </span>
+                              <span style={{ fontSize: "16px", color: "#000",fontWeight:'600' }}>+91123456788, </span>
+                              <span style={{ fontSize: "16px", color: "#000",fontWeight:'600' }}>+91123456788, </span>
+                              <span style={{ fontSize: "16px", color: "#000",fontWeight:'600' }}>+91123456788, </span>
+                              <span style={{ fontSize: "16px", color: "#000",fontWeight:'600' }}>+91123456788, </span>
+                              <span style={{ fontSize: "16px", color: "#000",fontWeight:'600' }}>+91123456788, </span>
+                              <span style={{ fontSize: "16px", color: "#000",fontWeight:'600' }}>+91123456788, </span>
+                              <span style={{ fontSize: "16px", color: "#000",fontWeight:'600' }}>+91123456788, </span>
+                              <span style={{ fontSize: "16px", color: "#000",fontWeight:'600' }}>+91123456788, </span>
+                            </div> */}
                         {/* </div> */}
                         {/* -----   Add Buyer Modal Start   ----- */}
 
@@ -836,6 +921,27 @@ function BuyerView() {
                                     setDailyLimit(e.target.value);
                                   }}
                                 />
+                                <FormControl
+                                  fullWidth
+                                  style={{ margin: " 5px 0 5px 0" }}
+                                >
+                                  <InputLabel id="demo-simple-select-label">
+                                    Follow Work Time
+                                  </InputLabel>
+                                  <Select
+                                    style={{ textAlign: "left" }}
+                                    labelId="demo-simple-select-label"
+                                    id="demo-simple-select"
+                                    label="Follow Work Time"
+                                    value={followWorkTime}
+                                    onChange={(e) =>
+                                      setFollowWorkTime(e.target.value)
+                                    }
+                                  >
+                                    <MenuItem value={true}>True</MenuItem>
+                                    <MenuItem value={false}>False</MenuItem>
+                                  </Select>
+                                </FormControl>
                                 <LocalizationProvider
                                   dateAdapter={AdapterDayjs}
                                   className={classes.formControl}
@@ -1164,7 +1270,20 @@ function BuyerView() {
                                       label="Working Start Time"
                                       value={
                                         fromDate
-                                          ? dayjs(fromDate, "HH:mm")
+                                          ? dayjs()
+                                              .hour(
+                                                parseInt(
+                                                  fromDate.split(":")[0],
+                                                  10
+                                                )
+                                              )
+                                              .minute(
+                                                parseInt(
+                                                  fromDate.split(":")[1],
+                                                  10
+                                                )
+                                              )
+                                              .second(0) // Set the time using the stored string (11:00:00)
                                           : null
                                       } // Convert selectedDate to a dayjs object
                                       onChange={handleFromDateChange}
@@ -1190,7 +1309,22 @@ function BuyerView() {
                                       className="frm_date"
                                       label="Working End Time"
                                       value={
-                                        toDate ? dayjs(toDate, "HH:mm") : null
+                                        toDate
+                                          ? dayjs()
+                                              .hour(
+                                                parseInt(
+                                                  toDate.split(":")[0],
+                                                  10
+                                                )
+                                              )
+                                              .minute(
+                                                parseInt(
+                                                  toDate.split(":")[1],
+                                                  10
+                                                )
+                                              )
+                                              .second(0) // Set the time using the stored string (11:00:00)
+                                          : null
                                       } // Convert selectedDate to a dayjs object
                                       onChange={handleToDateChange}
                                       renderInput={(props) => (

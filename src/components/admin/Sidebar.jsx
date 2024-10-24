@@ -313,7 +313,7 @@ function Sidebar({ colorThem }) {
             onClick={() => handleSubMenu()}
             open={openSettingMenu === "setting"}
           >
-            <MenuItem
+            {/* <MenuItem
               id="recording"
               icon={<RecordVoiceOverIcon />}
               onClick={(event) =>
@@ -321,7 +321,7 @@ function Sidebar({ colorThem }) {
               }
             >
               Recordings
-            </MenuItem>
+            </MenuItem> */}
             {/* <MenuItem
               icon={<QueueMusicIcon />}
               onClick={(event) => handleSubMenuClick(event, Router.AdminMOH)}
@@ -748,7 +748,7 @@ function Sidebar({ colorThem }) {
                           onClick={() => handleSubMenu()}
                           open={openSettingMenu === "setting"}
                         >
-                          <MenuItem
+                          {/* <MenuItem
                             id="recording"
                             icon={<RecordVoiceOverIcon />}
                             onClick={(event) =>
@@ -759,7 +759,7 @@ function Sidebar({ colorThem }) {
                             }
                           >
                             Recordings
-                          </MenuItem>
+                          </MenuItem> */}
                           {/* <MenuItem
                             icon={<QueueMusicIcon />}
                             onClick={(event) =>
