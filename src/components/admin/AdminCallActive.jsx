@@ -340,16 +340,20 @@ function AdminCallActive({ colorThem }) {
           const duration = timeDifference && timeDifference[index];
           
           return (
-            <span style={{ color: "green" }}>
+            <>
+            {params?.row?.Status === "DIALING" ? (<><span style={{ color: "grey" }}>
+              {duration ? `00:00:00` : ''}
+            </span></>) : (<> <span style={{ color: "green" }}>
               {duration ? `${duration.hours}:${duration.minutes}:${duration.seconds}` : ''}
-            </span>
+            </span></>)
+           
+          }</>
           );
         }
         return null;
       },
     },
-
-        
+  
     {
       field: "TimeStamp",
       headerName: "Date Time",
@@ -476,36 +480,6 @@ function AdminCallActive({ colorThem }) {
         );
       },
     },
-    // {
-    //   field: "id",
-    //   headerName: "Options",
-    //   width: 150,
-    //   headerClassName: "custom-header",
-    //   headerAlign: "center",
-    //   align: "center",
-    //   renderCell: (params) => {
-    //     return (
-    //       <div className="d-flex justify-content-between align-items-center">
-    //         {params.row.Status === "ANSWER" && (
-    //           <FormControl fullWidth style={{ width: "100%", margin: "7px 0" }} className="table_dropdown">
-    //             <Select
-    //               helperText="Select the language."
-    //               style={{ textAlign: "left" }}
-    //               defaultValue={option}
-    //               onChange={(e) => {
-    //                 setOption(e.target.value);
-    //               }}
-    //               className="table_slct_drop"
-    //             >
-    //               <MenuItem value={"L"}>Listen</MenuItem>
-    //               <MenuItem value={"LT"}>Listen and Talk</MenuItem>
-    //             </Select>
-    //           </FormControl>
-    //         )}
-    //       </div>
-    //     );
-    //   },
-    // },
   ];
 
  

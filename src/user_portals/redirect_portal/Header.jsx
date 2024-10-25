@@ -166,7 +166,7 @@ function Header() {
             <div className="manage_rgiht_bdr d-flex align-items-center">
             <p style={{color: "#fff",
                       textTransform: "capitalize",
-                      fontSize: "14px",margin:'0'}}>R. Minutes: <span style={{fontSize:'17px',fontWeight:'600'}}>{minutest[0]?.remaining_minutes}</span></p>
+                      fontSize: "14px",margin:'0'}}>Balance Min: <span style={{fontSize:'17px',fontWeight:'600',color:'#00f500'}}>{minutest[0]?.remaining_minutes}</span></p>
               <IconButton
                 size="large"
                 aria-label="account of current user"

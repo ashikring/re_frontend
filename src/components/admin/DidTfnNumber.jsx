@@ -381,7 +381,6 @@ function DID_TFN_number({ colorThem }) {
           });
           setResponse(response);
           handleCloseImport();
-          // navigate("/")}
         } else {
           toast.error(response.data.message, {
             position: toast.POSITION.TOP_RIGHT,

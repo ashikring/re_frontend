@@ -256,10 +256,14 @@ function CallActive(){
           const index = mockDataTeam.findIndex(item => item.id === params.row.id);
           const duration = timeDifference && timeDifference[index];
           
-          return (
-            <span style={{ color: "green" }}>
+          return (<>
+            {params?.row?.Status === "DIALING" ? (<><span style={{ color: "grey" }}>
+              {duration ? `00:00:00` : ''}
+            </span></>) : (<> <span style={{ color: "green" }}>
               {duration ? `${duration.hours}:${duration.minutes}:${duration.seconds}` : ''}
-            </span>
+            </span></>)
+           
+          }</>
           );
         }
         return null;
