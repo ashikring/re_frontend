@@ -777,58 +777,37 @@ function ManageAddBuyer({ colorThem }) {
                             </div>
                           </div>
                           {/* </div> */}
-                          {/* -----   Add Buyer Modal Start   ----- */}
+                    
+                           {/* -----   Add Campaigns Modal Start   ----- */}
 
-                          <Modal
-                            aria-labelledby="transition-modal-title"
-                            aria-describedby="transition-modal-description"
-                            open={open}
-                            closeAfterTransition
-                            slots={{ Backdrop: Backdrop }}
-                            slotProps={{
-                              backdrop: {
-                                timeout: 500,
-                              },
-                            }}
-                          >
-                            <Fade in={open} className="bg_imagess">
-                              <Box
-                                sx={style}
-                                borderRadius={"10px"}
-                                textAlign={"center"}
-                              >
-                                <IconButton
+                        <Dialog
+                          open={open}
+                       //   onClose={handleClose}
+                          sx={{ textAlign: "center" }}
+                        >
+                          <Box>
+                          <IconButton
                                   onClick={handleAddBuyerClose}
                                   sx={{ float: "inline-end" }}
                                 >
                                   <Close />
                                 </IconButton>
-                                <br />
-                                <Typography
-                                  id="transition-modal-title"
-                                  variant="h6"
-                                  component="h2"
-                                  color={"#092b5f"}
-                                  fontSize={"18px"}
-                                  fontWeight={"600"}
-                                >
-                                  Add Buyer
-                                </Typography>
-                                <Typography
-                                  id="transition-modal-description"
-                                  sx={{ mt: 2 }}
-                                  fontSize={"16px"}
-                                  color={"#000"}
-                                  paddingBottom={"10px"}
-                                >
-                                  {/* A ring group is a set of destinations that can
-                                be called with a ring strategy. */}
-                                </Typography>
-                                <form
+                          </Box>
+                          <DialogTitle
+                            sx={{
+                              color: "#07285d",
+                              fontWeight: "600",
+                              width: "500px",
+                            }}
+                          >
+                            Add Buyer
+                          </DialogTitle>
+                          <DialogContent>
+                          <form
                                   style={{
                                     textAlign: "center",
                                     height: "348px",
-                                    overflow: "auto",
+                                    // overflow: "auto",
                                     paddingTop: "10px",
                                     padding: "5px",
                                     overflowX: "clip",
@@ -987,8 +966,15 @@ function ManageAddBuyer({ colorThem }) {
                                     </DemoContainer>
                                   </LocalizationProvider>
                                 </form>
-                                <Box>
-                                  <Button
+                          </DialogContent>
+                          <DialogActions
+                            sx={{
+                              display: "flex",
+                              justifyContent: "center",
+                              paddingBottom: "20px",
+                            }}
+                          >
+                           <Button
                                     variant="contained"
                                     className="all_button_clr"
                                     color="primary"
@@ -1004,11 +990,12 @@ function ManageAddBuyer({ colorThem }) {
                                   >
                                     Save
                                   </Button>
-                                </Box>
-                              </Box>
-                            </Fade>
-                          </Modal>
-                          {/* -----   Add Buyer Modal End   ----- */}
+                          </DialogActions>
+                        </Dialog>
+
+                        {/* -----   Add Campaigns Modal End   ----- */}
+                           
+
 
                            {/* Delete Confirmation Modal Start  */}
                       <Dialog
@@ -1080,57 +1067,35 @@ function ManageAddBuyer({ colorThem }) {
             {/* Delete Confirmation Modal End  */}
 
                           {/* -----   Edit Modal Start   ----- */}
-
-                          <Modal
-                            aria-labelledby="transition-modal-title"
-                            aria-describedby="transition-modal-description"
-                            open={edit}
-                            closeAfterTransition
-                            slots={{ Backdrop: Backdrop }}
-                            slotProps={{
-                              backdrop: {
-                                timeout: 500,
-                              },
-                            }}
-                          >
-                            <Fade in={edit} className="bg_imagess">
-                              <Box
-                                sx={style}
-                                borderRadius={"10px"}
-                                textAlign={"center"}
-                              >
-                                <IconButton
+                                 
+                          <Dialog
+                          open={edit}
+                       //   onClose={handleClose}
+                          sx={{ textAlign: "center" }}
+                        >
+                          <Box>
+                          <IconButton
                                   onClick={handleEditClose}
                                   sx={{ float: "inline-end" }}
                                 >
                                   <Close />
                                 </IconButton>
-                                <br />
-                                <Typography
-                                  id="transition-modal-title"
-                                  variant="h6"
-                                  component="h2"
-                                  color={"#092b5f"}
-                                  fontSize={"18px"}
-                                  fontWeight={"600"}
-                                >
-                                  Update Buyer
-                                </Typography>
-                                <Typography
-                                  id="transition-modal-description"
-                                  sx={{ mt: 2 }}
-                                  fontSize={"16px"}
-                                  color={"#000"}
-                                  paddingBottom={"10px"}
-                                >
-                                  {/* A ring group is a set of destinations that can
-                                be called with a ring strategy. */}
-                                </Typography>
-                                <form
+                          </Box>
+                          <DialogTitle
+                            sx={{
+                              color: "#07285d",
+                              fontWeight: "600",
+                              width: "500px",
+                            }}
+                          >
+                            Add Buyer
+                          </DialogTitle>
+                          <DialogContent>
+                          <form
                                   style={{
                                     textAlign: "center",
                                     height: "348px",
-                                    overflow: "auto",
+                                    // overflow: "auto",
                                     paddingTop: "10px",
                                     padding: "5px",
                                     overflowX: "clip",
@@ -1310,8 +1275,15 @@ function ManageAddBuyer({ colorThem }) {
                                     </DemoContainer>
                                   </LocalizationProvider>
                                 </form>
-                                <Box>
-                                  <Button
+                          </DialogContent>
+                          <DialogActions
+                            sx={{
+                              display: "flex",
+                              justifyContent: "center",
+                              paddingBottom: "20px",
+                            }}
+                          >
+                           <Button
                                     variant="contained"
                                     className="all_button_clr"
                                     color="primary"
@@ -1327,10 +1299,9 @@ function ManageAddBuyer({ colorThem }) {
                                   >
                                     Update
                                   </Button>
-                                </Box>
-                              </Box>
-                            </Fade>
-                          </Modal>
+                          </DialogActions>
+                        </Dialog>
+
                           {/* -----   Edit Modal End   ----- */}
                           {state?.getAdminAddBuyer?.AddBuyer === undefined ? (
                             <>

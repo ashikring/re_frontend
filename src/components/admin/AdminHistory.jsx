@@ -4,6 +4,9 @@ import { makeStyles } from "@mui/styles";
 import {
   Box,
   Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
   Fade,
   FormControl,
   Grid,
@@ -488,6 +491,288 @@ function AdminHistory({ colorThem }) {
                             <AddOutlinedIcon />
                           </IconButton>
                           
+                            
+                             {/* -----   Edit Modal Start   ----- */}
+                                 
+                          <Dialog
+                          open={open}
+                        onClose={handleClose}
+                          sx={{ textAlign: "center" }}
+                        >
+                          <Box>
+                          <IconButton
+                                  onClick={handleClose}
+                                  sx={{ float: "inline-end" }}
+                                >
+                                  <Close />
+                                </IconButton>
+                          </Box>
+                          <DialogTitle
+                            // sx={{
+                            //   color: "#07285d",
+                            //   fontWeight: "600",
+                            //   width: "500px",
+                            // }}
+                          >
+                           <Typography
+                                  id="transition-modal-title"
+                                  variant="h6"
+                                  component="h2"
+                                  color={"#092b5f"}
+                                  fontSize={"18px"}
+                                  fontWeight={"600"}
+                                  marginBottom={"16px"}
+                                >
+                                  Check Add Minute
+                                </Typography>
+                          </DialogTitle>
+                          <DialogContent>
+                          <form
+                                  style={{
+                                    textAlign: "center",
+                                    textAlign: "center",
+                                    height: "auto",
+                                    // overflow: "auto",
+                                    paddingTop: "10px",
+                                    padding: "5px",
+                                  }}
+                                >
+                                  <Grid
+                                    container
+                                    className="cdr_filter_row"
+                                    style={{
+                                      padding: "20px 0",
+                                      display: "flex",
+                                      justifyContent: "center",
+                                    }}
+                                  >
+                                    <Grid
+                                      xl={4}
+                                      lg={4}
+                                      md={4}
+                                      sm={12}
+                                      xs={12}
+                                      style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                      }}
+                                    >
+                                      <FormControl
+                                        fullWidth
+                                        style={{
+                                          width: "98%",
+                                          margin: "7px 0",
+                                        }}
+                                        className={classes.formControl}
+                                      >
+                                        <InputLabel id="demo-simple-select-label">
+                                          UserName
+                                        </InputLabel>
+
+                                        <Select
+                                          labelId="demo-simple-select-label"
+                                          id="demo-simple-select"
+                                          label="UserName"
+                                          helperText="Select the language."
+                                          style={{ textAlign: "left" }}
+                                          value={userId}
+                                          onChange={(e) => {
+                                            setUserId(e.target.value);
+                                          }}
+                                          required
+                                        >
+                                          {users?.map((item, index) => {
+                                            return (
+                                              <MenuItem
+                                                key={index}
+                                                value={item?.user_id}
+                                              >
+                                                {item.username}
+                                              </MenuItem>
+                                            );
+                                          })}
+                                        </Select>
+                                      </FormControl>
+                                    </Grid>
+
+                                    <Grid
+                                      xl={4}
+                                      lg={4}
+                                      md={4}
+                                      sm={12}
+                                      xs={12}
+                                      style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        height: "53px",
+                                      }}
+                                    >
+                                      <LocalizationProvider
+                                        dateAdapter={AdapterDayjs}
+                                        className={classes.formControl}
+                                      >
+                                        <DemoContainer
+                                          components={["DatePicker"]}
+                                          sx={{ width: "98%" }}
+                                        >
+                                          <DatePicker
+                                            label="From Date"
+                                            style={{ width: "300px" }}
+                                            value={
+                                              fromDate
+                                                ? dayjs(fromDate, "DD/MM/YYYY")
+                                                : null
+                                            } // Convert selectedDate to a dayjs object
+                                            onChange={handleFromDateChange}
+                                            renderInput={(props) => (
+                                              <TextField {...props} />
+                                            )}
+                                            format="DD/MM/YYYY"
+                                          />
+                                        </DemoContainer>
+                                      </LocalizationProvider>
+                                    </Grid>
+                                    <Grid
+                                      xl={4}
+                                      lg={4}
+                                      md={4}
+                                      sm={12}
+                                      xs={12}
+                                      style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        height: "53px",
+                                      }}
+                                    >
+                                      <LocalizationProvider
+                                        dateAdapter={AdapterDayjs}
+                                        className={classes.formControl}
+                                      >
+                                        <DemoContainer
+                                          components={["DatePicker"]}
+                                          sx={{ width: "98%" }}
+                                        >
+                                          <DatePicker
+                                            label="To Date"
+                                            style={{ width: "98%" }}
+                                            value={
+                                              toDate
+                                                ? dayjs(toDate, "DD/MM/YYYY")
+                                                : null
+                                            } // Convert selectedDate to a dayjs object
+                                            onChange={handleToDateChange}
+                                            renderInput={(props) => (
+                                              <TextField {...props} />
+                                            )}
+                                            format="DD/MM/YYYY"
+                                          />
+                                        </DemoContainer>
+                                      </LocalizationProvider>
+                                    </Grid>
+                                  </Grid>
+                                  <Grid
+                                    container
+                                    className="cdr_filter_row"
+                                    style={{ padding: "0px 0" }}
+                                  >
+                                    <Grid
+                                      xl={12}
+                                      lg={12}
+                                      md={12}
+                                      sm={12}
+                                      xs={12}
+                                      style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "end",
+                                        padding: "0px 0",
+                                      }}
+                                    >
+                                      <IconButton
+                                        className="filter_search_btn"
+                                        style={{
+                                          marginLeft: "0 !important",
+                                          background: "green !important",
+                                        }}
+                                        onClick={handleSearchModal}
+                                      >
+                                        Search &nbsp;
+                                        <SearchIcon />
+                                      </IconButton>
+                                      <IconButton
+                                        className="filter_reset_btn"
+                                        style={{
+                                          marginLeft: "0 !important",
+                                          backgroundColor: "grey !important",
+                                        }}
+                                        onClick={handleResetModal}
+                                      >
+                                        Reset &nbsp;
+                                        <RestartAltIcon />
+                                      </IconButton>
+                                    </Grid>
+                                  </Grid>
+                                  <br />
+
+                                  <Box>
+                                    <ThemeProvider theme={theme}>
+                                      <div
+                                        style={{
+                                          height: "300px",
+                                          width: "100%",
+                                        }}
+                                      >
+                                        <DataGrid
+                                          rows={rows1}
+                                          columns={columns1}
+                                          headerClassName="custom-header"
+                                          // getRowClassName={(params) =>
+                                          //   isRowBordered(params)
+                                          //     ? classes.borderedGreen
+                                          //     : classes.borderedRed
+                                          // }
+                                          components={{ Toolbar: GridToolbar }}
+                                          slots={{
+                                            toolbar: CustomToolbar,
+                                          }}
+                                        />
+                                      </div>
+                                    </ThemeProvider>
+                                  </Box>
+                                </form>
+                          </DialogContent>
+                          {/* <DialogActions
+                            sx={{
+                              display: "flex",
+                              justifyContent: "center",
+                              paddingBottom: "20px",
+                            }}
+                          >
+                           <Button
+                                    variant="contained"
+                                    className="all_button_clr"
+                                    color="primary"
+                                    sx={{
+                                      fontSize: "16px !impotant",
+                                      background: "#092b5f",
+
+                                      marginLeft: "10px !important",
+                                      padding: "10px 20px !important",
+                                      textTransform: "capitalize !important",
+                                    }}
+                                    onClick={handleUpdate}
+                                  >
+                                    Update
+                                  </Button>
+                          </DialogActions> */}
+                        </Dialog>
+
+                          {/* -----   Edit Modal End   ----- */}
+
+                            
+
+
 
                           <Modal
                             open={open}

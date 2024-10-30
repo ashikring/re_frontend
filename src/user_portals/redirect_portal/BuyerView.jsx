@@ -64,6 +64,9 @@ import Menu from '@mui/material/Menu';
 // import MenuItem from '@mui/material/MenuItem';
 import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import axios from "axios";
+import { api } from "../../mockData";
+import { toast } from "react-toastify";
 
 const useStyles = makeStyles({
   borderedGreen: {
@@ -229,7 +232,6 @@ function BuyerView() {
   const classes = useStyles();
   const navigate = useNavigate();
   const location = useLocation();
-  const [buyerOpen, setBuyerOpen] = useState(false);
   const [response, setResponse] = useState("");
   const [open, setOpen] = useState(false);
   const [edit, setEdit] = useState(false);
@@ -246,6 +248,7 @@ function BuyerView() {
   const [toDate, setToDate] = useState(null);
   const [followWorkTime, setFollowWorkTime] = useState(false);
   const [alertMessage, setAlertMessage] = useState(false);
+  const [campaignNumbers, setCampaignNumbers] = useState([]);
   const [id, setId] = useState("");
   const [name, setName] = useState("");
   const handleAddBuyerOpen = () => setOpen(true);
@@ -388,6 +391,32 @@ function BuyerView() {
   useEffect(() => {
     dispatch(getRedirectBuyer(location.state.data.campaignId));
   }, [location.state.data.campaignId, response]);
+
+  useEffect(()=>{
+    const current_user = localStorage.getItem("current_user");
+    const token = JSON.parse(localStorage.getItem(`user_${current_user}`));
+    
+        try {
+          const config = {
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization" : `Bearer ${token.access_token} `
+            },
+          };
+          axios.get(
+            `${api.dev}/api/getdidfromgroup?group_id=${location.state.data.campaignId}`,
+            config
+          ).then((res)=>{
+            setCampaignNumbers(res?.data?.data);
+          });
+        
+        } catch (error) {
+          toast.error(error?.response?.data?.message, {
+            position: toast.POSITION.TOP_RIGHT,
+            autoClose: 2500,
+          });
+        }
+  },[])
 
   const columns = [
     {
@@ -707,7 +736,7 @@ function BuyerView() {
                             <b className="fnt_bld"> Campaign Name:</b>{" "}
                             {location.state.data.group_name} 
 
-                            {/* <PopupState variant="popover" popupId="demo-popup-menu" >
+                             <PopupState variant="popover" popupId="demo-popup-menu" >
       {(popupState) => (
         <React.Fragment>
           <Button variant="contained" {...bindTrigger(popupState)} className="redirect_all_button_clr"
@@ -715,20 +744,16 @@ function BuyerView() {
             style={{marginLeft:'10px'}}>
             Campaign Number
           </Button>
-          <Menu {...bindMenu(popupState)}>
-            <MenuItem onClick={popupState.close}>+91234567898</MenuItem>
-            <MenuItem onClick={popupState.close}>+91234567898</MenuItem>
-            <MenuItem onClick={popupState.close}>+91234567898</MenuItem>
-            <MenuItem onClick={popupState.close}>+91234567898</MenuItem>
-            <MenuItem onClick={popupState.close}>+91234567898</MenuItem>
-            <MenuItem onClick={popupState.close}>+91234567898</MenuItem>
-            <MenuItem onClick={popupState.close}>+91234567898</MenuItem>
-            <MenuItem onClick={popupState.close}>+91234567898</MenuItem>
-            <MenuItem onClick={popupState.close}>+91234567898</MenuItem>
+          <Menu {...bindMenu(popupState)} >
+            {campaignNumbers?.map((item, index)=>(
+              
+              <MenuItem key={index} style={{cursor:"context-menu"}}>{item}</MenuItem>
+              
+            ))}
           </Menu>
         </React.Fragment>
       )}
-    </PopupState> */}
+    </PopupState> 
                           </p>
 
                           <div>

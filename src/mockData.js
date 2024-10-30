@@ -2,10 +2,8 @@ const dev = "https://devredirect.tellipsis.com";
 const prod = "https://forwarding.tellipsis.com";
 const domain = window.location.host;
 
-
-
 export const api ={
-    dev:dev,
+    dev:prod,
 }
 
 export const usersGroupRolesList = [

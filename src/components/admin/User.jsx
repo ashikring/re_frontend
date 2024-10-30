@@ -1535,7 +1535,7 @@ function User({ colorThem }) {
                           </FormControl>
                         </>
                       )}
-                      <FormControl
+                      {/* <FormControl
                         style={{ width: "100%", margin: "5px 0 5px 0" }}
                       >
                         <InputLabel id="demo-multiple-checkbox-label">
@@ -1564,7 +1564,7 @@ function User({ colorThem }) {
                             </MenuItem>
                           ))}
                         </Select>
-                      </FormControl>
+                      </FormControl> */}
                     </form>
                   </Typography>
                 </form>
@@ -2067,7 +2067,7 @@ function User({ colorThem }) {
                                       <></>
                                     )}
 
-                                    <FormControl
+                                    {/* <FormControl
                                       style={{
                                         width: "100%",
                                         margin: "5px 0 5px 0",
@@ -2109,7 +2109,7 @@ function User({ colorThem }) {
                                           )
                                         )}
                                       </Select>
-                                    </FormControl>
+                                    </FormControl> */}
                                   </form>
                              
                               </form>
