@@ -19,6 +19,16 @@
   height: 24px;
 }
 
+/* .MuiInputBase-root.MuiOutlinedInput-root.MuiInputBase-colorPrimary.MuiInputBase-formControl.css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root {
+  border: 0px !important;
+  display: contents;
+} */
+/* 
+.MuiInputBase-root.MuiOutlinedInput-root.MuiInputBase-colorPrimary.MuiInputBase-formControl.css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root:focus-visible {
+  border: 0px !important;
+  display: contents;
+} */
+
 .MuiPaper-root.MuiPaper-elevation.MuiPaper-rounded.MuiPaper-elevation24.MuiDialog-paper.MuiDialog-paperScrollPaper.MuiDialog-paperWidthSm.css-uhb5lp {
   background: #254336;
   background: linear-gradient(
@@ -768,6 +778,7 @@ border-radius: 4px;
 .tab_sub_cntnt form button:hover{
 box-shadow: 0px 2px 3px -1px #000;
 }
+
 /* .MuiPaper-root.MuiPaper-elevation.MuiPaper-rounded.MuiPaper-elevation24.MuiDialog-paper.MuiDialog-paperScrollPaper.MuiDialog-paperWidthSm.css-uhb5lp {
   background-image: url('https://portal.dev.ringoncore.com/static/media/mdlbg-cover.4e9a1c6f84ed8587e28d.jpg') !important;
   background-repeat: no-repeat;

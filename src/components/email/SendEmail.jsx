@@ -76,17 +76,20 @@ function SendEmail() {
         if (values.status === 200) {
           toast.success(values.message, {
             position: toast.POSITION.TOP_RIGHT,
-            autoClose: 1500,
+            autoClose: 2500,
           });
         } else {
           toast.error(values.message, {
             position: toast.POSITION.TOP_RIGHT,
-            autoClose: 1500,
+            autoClose: 2500,
           });
         }
       })
       .catch((error) => {
-        console.log(error);
+        toast.error(error.response.data.message, {
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 2500,
+        });
       });
   };
 

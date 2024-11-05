@@ -204,14 +204,14 @@ function Login() {
                         variant="body2"
                         className="text-end login-inpt-txt"
                       >
-                        {/* <p
+                        <p
                           style={{ cursor: "pointer", color: "#fff" }}
                           onClick={() => {
                             navigate("/send_email");
                           }}
                         >
                           Forgot you password?
-                        </p> */}
+                        </p>
                       </Typography>
                     </form>
                   </CardContent>

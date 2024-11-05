@@ -3,7 +3,7 @@ const prod = "https://forwarding.tellipsis.com";
 const domain = window.location.host;
 
 export const api ={
-    dev:prod,
+    dev:dev,
 }
 
 export const usersGroupRolesList = [
