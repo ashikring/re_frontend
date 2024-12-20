@@ -6,6 +6,7 @@ import Chart from "chart.js/auto";
 import All_Route from "./routes/AllRoute";
 Chart.register(CategoryScale);
 function App() {
+  
   return (
     <div className="App" >
       <All_Route />

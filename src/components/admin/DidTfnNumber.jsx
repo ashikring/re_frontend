@@ -306,7 +306,7 @@ function DID_TFN_number({ colorThem }) {
     setTfnNumber(data?.tfn_number);
     setClientName(data?.user_uuid);
     setMaxCall(data?.max_call);
-    setSelectedValue(data?.status === "Active" ? "t" : "f");
+    setSelectedValue(data?.status === true ? "t" : "f");
     setDestinationAction(data?.details);
     setCarrierName(data?.carrier_name);
     setDestinationDescription(data?.description);
@@ -329,7 +329,7 @@ function DID_TFN_number({ colorThem }) {
         user_id: userId,
         recording: recording,
         carrier_name: carrierName,
-        reseller_id: resellerId,
+        reseller_id: resellerId === "" ? null : resellerId,
         didnumber: tfnNumber,
         redirect_group_id: redirectGroup,
         ivr_authendication: ivrAuthentication
@@ -532,7 +532,7 @@ function DID_TFN_number({ colorThem }) {
               <></>
             ) : (
               <>
-               <Tooltip title="edit" disableInteractive interactive>
+               <Tooltip title="Edit" disableInteractive interactive>
             <IconButton onClick={() => handleEdit(params.row)}>
               <Edit
                 index={params.row.id}
@@ -561,7 +561,11 @@ function DID_TFN_number({ colorThem }) {
       width: 100,
       headerAlign: "center",
       align: "center",
-    },
+      renderCell: (params)=>{
+        return(
+          <span style={{textTransform:'capitalize'}}>{params.row.username}</span>
+        )
+      }    },
     {
       field: "resellername",
       headerName: "Reseller",
@@ -569,6 +573,11 @@ function DID_TFN_number({ colorThem }) {
       width: 100,
       headerAlign: "center",
       align: "center",
+      renderCell: (params)=>{
+        return(
+          <span style={{textTransform:'capitalize'}}>{params.row.resellername}</span>
+        )
+      }
     },
     {
       field: "redirect_group_name",
@@ -577,6 +586,11 @@ function DID_TFN_number({ colorThem }) {
       width: 120,
       headerAlign: "center",
       align: "center",
+      renderCell: (params)=>{
+        return(
+          <span style={{textTransform:'capitalize'}}>{params.row.redirect_group_name}</span>
+        )
+      }
     },
     {
       field: "total_call_duration",
@@ -594,6 +608,11 @@ function DID_TFN_number({ colorThem }) {
       width: 130,
       headerAlign: "center",
       align: "center",
+      renderCell: (params)=>{
+        return(
+          <span style={{textTransform:'capitalize'}}>{params.row.ivr_authendication === true ? 'True' : 'False'}</span>
+        )
+      }
     },
 
     {
@@ -610,11 +629,11 @@ function DID_TFN_number({ colorThem }) {
               <>
                 <div
                   style={{
-                    color: "white",
-                    background: "red",
+                    color: "red",
+                    //background: "red",
                     padding: "7px",
                     borderRadius: "5px",
-                    fontSize: "12px",
+                   // fontSize: "12px",
                     textTransform: "capitalize",
                   }}
                 >
@@ -625,11 +644,11 @@ function DID_TFN_number({ colorThem }) {
               <>
                 <div
                   style={{
-                    color: "white",
-                    background: "green",
+                    color: "green",
+                    //background: "green",
                     padding: "7px",
                     borderRadius: "5px",
-                    fontSize: "12px",
+                   // fontSize: "12px",
                     textTransform: "capitalize",
                   }}
                 >
@@ -659,9 +678,9 @@ function DID_TFN_number({ colorThem }) {
                     //background: "green",
                     padding: "7px",
                     borderRadius: "5px",
-                    fontSize: "15px",
+                  //  fontSize: "15px",
                     textTransform: "capitalize",
-                    fontWeight: "600",
+                   // fontWeight: "600",
                   }}
                 >
                   Active
@@ -675,9 +694,9 @@ function DID_TFN_number({ colorThem }) {
                     //   background: "red",
                     padding: "7px",
                     borderRadius: "5px",
-                    fontSize: "15px",
+                  //  fontSize: "15px",
                     textTransform: "capitalize",
-                    fontWeight: "600",
+                  //  fontWeight: "600",
                   }}
                 >
                   Deactive
@@ -695,6 +714,11 @@ function DID_TFN_number({ colorThem }) {
       width: 150,
       headerAlign: "center",
       align: "center",
+      renderCell: (params)=>{
+        return(
+          <span style={{textTransform:'capitalize'}}>{params.row.description}</span>
+        )
+      }
     },
     {
       field: "carrier_name",
@@ -703,6 +727,11 @@ function DID_TFN_number({ colorThem }) {
       width: 100,
       headerAlign: "left",
       align: "left",
+      renderCell: (params)=>{
+        return(
+          <span style={{textTransform:'capitalize'}}>{params.row.carrier_name}</span>
+        )
+      }
     },
     {
       field: 'created_at',
@@ -830,7 +859,7 @@ function DID_TFN_number({ colorThem }) {
                                 Alias for inbound calls.
                               </p> */}
                             </div>
-
+                            <div className="d-xxl-block d-xl-block d-lg-block d-md-block d-sm-none d-none">
                             <div
                               style={{
                                 display: "flex",
@@ -838,6 +867,7 @@ function DID_TFN_number({ colorThem }) {
                                 position: "relative",
                                 top: "0",
                               }}
+                              
                             >
                          
                               {/* import */}
@@ -1022,7 +1052,8 @@ function DID_TFN_number({ colorThem }) {
                             </IconButton>
                           </Box>
                           <DialogTitle
-                            sx={{ color: "#07285d", fontWeight: "600", width: "500px" }}
+                            className="modal_heading"
+                            sx={{ color: "#133325", fontWeight: "600", width: "500px" }}
                           >
                           
                           Add DID
@@ -1432,8 +1463,88 @@ function DID_TFN_number({ colorThem }) {
 
                               {/* -----   Add Campaigns Modal End   ----- */}
                             </div>
-                       
+                            </div>
+                           
                           </div>
+                           {/* mobile_view_start */}
+                           <div className="d-xxl-none d-xl-none d-lg-none d-md-none d-sm-block d-block">
+                           <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent:'space-between',
+                                position: "relative",
+                                top: "0",
+                              }}
+                             
+                            >
+                         
+                              {/* import */}
+                              {user.user_role === "Reseller" ? (
+                                <></>
+                              ) : (
+                                <>
+                                  <Typography
+                                    onClick={handleClick}
+                                    target="_blank"
+                                    className="hover-content"
+                                    style={{ cursor: "pointer" }}
+                                  >
+                                    <IconButton>
+                                      <FileDownloadIcon />
+                                    </IconButton>
+                                  </Typography>
+
+                                  <div
+                                    className="n-ppost"
+                                    style={{ paddingRight: "20px" }}
+                                  >
+                                    Sample
+                                  </div>
+                                  <img
+                                    className="n-ppost-name"
+                                    src="https://i.ibb.co/rMkhnrd/sample2.png"
+                                    alt="Image"
+                                  />
+
+                                  <div>
+                                    <IconButton
+                                      className="all_button_clr"
+                                      onClick={handleOpenImport}
+                                    >
+                                      Import <ImportExportIcon />
+                                    </IconButton>
+                                  </div>
+                                </>
+                              )}
+   
+                              
+                              {/* import-end */}
+
+                              {/* ==Add-modal== */}
+
+                              {user.user_role === "Reseller" ? (
+                                <></>
+                              ) : (
+                                <>
+                                  {" "}
+                                  <div>
+                                    <IconButton
+                                      className="all_button_clr"
+                                      onClick={handleOpen}
+                                    >
+                                      Add <AddOutlinedIcon />
+                                    </IconButton>
+                                  </div>
+                                </>
+                              )}
+
+
+                          
+                            </div>
+                            </div>
+                            {/* mobile_view_end */}
+                       
                           <div>
                   <FormControl>
                     {/* <FormLabel id="demo-row-radio-buttons-group-label">Live Calls</FormLabel> */}
@@ -1490,21 +1601,28 @@ function DID_TFN_number({ colorThem }) {
                             open={edit}
                             sx={{ textAlign: "center" }}
                           >
-                          <Box>
+                          <Box
+                         
+                          >
                             <IconButton
                               onClick={handleEditClose}
-                              sx={{
-                                float: "inline-end",
-                                display: "flex",
-                                justifyContent: "end",
-                                margin: "10px 10px 0px 0px",
+                              sx={{ float: "inline-end",
+                    display: "flex",
+                    justifyContent: "end",
+                    margin: "10px 10px 0px 0px",
                               }}
                             >
                               <Close />
                             </IconButton>
+                          
                           </Box>
                           <DialogTitle
-                            sx={{ color: "#07285d", fontWeight: "600", width: "500px" }}
+                          className="modal_heading"
+                            sx={{ color: "#133325", fontWeight: "600", width: "500px", margin:'auto',
+                            float: "inline-end",
+                            //position:'relative',right:'1rem',top:'1rem' 
+                             }}
+                           
                           >
                           
                           Update Destination

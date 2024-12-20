@@ -709,7 +709,7 @@ function User({ colorThem }) {
             {user.user_role === "Reseller" ? (
               <>
                 {" "}
-                <Tooltip title="edit" disableInteractive interactive>
+                <Tooltip title="Edit" disableInteractive interactive>
             <IconButton onClick={() => handleButtonClick(params.row)}>
               <Edit
                 index={params.row.id}
@@ -720,7 +720,7 @@ function User({ colorThem }) {
               </>
             ) : (
               <>
-                <Tooltip title="edit" disableInteractive interactive>
+                <Tooltip title="Edit" disableInteractive interactive>
             <IconButton onClick={() => handleButtonClick(params.row)}>
               <Edit
                 index={params.row.id}
@@ -748,7 +748,7 @@ function User({ colorThem }) {
       renderCell: (params) => {
         return (
           <div className=" user_bdr d-flex justify-content-between align-items-center">
-            <Tooltip title="view" disableInteractive interactive>
+            <Tooltip title="View" disableInteractive interactive>
               <Box
                 className="user_img"
                 onClick={() => handleView(params.row.user_id)}
@@ -801,7 +801,7 @@ function User({ colorThem }) {
             {state?.allUsers?.users?.map((name, index) => {
               if (name?.role === "Reseller") {
                 return (
-                  <span key={index}>
+                  <span key={index} style={{textTransform: "capitalize", fontSize:"12px"}}>
                     {name.id === params.row.reseller_id ? (
                       <>{name.username}</>
                     ) : (
@@ -822,7 +822,7 @@ function User({ colorThem }) {
       width: 180,
       headerClassName: "custom-header",
       headerAlign: "center",
-      align: "center",
+      align: "left",
     },
 
     {
@@ -1017,8 +1017,8 @@ function User({ colorThem }) {
               <>
                 <div
                   style={{
-                    color: "white",
-                    background: "red",
+                   // color: "white",
+                    color: "red",
                     padding: "7px",
                     borderRadius: "5px",
                     fontSize: "12px",
@@ -1032,8 +1032,8 @@ function User({ colorThem }) {
               <>
                 <div
                   style={{
-                    color: "white",
-                    background: "green",
+                   // color: "white",
+                    color: "green",
                     padding: "7px",
                     borderRadius: "5px",
                     fontSize: "12px",
@@ -1065,10 +1065,13 @@ function User({ colorThem }) {
                   style={{
                     color: "white",
                     background: "green",
-                    padding: "7px",
+                    padding: "7px 0 0 0",
                     borderRadius: "5px",
                     fontSize: "12px",
                     textTransform: "capitalize",
+                    height: "30px",
+                    width: "62px",
+                    textAlign:"center"
                   }}
                 >
                   Active
@@ -1246,9 +1249,10 @@ function User({ colorThem }) {
                 </IconButton>
               </Box>
               <DialogTitle
-                sx={{ color: "#07285d", fontWeight: "600", width: "500px" }}
+                  className="modal_heading" 
+                sx={{ color: "#133325", fontWeight: "600", width: "500px" }}
               >
-                <Box>
+                <Box >
                   {" "}
                   <img src="/img/mdl_icon.png" alt="user icon" />
                 </Box>
@@ -1622,6 +1626,7 @@ function User({ colorThem }) {
               //className="bg_imagess"
             >
               <DialogTitle
+              className="modal_heading"
                 id="alert-dialog-title"
                 sx={{ color: "#07285d", fontWeight: "600" }}
               >
@@ -1746,7 +1751,8 @@ function User({ colorThem }) {
                 </IconButton>
               </Box>
               <DialogTitle
-                sx={{ color: "#07285d", fontWeight: "600", width: "500px" }}
+              className="modal_heading"
+                sx={{ color: "#133325", fontWeight: "600", width: "500px" }}
               >
                 <Box>
                   {" "}

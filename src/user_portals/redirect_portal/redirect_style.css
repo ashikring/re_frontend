@@ -26,16 +26,27 @@ button.MuiButtonBase-root.MuiTab-root.MuiTab-textColorPrimary.css-1q2h7u5 {
     background-color: #fff !important;
     /* background-color: #0c367a !important; */
     /* background-color: #0F67B1 !important; =====blue===*/
-    background-color: #254336 !important;
+    /* background-color: #254336 !important; */
     /* background-color: #DAD3BE !important; */
+    /* border-bottom: 1px solid #0a2c1e; */
   }
-  
+  .tabbs{
+    display: block !important;
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+    min-height: 54px !important;
+  }
+  .campaign_add_btn:hover{
+     background: #ff6800  !important;
+  }
   
   .redirect_tab {
     /* background-color: #fff; */
     /* background-color: #96C9F4; */
-    background-color: #6B8A7A;
-    border-radius: 0px 0px 25px 25px;
+    /* background-color: #6B8A7A; */
+    background-color: #254336;
+    min-height: 54px !important;
+    /* border-radius: 0px 0px 25px 25px; */
   }
   .redirect_header_row {
     border-bottom: 0px solid #f0f0f0 !important;
@@ -43,16 +54,19 @@ button.MuiButtonBase-root.MuiTab-root.MuiTab-textColorPrimary.css-1q2h7u5 {
     background-color: #e2e8f04d;
   }
  .tabbs {
-    color: #0c367a !important;
+    color: #fff !important;
+    font-weight: 400 !important;
   }
   .MuiTabs-flexContainer.css-heg063-MuiTabs-flexContainer button {
     /* color: #0c367a !important; */
     color: #fff !important;
     font-weight: 600;
   }
+
   .manage_call {
     font-size: 15px !important;
-    color: #fff !important;
+    /* color: #fff !important; */
+    color: #000 !important;
     cursor: inherit !important;
   }
   #transition-modal-title {
@@ -203,12 +217,17 @@ button.MuiButtonBase-root.MuiTab-root.MuiTab-textColorPrimary.css-1q2h7u5 {
   }
   .MuiTabs-flexContainer.css-heg063-MuiTabs-flexContainer {
     overflow: scroll !important;
+    width: fit-content;
   }
   
  
 }
 
 @media (max-width:576px){
+  .MuiTabs-flexContainer.css-heg063-MuiTabs-flexContainer {
+    overflow: scroll !important;
+    width: fit-content;
+  }
   .all_button_clr {
     padding: 10px !important;
     font-size: 15px !important;
@@ -251,5 +270,14 @@ button.MuiButtonBase-root.MuiTab-root.MuiTab-textColorPrimary.css-1q2h7u5 {
   }
   .chart-container{
     margin-top: 10px;
+  }
+  .redirect_tab {
+    min-height: 54px !important;
+  }
+  section.sidebar-sec {
+
+    padding: 120px 0;
+    min-height: 100vh !important;
+    max-height: 100% !important;
   }
 }

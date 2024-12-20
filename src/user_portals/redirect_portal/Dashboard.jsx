@@ -5,7 +5,7 @@ import { Line, Pie } from "react-chartjs-2";
 import { useSelector } from "react-redux";
 import PieChart from "../../components/chart/PieChart";
 import AdminDashboard from "../../components/admin/AdminDashboard";
-function Dashboard({ chartData }) {
+function Dashboard({ chartData,userThem }) {
   const state = useSelector((state) => state?.user);
   const current_user = localStorage.getItem("current_user");
     const user = localStorage.getItem(`user_${current_user}`)
@@ -32,6 +32,8 @@ function Dashboard({ chartData }) {
 
 
 {user?.user_role === "client" || "User" ?(<>
+  <div className={`App ${userThem} `}>
+  <div className="contant_box">
     <section className="sidebar-sec">
         <div className="container-fluid">
           <div className="row">
@@ -48,17 +50,17 @@ function Dashboard({ chartData }) {
                     {/* <!--role-contet--> */}
                     <div className="tab_cntnt_box">
                       <div className="cntnt_title">
-                        <h3>Message</h3>
-                        <p>
+                        <h3>Dashboard</h3>
+                        {/* <p>
                           Quickly access information and tools related to your
                           account.
-                        </p>
+                        </p> */}
                       </div>
 
                       {/* <!--table---> */}
                       <div className="row">
                       
-                        <div className="col-lg-6 vertical-bdr-line">
+                        <div className="col-lg-6 vertical-bdr-line mb-xxl-0 my-xl-0 my-lg-2 my-md-2 my-sm-2 my-xs-2 my-2">
                         
                           
                           <PieChart/> 
@@ -66,7 +68,7 @@ function Dashboard({ chartData }) {
                          
                         </div>
 
-                        <div className="col-lg-6">
+                        <div className="col-lg-6 mb-xxl-0 my-xl-0 my-lg-2 my-md-2 my-sm-2 my-xs-2 my-2">
                           <div className="chart-container">
                             {/* <h2 style={{ textAlign: "center" }}></h2> */}
                             <Line
@@ -369,7 +371,11 @@ function Dashboard({ chartData }) {
             </div>
           </div>
         </div>
-      </section></>):(<></>)}
+      </section>
+      </div>
+      </div>
+      
+      </>):(<></>)}
      
     </>
   );

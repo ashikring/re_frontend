@@ -297,11 +297,13 @@ function AdminCallBlock({ colorThem }) {
                 onClick={() => handleButtonClick(params.row)}
                 style={{
                   fontSize: "15px",
-                  color: "#04255C",
+                 // color: "#42765f",
                   marginRight: "10px",
                 }}
               >
-                <Edit index={params.row.id} />
+                <Edit index={params.row.id}
+                  style={{ cursor: "pointer", color: "#42765f" }}
+                />
               </IconButton>
             </Tooltip>
             <Tooltip title="delete" disableInteractive interactive>
@@ -320,6 +322,11 @@ function AdminCallBlock({ colorThem }) {
       headerClassName: "custom-header",
       headerAlign: "center",
       align: "center",
+      renderCell: (params)=>{
+        return(
+          <span style={{textTransform:'capitalize'}}>{params.row.username}</span>
+        )
+      } 
     },
     {
       field: "details",
@@ -337,14 +344,7 @@ function AdminCallBlock({ colorThem }) {
       headerAlign: "center",
       align: "center",
     },
-    {
-      field: "description",
-      headerName: "Description",
-      width: 250,
-      headerClassName: "custom-header",
-      headerAlign: "left",
-      align: "left",
-    },
+   
     {
       field: "is_active",
       headerName: "Status",
@@ -359,36 +359,49 @@ function AdminCallBlock({ colorThem }) {
               <>
                 <div
                   style={{
-                    color: "white",
-                    background: "green",
+                    color: "green",
+                  //  background: "green",
                     padding: "7px",
                     borderRadius: "5px",
-                    fontSize: "12px",
+                  //  fontSize: "12px",
                     textTransform: "capitalize",
                   }}
                 >
-                  Enable
+                  Active
                 </div>
               </>
             ) : (
               <>
                 <div
                   style={{
-                    color: "white",
-                    background: "red",
+                    color: "red",
+                   // background: "red",
                     padding: "7px",
-                    borderRadius: "5px",
-                    fontSize: "12px",
+                  //  borderRadius: "5px",
+                   // fontSize: "12px",
                     textTransform: "capitalize",
                   }}
                 >
-                  Disable
+                  Deactive
                 </div>
               </>
             )}
           </div>
         );
       },
+    },
+    {
+      field: "description",
+      headerName: "Description",
+      width: 250,
+      headerClassName: "custom-header",
+      headerAlign: "left",
+      align: "left",
+      renderCell: (params)=>{
+        return(
+          <span style={{textTransform:'capitalize'}}>{params.row.description}</span>
+        )
+      } 
     },
 
    
@@ -480,6 +493,7 @@ function AdminCallBlock({ colorThem }) {
                             </IconButton>
                           </Box>
                           <DialogTitle
+                            className="modal_heading"
                             sx={{ color: "#133325", fontWeight: "600", width: "500px" }}
                           >
                           
@@ -685,8 +699,9 @@ function AdminCallBlock({ colorThem }) {
                             onClick={handleCloseModal}
                             sx={{
                               float: "inline-end",
-                              marginRight: "20px",
-                              marginTop: "20px",
+                    display: "flex",
+                    justifyContent: "end",
+                    margin: "10px 10px 0px 0px",
                             }}
                           >
                             <Close />
@@ -694,12 +709,13 @@ function AdminCallBlock({ colorThem }) {
                         </Box>
 
                         <DialogTitle
+                        
                           sx={{
                             color: "#133325",
                             fontWeight: "600",
                             width: "500px",
                           }}
-                          className="mobile_view"
+                          className="mobile_view modal_heading"
                         >
                           {/* <Box>
                   {" "}
@@ -711,7 +727,7 @@ function AdminCallBlock({ colorThem }) {
                           <form>
                             {/* <SelectComponent handleClose={handleClose} /> */}
                             <Typography variant="body1">
-                              <br />
+                             
                               <form
                                 style={{
                                   textAlign: "center",
@@ -867,7 +883,7 @@ function AdminCallBlock({ colorThem }) {
             >
               <DialogTitle
                 id="alert-dialog-title"
-                sx={{ color: "#07285d", fontWeight: "600" }}
+                sx={{ color: "#133325", fontWeight: "600" }}
               >
                 {"Delete Confirmation"}
               </DialogTitle>

@@ -79,6 +79,7 @@ function PrivateRoute() {
   const user = JSON.parse(localStorage.getItem("admin"));
   const reseller = JSON.parse(localStorage.getItem("reseller"));
   const current_user = localStorage.getItem("current_user");
+
  
 
 
@@ -100,9 +101,11 @@ function PrivateRoute() {
   // -------------
 
   //state
-  const color = localStorage.getItem("theme-color")
+  const color = localStorage.getItem("theme-color");
+  const usercolor = localStorage.getItem("user-color");
+
   const [colorThem, setColorTheme] = useState(color);
-  //console.log(colorThem)
+  const [userThem, setUserThem] = useState(usercolor); 
   //alert(colorThem)
 
   //effect
@@ -113,6 +116,15 @@ function PrivateRoute() {
     if (currentThemeColor) {
       setColorTheme(currentThemeColor);
     }
+
+
+     //check for selected the ///localstorage value
+     const currentUserThemeColor = localStorage.getItem("user-color");
+     //if found set selected theme value in state
+     if (currentUserThemeColor) {
+      setUserThem(currentUserThemeColor);
+     }
+
   }, []);
 
   //set theme
@@ -122,6 +134,15 @@ function PrivateRoute() {
     localStorage.setItem("theme-color", theme);
   };
   // -------------
+  const handleClickUser = (usertheme) => {
+    //alert(theme)
+    setUserThem(usertheme);
+    localStorage.setItem("user-color", usertheme);
+  };
+
+
+
+
 
   const [chartData, setChartData] = useState({
     type: "line",
@@ -153,7 +174,7 @@ function PrivateRoute() {
       },
     ],
   });
-  useEffect(() => {}, []);
+
 
   return (
     <>
@@ -433,15 +454,15 @@ function PrivateRoute() {
         )}
  {current_user !== null ? (
           <>
-<Route path={Router.REDIRECT_DASHBOARD} element={<Layout />}>
-          <Route index element={<Dashboard chartData={chartData} />} />
-          <Route path={Router.REDIRECT_CAMPAIGNS} element={<Campaigns />} />
-          <Route path={Router.REDIRECT_DESTINATION} element={<Destination />} />
-          <Route path={Router.REDIRECT_CALL_ACTIVE} element={<CallActive />} />
-          <Route path={Router.REDIRECT_XML_CDR} element={<XmlCdr />} />
-          <Route path={Router.REDIRECT_CALL_BLOCK} element={<CallBlock />} />
-          <Route path={Router.REDIRECT_MINUTES_LOG} element={<MinutesLog />} />
-          <Route path={Router.REDIRECT_BUYER_VIEW} element={<BuyerView />} />
+<Route path={Router.REDIRECT_DASHBOARD} element={<Layout userThem={userThem} handleClickUser={handleClickUser}/>}>
+          <Route index element={<Dashboard chartData={chartData} userThem={userThem} />} />
+          <Route path={Router.REDIRECT_CAMPAIGNS} element={<Campaigns userThem={userThem} />} />
+          <Route path={Router.REDIRECT_DESTINATION} element={<Destination userThem={userThem} />} />
+          <Route path={Router.REDIRECT_CALL_ACTIVE} element={<CallActive userThem={userThem} />} />
+          <Route path={Router.REDIRECT_XML_CDR} element={<XmlCdr userThem={userThem}/>} />
+          <Route path={Router.REDIRECT_CALL_BLOCK} element={<CallBlock userThem={userThem}/>} />
+          <Route path={Router.REDIRECT_MINUTES_LOG} element={<MinutesLog userThem={userThem}/>} />
+          <Route path={Router.REDIRECT_BUYER_VIEW} element={<BuyerView userThem={userThem}/>} />
           <Route path="*" element={<NoPage />} />
         </Route>
         </>

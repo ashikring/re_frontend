@@ -298,6 +298,11 @@ function AdminHistory({ colorThem }) {
       headerAlign: "center",
       align: "center",
       cellClassName: "super-app-theme--cell",
+      renderCell: (params) => (
+        <span style={{ textTransform: 'capitalize' }}>
+          {params.row.username}
+        </span>
+      )
     },
     {
       field: "added_by",
@@ -307,6 +312,11 @@ function AdminHistory({ colorThem }) {
       headerAlign: "center",
       align: "center",
       cellClassName: "super-app-theme--cell",
+      renderCell: (params) => (
+        <span style={{ textTransform: 'capitalize' }}>
+          {params.row.added_by}
+        </span>
+      )
     },
     {
       field: "topup",
@@ -385,6 +395,11 @@ function AdminHistory({ colorThem }) {
       headerClassName: "custom-header",
       headerAlign: "center",
       align: "center",
+      renderCell: (params) => (
+        <span style={{ textTransform: 'capitalize' }}>
+          {params.row.reseller_name}
+        </span>
+      )
     },
   ];
 
@@ -472,15 +487,18 @@ function AdminHistory({ colorThem }) {
                         aria-labelledby="pills-home-tab"
                       >
                         {/* <!--role-contet--> */}
+                        <div className="d-xxl-none d-xl-none d-lg-none d-md-none d-sm-block d-block">
+                            <h3>Reseller Commision Report</h3>
+                          </div>
                         <div
-                          className="cntnt_title"
+                          className="cntnt_title mobile_justify_end"
                           style={{
                             display: "flex",
                             justifyContent: "space-between",
                             alignItems: "end",
                           }}
                         >
-                          <div>
+                          <div className="d-xxl-block d-xl-block d-lg-block d-md-block d-sm-none d-none">
                             <h3>Reseller Commision Report</h3>
                           </div>
                           <IconButton
@@ -494,7 +512,7 @@ function AdminHistory({ colorThem }) {
                             
                              {/* -----   Edit Modal Start   ----- */}
                                  
-                          <Dialog
+                          {/* <Dialog
                           open={open}
                         onClose={handleClose}
                           sx={{ textAlign: "center" }}
@@ -765,14 +783,10 @@ function AdminHistory({ colorThem }) {
                                   >
                                     Update
                                   </Button>
-                          </DialogActions> */}
-                        </Dialog>
+                          </DialogActions> 
+                        </Dialog> */}
 
-                          {/* -----   Edit Modal End   ----- */}
-
-                            
-
-
+                     
 
                           <Modal
                             open={open}
@@ -780,7 +794,7 @@ function AdminHistory({ colorThem }) {
                             aria-labelledby="child-modal-title"
                             aria-describedby="child-modal-description"
                           >
-                            <Fade in={open} className="bg_imagess">
+                            <Fade in={open} className="bg_imagess" style={{padding:'10px',borderRadius:'15px'}}>
                               <Box sx={{ ...style, width: 700 }}>
                                 <IconButton
                                   onClick={handleClose}
@@ -790,6 +804,7 @@ function AdminHistory({ colorThem }) {
                                 </IconButton>
                                 <br />
                                 <Typography
+                              
                                   id="transition-modal-title"
                                   variant="h6"
                                   component="h2"
@@ -797,6 +812,7 @@ function AdminHistory({ colorThem }) {
                                   fontSize={"18px"}
                                   fontWeight={"600"}
                                   marginBottom={"16px"}
+                                  className="text-center modal_heading"
                                 >
                                   Check Add Minute
                                 </Typography>
@@ -1050,6 +1066,8 @@ function AdminHistory({ colorThem }) {
                               </Box>
                             </Fade>
                           </Modal>
+
+                               {/* -----   Edit Modal End   ----- */}
                         </div>
 
                         <Grid
@@ -1219,7 +1237,7 @@ function AdminHistory({ colorThem }) {
                         <Grid
                           container
                           className="cdr_filter_row"
-                          style={{ padding: "20px 0" }}
+                          style={{ padding: "0px 0" }}
                         >
                           <Grid
                             xl={12}
@@ -1231,7 +1249,7 @@ function AdminHistory({ colorThem }) {
                               display: "flex",
                               alignItems: "center",
                               justifyContent: "end",
-                              padding: "20px 0",
+                              padding: "0px 0",
                             }}
                           >
                             <IconButton

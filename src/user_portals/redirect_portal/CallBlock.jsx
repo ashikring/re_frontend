@@ -148,7 +148,7 @@ function CustomToolbar() {
   );
 }
 
-function CallBlock() {
+function CallBlock({userThem}) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const state = useSelector((state) => state);
@@ -261,19 +261,23 @@ function CallBlock() {
       renderCell: (params) => {
         return (
           <div className="d-flex justify-content-between align-items-center">
-            <Tooltip title="edit" disableInteractive interactive>
+            <Tooltip title="Edit" disableInteractive interactive>
               <IconButton
                 onClick={() => handleButtonClick(params.row)}
                 style={{
                   fontSize: "15px",
-                  color: "#04255C",
+                  color: "#42765f",
                   marginRight: "10px",
                 }}
               >
-                <Edit index={params.row.id} />
+                <Edit index={params.row.id} style={{
+                cursor: "pointer",
+                  color: "#42765f",
+             
+                }} />
               </IconButton>
             </Tooltip>
-            <Tooltip title="delete" disableInteractive interactive>
+            <Tooltip title="Delete" disableInteractive interactive>
             <IconButton onClick={() => handleMessage(params?.row)}>
               <Delete style={{ cursor: "pointer", color: "red" }} />
             </IconButton>
@@ -289,6 +293,11 @@ function CallBlock() {
       headerClassName: "custom-header",
       headerAlign: "center",
       align: "center",
+      renderCell:((params)=>{
+        return(<>
+        <span style={{textTransform:"capitalize"}}>{params.row.username}</span>
+        </>)
+              })
     },
     {
       field: "details",
@@ -320,10 +329,10 @@ function CallBlock() {
               <>
                 <div
                   style={{
-                    color: "white",
-                    background: "green",
-                    padding: "7px",
-                    borderRadius: "5px",
+                    color: "green",
+                    // background: "green",
+                    // padding: "7px",
+                    // borderRadius: "5px",
                     fontSize: "12px",
                     textTransform: "capitalize",
                   }}
@@ -335,10 +344,10 @@ function CallBlock() {
               <>
                 <div
                   style={{
-                    color: "white",
-                    background: "red",
-                    padding: "7px",
-                    borderRadius: "5px",
+                    color: "red",
+                    // background: "red",
+                    // padding: "7px",
+                    // borderRadius: "5px",
                     fontSize: "12px",
                     textTransform: "capitalize",
                   }}
@@ -358,6 +367,11 @@ function CallBlock() {
       headerClassName: "custom-header",
       headerAlign: "center",
       align: "center",
+      renderCell:((params)=>{
+        return(<>
+        <span style={{textTransform:"capitalize"}}>{params.row.description}</span>
+        </>)
+              })
     },
     
 
@@ -381,6 +395,8 @@ function CallBlock() {
     );
   return (
     <>
+     <div className={`App ${userThem} `}>
+     <div className="contant_box">
       <div className="main">
         <section className="sidebar-sec">
           <div className="container-fluid">
@@ -407,10 +423,10 @@ function CallBlock() {
                         >
                           <div>
                             <h3>Call Block</h3>
-                            <p>
+                            {/* <p>
                               Use this to monitor and interact with the call
                               bock.
-                            </p>
+                            </p> */}
                           </div>
 
                           <IconButton
@@ -422,54 +438,47 @@ function CallBlock() {
                           </IconButton>
                         </div>
 
-                        <Modal
-                          aria-labelledby="transition-modal-title"
-                          aria-describedby="transition-modal-description"
-                          open={open}
-                          closeAfterTransition
-                          slots={{ backdrop: Backdrop }}
-                          slotProps={{
-                            backdrop: {
-                              timeout: 500,
-                            },
-                          }}
-                        >
-                          <Fade in={open} className="bg_imagess">
-                            <Box
-                              sx={style}
-                              borderRadius="10px"
-                              textAlign="center"
-                            >
-                              <IconButton
-                                onClick={handleClose}
-                                sx={{ float: "inline-end" }}
-                              >
-                                <Close />
-                              </IconButton>
-                              <br />
-                              <br />
-                              <Typography
-                                id="transition-modal-title"
-                                variant="h6"
-                                component="h2"
-                                color={"#092b5f"}
-                                fontSize={"18px"}
-                                fontWeight={"600"}
-                                marginBottom={"16px"}
-                              >
-                                Add Call Block
-                              </Typography>
+                        <Dialog
+                            open={open}
+                            onClose={handleClose}
+                            sx={{ textAlign: "center" }}
+                          > 
+                           <Box>
+                <IconButton
+                  onClick={handleClose}
+                  sx={{
+                    float: "inline-end",
+                    display: "flex",
+                    justifyContent: "end",
+                    margin: "10px 10px 0px 0px",
+                  }}
+                >
+                  <Close />
+                </IconButton>
+              </Box>
+              <DialogTitle
+              className="modal_heading"
+                sx={{ color: "#133325", fontWeight: "600", width: "500px" }}
+              >
+                
+                Add Call Block
+              </DialogTitle>
+
+
+                            <DialogContent>
+                              <form>
+                            
                               <form
-                                style={{
-                                  textAlign: "center",
-                                  textAlign: "center",
-                                  // height: "400px",
-                                  overflow: "auto",
-                                  paddingTop: "10px",
-                                  padding: "5px",
-                                }}
-                              >
-                                <FormControl
+                                     style={{
+                                      textAlign: "center",
+                                      height: "260px",
+                                      // overflow: "auto",
+                                      paddingTop: "10px",
+                                      padding: "5px",
+                                      width: "auto",
+                                    }}
+                                  >
+                                     <FormControl
                                   fullWidth
                                   style={{ margin: " 5px 0 5px 0" }}
                                 >
@@ -575,10 +584,18 @@ function CallBlock() {
                                     setDescription(e.target.value);
                                   }}
                                 />
-
-                                <br />
-
-                                <Button
+                                  </form>
+                             
+                              </form>
+                            </DialogContent>
+                            <DialogActions
+                                  sx={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                   paddingBottom: "20px",
+                                  }}
+                                >
+                                 <Button
                                   variant="contained"
                                   className="all_button_clr"
                                   color="primary"
@@ -609,10 +626,10 @@ function CallBlock() {
                                 >
                                   save
                                 </Button>
-                              </form>
-                            </Box>
-                          </Fade>
-                        </Modal>
+                                </DialogActions>
+                          </Dialog>
+
+
 
                         {/* edit -modal- start */}
                         <Dialog
@@ -624,22 +641,24 @@ function CallBlock() {
                             <IconButton
                               onClick={handleCloseModal}
                               sx={{
-                                float: "inline-end",
-                                marginRight: "20px",
-                                marginTop: "20px",
-                              }}
+                    float: "inline-end",
+                    display: "flex",
+                    justifyContent: "end",
+                    margin: "10px 10px 0px 0px",
+                  }}
+                             // sx={{ float: "inline-end",position:'absolute',right:'1rem',top:'1rem' }}
                             >
                               <Close />
                             </IconButton>
                           </Box>
-
+                         
                           <DialogTitle
                             sx={{
-                              color: "#07285d",
+                              color: "#133325",
                               fontWeight: "600",
                               width: "500px",
                             }}
-                            className="mobile_view"
+                            className="mobile_view modal_heading"
                           >
                             Edit
                           </DialogTitle>
@@ -647,7 +666,7 @@ function CallBlock() {
                             <form>
                               {/* <SelectComponent handleClose={handleClose} /> */}
                               <Typography variant="body1">
-                                <br />
+                             
                                 <form
                                   style={{
                                     textAlign: "center",
@@ -801,7 +820,7 @@ function CallBlock() {
                         >
                           <DialogTitle
                             id="alert-dialog-title"
-                            sx={{ color: "#07285d", fontWeight: "600" }}
+                            sx={{ color: "#133325", fontWeight: "600" }}
                           >
                             {"Delete Confirmation"}
                           </DialogTitle>
@@ -885,6 +904,8 @@ function CallBlock() {
             </div>
           </div>
         </section>
+      </div>
+      </div>
       </div>
     </>
   );

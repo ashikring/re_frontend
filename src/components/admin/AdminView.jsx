@@ -425,7 +425,7 @@ setOpen(false);
       <div className={`App ${colorThem} `}>
         <div className="contant_box">
           <Box
-            className="right_sidebox  user_profile_page mobile_top_pddng"
+            className="right_sidebox user_profile_page mobile_top_pddng"
             component="main"
             sx={{
               flexGrow: 1,
@@ -519,9 +519,13 @@ setOpen(false);
                         })}
                       </CardContent>
                       <CardActions className="card_button_box">
-                        <Button variant="contained">Edit</Button>
-                        <Button variant="outlined">Message</Button>
-                      </CardActions>
+ <Button className="all_button_clr" 
+ // variant="contained"
+ >Edit</Button>
+ <Button className="all_button_clr" 
+ // variant="outlined"
+ >Message</Button>
+ </CardActions>
                     </Card>
 
                     <Card

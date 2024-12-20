@@ -79,7 +79,13 @@ function AdminAuditLog({ colorThem }) {
       headerClassName: "custom-header",
       headerAlign: "center",
       align: "center",
+      renderCell: (params)=>{
+        return(
+          <span style={{textTransform:'capitalize'}}>{params.row.username}</span>
+        )
+      } 
     },
+
     {
       field: "application_type",
       headerName: "Application Type",

@@ -234,7 +234,7 @@ function AdminReport({ colorThem }) {
       to_date: formattedToDate,
       call_direction: callDirection,
       didnumber: didNumber,
-      destination: destination,
+      forward_number: destination,
       hangup_reason: status,
       extension: extension,
     });
@@ -362,14 +362,14 @@ function AdminReport({ colorThem }) {
       headerAlign: "center",
       align: "center",
     },
-    {
-      field: "destination",
-      headerName: "Destination",
-      width: 150,
-      headerClassName: "custom-header",
-      headerAlign: "center",
-      align: "center",
-    },
+    // {
+    //   field: "destination",
+    //   headerName: "Destination",
+    //   width: 150,
+    //   headerClassName: "custom-header",
+    //   headerAlign: "center",
+    //   align: "center",
+    // },
     {
       field: "duration",
       headerName: "Duration",
@@ -828,7 +828,7 @@ function AdminReport({ colorThem }) {
                               onChange={(e) => setCallerId(e.target.value)}
                             />
                           </Grid>
-                          <Grid
+                          {/* <Grid
                             xl={3}
                             lg={3}
                             md={3}
@@ -848,7 +848,7 @@ function AdminReport({ colorThem }) {
                               value={extension}
                               onChange={(e) => setExtension(e.target.value)}
                             />
-                          </Grid>
+                          </Grid> */}
 
                           <Grid
                             xl={3}
@@ -888,7 +888,7 @@ function AdminReport({ colorThem }) {
                                 margin: " 5px 0 5px 0",
                               }}
                               type="text"
-                              label="Destination Number"
+                              label="Forward Number"
                               variant="outlined"
                               value={destination}
                               onChange={(e) => {
@@ -896,7 +896,7 @@ function AdminReport({ colorThem }) {
                               }}
                             />
                           </Grid>
-                          <Grid
+                          {/* <Grid
                             xl={3}
                             lg={3}
                             md={3}
@@ -929,7 +929,7 @@ function AdminReport({ colorThem }) {
                                 <MenuItem value={"Outbound"}>Outbound</MenuItem>
                               </Select>
                             </FormControl>
-                          </Grid>
+                          </Grid> */}
                           <Grid
                             xl={3}
                             lg={3}

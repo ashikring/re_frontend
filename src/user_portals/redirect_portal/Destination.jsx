@@ -93,7 +93,7 @@ function CustomToolbar() {
   );
 }
 
-function Destination() {
+function Destination({userThem}) {
   const [edit, setEdit] = useState(false);
   const [destination, setDestination] = useState("");
   const [destinationId, setDestinationId] = useState("");
@@ -140,6 +140,7 @@ function Destination() {
     setDestination(data?.didnumber);
     setDestinationId(data?.destinationId);
     setStatus(data?.status);
+    setRedirectGroup(data?.redirect_group_id)
   };
 
   useMemo(() => {
@@ -163,137 +164,9 @@ function Destination() {
     dispatch(getUserRedirectGroups());
   }, [response]);
 
+
+
   const columns = [
-    {
-      field: "didnumber",
-      headerName: "Destination",
-      headerClassName: "redirect_custom-header",
-      headerAlign: "center",
-      width: 130,
-      align: "center",
-    },
-
-    {
-      field: "ivr_authendication",
-      headerName: "IVR Authentication",
-      headerClassName: "custom-header",
-      width: 130,
-      headerAlign: "center",
-      align: "center",
-    },
-    {
-      field: "redirect_group_name",
-      headerName: "Campaign Name",
-      headerClassName: "custom-header",
-      width: 100,
-      headerAlign: "center",
-      align: "center",
-    },
-    {
-      field: "carrier_name",
-      headerName: "Carrier Name",
-      headerClassName: "custom-header",
-      width: 100,
-      headerAlign: "left",
-      align: "left",
-    },
-    {
-      field: "recording",
-      headerName: "Recording",
-      headerClassName: "custom-header",
-      width: 80,
-      headerAlign: "center",
-      align: "center",
-      renderCell: (params) => {
-        return (
-          <div className="d-flex justify-content-between align-items-center">
-            {params.row.recording === false ? (
-              <>
-                <div
-                  style={{
-                    color: "white",
-                    background: "red",
-                    padding: "7px",
-                    borderRadius: "5px",
-                    fontSize: "12px",
-                    textTransform: "capitalize",
-                  }}
-                >
-                  {params.row.recording.toString().toLowerCase()}
-                </div>
-              </>
-            ) : (
-              <>
-                <div
-                  style={{
-                    color: "white",
-                    background: "green",
-                    padding: "7px",
-                    borderRadius: "5px",
-                    fontSize: "12px",
-                    textTransform: "capitalize",
-                  }}
-                >
-                  {params.row.recording.toString().toLowerCase()}
-                </div>
-              </>
-            )}
-          </div>
-        );
-      },
-    },
-    {
-      field: "description",
-      headerName: "Description",
-      width: 200,
-      headerClassName: "redirect_custom-header",
-      headerAlign: "center",
-      align: "center",
-    },
-
-    {
-      field: "status",
-      headerName: "Status",
-      width: 120,
-      headerAlign: "center",
-      align: "center",
-      headerClassName: "custom-header",
-      renderCell: (params) => {
-        return (
-          <>
-            {params.row.status === true ? (
-              <>
-                <div
-                  className="d-flex justify-content-between align-items-center"
-                  style={{
-                    color: "green",
-                    border: "1px solid green",
-                    padding: "5px 4.5px",
-                    borderRadius: "5px",
-                  }}
-                >
-                  Active
-                </div>
-              </>
-            ) : (
-              <>
-                <div
-                  className="d-flex justify-content-between align-items-center"
-                  style={{
-                    color: "red",
-                    border: "1px solid red",
-                    padding: "5px 4.5px",
-                    borderRadius: "5px",
-                  }}
-                >
-                  Deactive
-                </div>
-              </>
-            )}
-          </>
-        );
-      },
-    },
     {
       field: "edit",
       headerName: "Action",
@@ -316,7 +189,7 @@ function Destination() {
             >
               Edit
             </IconButton> */}
-             <Tooltip title="edit" disableInteractive interactive>
+             <Tooltip title="Edit" disableInteractive interactive>
             <IconButton onClick={() => handleEdit(params.row)} style={{
               fontSize:'22px'
             }}>
@@ -330,6 +203,156 @@ function Destination() {
         );
       },
     },
+    {
+      field: "didnumber",
+      headerName: "Destination",
+      headerClassName: "redirect_custom-header",
+      headerAlign: "center",
+      width: 150,
+      align: "center",
+    },
+
+
+    {
+      field: "redirect_group_name",
+      headerName: "Campaign Name",
+      headerClassName: "custom-header",
+      width: 200,
+      headerAlign: "center",
+      align: "center",
+      renderCell: (params)=> {
+        return(
+          <span style={{textTransform:'capitalize'}}>{params.row.redirect_group_name}</span>
+        )
+      }
+    },
+    // {
+    //   field: "carrier_name",
+    //   headerName: "Carrier Name",
+    //   headerClassName: "custom-header",
+    //   width: 100,
+    //   headerAlign: "left",
+    //   align: "left",
+    // },
+   
+
+
+    {
+      field: "status",
+      headerName: "Status",
+      width: 120,
+      headerAlign: "center",
+      align: "center",
+      headerClassName: "custom-header",
+      renderCell: (params) => {
+        return (
+          <>
+            {params.row.status === true ? (
+              <>
+                <div
+                  className="d-flex justify-content-between align-items-center"
+                  style={{
+                    color: "green",
+                    //border: "1px solid green",
+                    padding: "5px 4.5px",
+                    borderRadius: "5px",
+                  }}
+                >
+                  Active
+                </div>
+              </>
+            ) : (
+              <>
+                <div
+                  className="d-flex justify-content-between align-items-center"
+                  style={{
+                    color: "red",
+                    //border: "1px solid red",
+                    padding: "5px 4.5px",
+                    borderRadius: "5px",
+                  }}
+                >
+                  Deactive
+                </div>
+              </>
+            )}
+          </>
+        );
+      },
+    },
+    {
+      field: "ivr_authendication",
+      headerName: "IVR Authentication",
+      headerClassName: "custom-header",
+      width: 200,
+      headerAlign: "center",
+      align: "center",
+      renderCell: ((params)=>{
+        const val = params.row.ivr_authendication;
+        return(<>
+        <span >{val === false? "False" : "True"}</span>
+        </>)
+      })
+    },
+    {
+      field: "recording",
+      headerName: "Recording",
+      headerClassName: "custom-header",
+      width: 150,
+      headerAlign: "center",
+      align: "center",
+      renderCell: (params) => {
+        return (
+          <div className="d-flex justify-content-between align-items-center">
+            {params.row.recording === false ? (
+              <>
+                <div
+                  style={{
+                    color: "red",
+                    // background: "red",
+                    // padding: "7px",
+                    // borderRadius: "5px",
+                    fontSize: "12px",
+                    textTransform: "capitalize",
+                  }}
+                >
+                  {params.row.recording.toString().toLowerCase()}
+                </div>
+              </>
+            ) : (
+              <>
+                <div
+                  style={{
+                    color: "green",
+                    // background: "green",
+                    // padding: "7px",
+                    // borderRadius: "5px",
+                    fontSize: "12px",
+                    textTransform: "capitalize",
+                  }}
+                >
+                  {params.row.recording.toString().toLowerCase()}
+                </div>
+              </>
+            )}
+          </div>
+        );
+      },
+    },
+    {
+      field: "description",
+      headerName: "Description",
+      width: 200,
+      headerClassName: "redirect_custom-header",
+      headerAlign: "center",
+      align: "center",
+            renderCell:((params)=>{
+return(<>
+<span style={{textTransform:"capitalize"}}>{params.row.description}</span>
+</>)
+      })
+    },
+   
   ];
 
   const rows = [];
@@ -357,6 +380,8 @@ function Destination() {
 
   return (
     <>
+      <div className={`App ${userThem} `}>
+      <div className="contant_box">
       <div className="main">
         <section className="sidebar-sec">
           <div className="container-fluid">
@@ -375,9 +400,9 @@ function Destination() {
                       <div className="tab_cntnt_box">
                         <div className="cntnt_title">
                           <h3>Destination</h3>
-                          <p>
+                          {/* <p>
                             Use this to monitor and interact with the call bock.
-                          </p>
+                          </p> */}
                         </div>
 
                         <ThemeProvider theme={theme}>
@@ -404,184 +429,187 @@ function Destination() {
 
                           {/* -----   Edit Campaign Modal Start   ----- */}
                              
-
                           <Dialog
                             open={edit}
+                            onClose={handleEditClose}
                             sx={{ textAlign: "center" }}
-                          >
-                          <Box>
-                            <IconButton
-                              onClick={handleEditClose}
-                              sx={{
-                                float: "inline-end",
-                                display: "flex",
-                                justifyContent: "end",
-                                margin: "10px 10px 0px 0px",
-                              }}
-                            >
-                              <Close />
-                            </IconButton>
-                          </Box>
-                          <DialogTitle
-                            sx={{ color: "#07285d", fontWeight: "600", width: "500px" }}
-                          >
-                          
-                          Update Destination
-                          </DialogTitle>
+                          > 
+                           <Box>
+                <IconButton
+                  onClick={handleEditClose}
+                  sx={{
+                    float: "inline-end",
+                    display: "flex",
+                    justifyContent: "end",
+                    margin: "10px 10px 0px 0px",
+                  }}
+                >
+                  <Close />
+                </IconButton>
+              </Box>
+              <DialogTitle
+              className="modal_heading"
+                sx={{ color: "#133325", fontWeight: "600", width: "500px" }}
+              >
+               
+                Update Destination
+              </DialogTitle>
+
+
                             <DialogContent>
-                              <form>
+                            <form>
 
-                              <form style={{ textAlign: "center" }}>
-                                <TextField
-                                  style={{
-                                    width: "100%",
-                                    margin: " 5px 0 5px 0",
-                                  }}
-                                  type="text"
-                                  label="Destination"
-                                  variant="outlined"
-                                  name="destination"
-                                  value={destination}
-                                  onChange={handleChange}
-                                  padding={"0px 0 !important"}
-                                  disabled
-                                />
-                                <br />
-                                <FormControl
-                                  fullWidth
-                                  style={{ width: "100%", margin: "7px 0" }}
-                                >
-                                  <InputLabel id="demo-simple-select-label">
-                                    IVR Authentication
-                                  </InputLabel>
-                                  <Select
-                                    labelId="demo-simple-select-label"
-                                    id="demo-simple-select"
-                                    label="IVR Authentication"
-                                    helperText="Select the language."
-                                    style={{ textAlign: "left" }}
-                                    value={ivrAuthentication}
-                                    onChange={(e) => {
-                                      setIvrAuthentication(e.target.value);
-                                    }}
-                                    required
-                                  >
-                                    <MenuItem value={"true"}>true</MenuItem>
-                                    <MenuItem value={"false"}>false</MenuItem>
-                                  </Select>
-                                </FormControl>
+<form style={{ textAlign: "center" }}>
+  <TextField
+    style={{
+      width: "100%",
+      margin: " 5px 0 5px 0",
+    }}
+    type="text"
+    label="Destination"
+    variant="outlined"
+    name="destination"
+    value={destination}
+    onChange={handleChange}
+    padding={"0px 0 !important"}
+    disabled
+  />
+  <br />
+  <FormControl
+    fullWidth
+    style={{ width: "100%", margin: "7px 0" }}
+  >
+    <InputLabel id="demo-simple-select-label">
+      IVR Authentication
+    </InputLabel>
+    <Select
+      labelId="demo-simple-select-label"
+      id="demo-simple-select"
+      label="IVR Authentication"
+      helperText="Select the language."
+      style={{ textAlign: "left" }}
+      value={ivrAuthentication}
+      onChange={(e) => {
+        setIvrAuthentication(e.target.value);
+      }}
+      required
+    >
+      <MenuItem value={"true"}>true</MenuItem>
+      <MenuItem value={"false"}>false</MenuItem>
+    </Select>
+  </FormControl>
 
-                                <FormControl
-                                    fullWidth
-                                    style={{
-                                      width: "100%",
-                                      margin: "7px 0",
-                                    }}
-                                  >
-                                    <InputLabel id="demo-simple-select-label">
-                                      Status
-                                    </InputLabel>
-                                    <Select
-                                      labelId="demo-simple-select-label"
-                                      id="demo-simple-select"
-                                      label="Status"
-                                      helperText="Select the language."
-                                      style={{ textAlign: "left" }}
-                                      value={status}
-                                    onChange={(e) =>
-                                      setStatus(e.target.value)
-                                    }
-                                      required
-                                    >
-                                      <MenuItem value={true}>Active</MenuItem>
-                                      <MenuItem value={false}>Deactive</MenuItem>
-                                    </Select>
-                                  </FormControl>
+  <FormControl
+      fullWidth
+      style={{
+        width: "100%",
+        margin: "7px 0",
+      }}
+    >
+      <InputLabel id="demo-simple-select-label">
+        Status
+      </InputLabel>
+      <Select
+        labelId="demo-simple-select-label"
+        id="demo-simple-select"
+        label="Status"
+        helperText="Select the language."
+        style={{ textAlign: "left" }}
+        value={status}
+      onChange={(e) =>
+        setStatus(e.target.value)
+      }
+        required
+      >
+        <MenuItem value={true}>Active</MenuItem>
+        <MenuItem value={false}>Deactive</MenuItem>
+      </Select>
+    </FormControl>
 
-                                <FormControl
-                                        style={{
-                                          width: "100%",
-                                          margin: " 5px 0 5px 0",
-                                        }}
-                                      >
-                                        <InputLabel id="demo-multiple-checkbox-label">
-                                          Ring groups
-                                        </InputLabel>
-                                        <Select
-                                          style={{ textAlign: "left" }}
-                                          labelId="demo-multiple-checkbox-label"
-                                          label="Ring groups"
-                                          id="demo-multiple-checkbox"
-                                          fullWidth
-                                          value={redirectGroup}
-                                          onChange={(e) =>
-                                            setRedirectGroup(e.target.value)
-                                          }
-                                          input={
-                                            <OutlinedInput label="Ring groups" />
-                                          }
-                                          MenuProps={MenuProps}
-                                        >
-                                          {redirectGroupData &&
-                                            redirectGroupData?.map((name) => (
-                                              <MenuItem
-                                                key={name}
-                                                value={name.id}
-                                              >
-                                                {name.group_name}
-                                              </MenuItem>
-                                            ))}
-                                        </Select>
-                                      </FormControl>
+  <FormControl
+          style={{
+            width: "100%",
+            margin: " 5px 0 5px 0",
+          }}
+        >
+          <InputLabel id="demo-multiple-checkbox-label">
+            Ring groups
+          </InputLabel>
+          <Select
+            style={{ textAlign: "left" }}
+            labelId="demo-multiple-checkbox-label"
+            label="Ring groups"
+            id="demo-multiple-checkbox"
+            fullWidth
+            value={redirectGroup}
+            onChange={(e) =>
+              setRedirectGroup(e.target.value)
+            }
+            input={
+              <OutlinedInput label="Ring groups" />
+            }
+            MenuProps={MenuProps}
+          >
+            {redirectGroupData &&
+              redirectGroupData?.map((name) => (
+                <MenuItem
+                  key={name}
+                  value={name.id}
+                >
+                  {name.group_name}
+                </MenuItem>
+              ))}
+          </Select>
+        </FormControl>
 
-                                <FormControl
-                                  fullWidth
-                                  style={{ width: "100%", margin: "7px 0" }}
-                                >
-                                  <InputLabel id="demo-simple-select-label">
-                                    Recording
-                                  </InputLabel>
-                                  <Select
-                                    labelId="demo-simple-select-label"
-                                    id="demo-simple-select"
-                                    label="Recording"
-                                    helperText="Select the language."
-                                    style={{ textAlign: "left" }}
-                                    value={recording}
-                                    onChange={(e) => {
-                                      setRecording(e.target.value);
-                                    }}
-                                    required
-                                  >
-                                    <MenuItem value={"true"}>true</MenuItem>
-                                    <MenuItem value={"false"}>false</MenuItem>
-                                  </Select>
-                                </FormControl>
-                                <br />
-                                <TextField
-                                  style={{
-                                    width: "100%",
-                                    margin: " 5px 0 5px 0",
-                                  }}
-                                  type="text"
-                                  label="Description"
-                                  variant="outlined"
-                                  name="description"
-                                  value={description}
-                                  onChange={handleChange}
-                                  padding={"0px 0 !important"}
-                                />
-                              </form>
-                              </form>
+  <FormControl
+    fullWidth
+    style={{ width: "100%", margin: "7px 0" }}
+  >
+    <InputLabel id="demo-simple-select-label">
+      Recording
+    </InputLabel>
+    <Select
+      labelId="demo-simple-select-label"
+      id="demo-simple-select"
+      label="Recording"
+      helperText="Select the language."
+      style={{ textAlign: "left" }}
+      value={recording}
+      onChange={(e) => {
+        setRecording(e.target.value);
+      }}
+      required
+    >
+      <MenuItem value={"true"}>true</MenuItem>
+      <MenuItem value={"false"}>false</MenuItem>
+    </Select>
+  </FormControl>
+  <br />
+  <TextField
+    style={{
+      width: "100%",
+      margin: " 5px 0 5px 0",
+    }}
+    type="text"
+    label="Description"
+    variant="outlined"
+    name="description"
+    value={description}
+    onChange={handleChange}
+    padding={"0px 0 !important"}
+  />
+</form>
+</form>
                             </DialogContent>
                             <DialogActions
-                              sx={{
-                                display: "flex",
-                                justifyContent: "center",
-                                paddingBottom: "20px",
-                              }}
-                            >
-                               <Button
+                                  sx={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                   paddingBottom: "20px",
+                                  }}
+                                >
+                                 <Button
                                   variant="contained"
                                   sx={{
                                     fontSize: "16px !impotant",
@@ -614,9 +642,8 @@ function Destination() {
                                 >
                                   Update
                                 </Button>
-                            </DialogActions>
+                                </DialogActions>
                           </Dialog>
-
 
                           {/* -----   Edit Campaign Modal End   ----- */}
                       </div>
@@ -627,6 +654,8 @@ function Destination() {
             </div>
           </div>
         </section>
+      </div>
+      </div>
       </div>
     </>
   );

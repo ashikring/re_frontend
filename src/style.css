@@ -29,6 +29,26 @@
   display: contents;
 } */
 
+.custome_input{
+  width: 100%;
+    margin: 0px;
+    background: transparent;
+    color: #fff;
+    padding: 0.6rem;
+    border: 1px solid #fff;
+    border-radius: 4px;
+}
+.custome_input::placeholder{
+  color: #fff;
+}
+.custome_input:focus{
+  /* outline: 0px !important; */
+}
+.custome_input:focus-visible{
+  /* border: none; */
+  outline: 0px !important;
+}
+
 .MuiPaper-root.MuiPaper-elevation.MuiPaper-rounded.MuiPaper-elevation24.MuiDialog-paper.MuiDialog-paperScrollPaper.MuiDialog-paperWidthSm.css-uhb5lp {
   background: #254336;
   background: linear-gradient(
@@ -192,6 +212,14 @@ h4.dshbrd_list_title {
 
 
 @media (max-width: 575.98px) { 
+  .modal_heading {
+    width: 100% !important;
+    margin: auto;
+  }
+  .mobile_justify_end{
+    display: flex;
+    justify-content: end !important;
+  }
   .dashboard_card_row::after {
     position: absolute;
     content: "";
@@ -2095,7 +2123,7 @@ ul.hdr_profile {
   width: 100%;
 }
 .tab_cntnt_box {
-  padding-top: 130px !important;
+  padding-top: 80px !important;
 }
 .manage_mobile_logo {
   padding: 8px;
@@ -2172,6 +2200,14 @@ main.right_sidebox {
 
 
 @media (max-width: 767.98px) {
+  .modal_heading {
+    width: 100% !important;
+    margin: auto;
+  }
+  .mobile_justify_end{
+    display: flex;
+    justify-content: end !important;
+  }
   .pro-sidebar .pro-menu {
     padding-top: 40px !important;
     background: #264236;
@@ -2182,7 +2218,7 @@ main.right_sidebox {
     display: inherit;
   }
   .bg_imagess {
-    border: 1px solid #fff !important;
+    /* border: 1px solid #fff !important; */
     border-radius: 10px !important;
     text-align: center !important;
     width: 90% !important;

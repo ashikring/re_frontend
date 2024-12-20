@@ -60,10 +60,10 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { makeStyles } from "@mui/styles";
 import DeleteIcon from "@mui/icons-material/Delete";
-import Menu from '@mui/material/Menu';
+import Menu from "@mui/material/Menu";
 // import MenuItem from '@mui/material/MenuItem';
-import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import axios from "axios";
 import { api } from "../../mockData";
 import { toast } from "react-toastify";
@@ -197,7 +197,7 @@ const theme = createTheme({
         },
       },
       defaultProps: {
-        density: "compact", // Set default density to compact
+        density: "standard", // Set default density to standard
       },
     },
   },
@@ -226,7 +226,7 @@ const style = {
   p: 4,
 };
 
-function BuyerView() {
+function BuyerView({userThem}) {
   const state = useSelector((state) => state);
   const dispatch = useDispatch();
   const classes = useStyles();
@@ -392,31 +392,32 @@ function BuyerView() {
     dispatch(getRedirectBuyer(location.state.data.campaignId));
   }, [location.state.data.campaignId, response]);
 
-  useEffect(()=>{
+  useEffect(() => {
     const current_user = localStorage.getItem("current_user");
     const token = JSON.parse(localStorage.getItem(`user_${current_user}`));
-    
-        try {
-          const config = {
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization" : `Bearer ${token.access_token} `
-            },
-          };
-          axios.get(
-            `${api.dev}/api/getdidfromgroup?group_id=${location.state.data.campaignId}`,
-            config
-          ).then((res)=>{
-            setCampaignNumbers(res?.data?.data);
-          });
-        
-        } catch (error) {
-          toast.error(error?.response?.data?.message, {
-            position: toast.POSITION.TOP_RIGHT,
-            autoClose: 2500,
-          });
-        }
-  },[])
+
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token.access_token} `,
+        },
+      };
+      axios
+        .get(
+          `${api.dev}/api/getdidfromgroup?group_id=${location.state.data.campaignId}`,
+          config
+        )
+        .then((res) => {
+          setCampaignNumbers(res?.data?.data);
+        });
+    } catch (error) {
+      toast.error(error?.response?.data?.message, {
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 2500,
+      });
+    }
+  }, []);
 
   const columns = [
     {
@@ -431,7 +432,7 @@ function BuyerView() {
       renderCell: (params) => {
         return (
           <div className="d-flex justify-content-between align-items-center">
-            <Tooltip title="edit" disableInteractive interactive>
+            <Tooltip title="Edit" disableInteractive interactive>
               <IconButton onClick={() => handleEdit(params.row)}>
                 <Edit
                   index={params.row.id}
@@ -439,7 +440,7 @@ function BuyerView() {
                 />
               </IconButton>
             </Tooltip>
-            <Tooltip title="delete" disableInteractive interactive>
+            <Tooltip title="Delete" disableInteractive interactive>
               <IconButton onClick={() => handleMessage(params.row)}>
                 <Delete style={{ cursor: "pointer", color: "red" }} />
               </IconButton>
@@ -461,10 +462,10 @@ function BuyerView() {
         );
         return (
           <>
-            <p style={{ margin: "0", lineHeight: "14px" }}>
+            <p style={{ margin: "0", lineHeight: "20px" }}>
               {params.row.buyer_name}
               <br />
-              <i style={{ margin: "0", fontSize: "11px" }}>
+              <i style={{ margin: "0", fontSize: "13px" }}>
                 {" "}
                 <b>Created: {formattedDate}</b>
               </i>
@@ -481,12 +482,55 @@ function BuyerView() {
     //   width: 140,
     //   align: "center",
     // },
+    // {
+    //   field: "username",
+    //   headerName: "User Name",
+    //   width: 100,
+    //   headerClassName: "custom-header",
+    //   headerAlign: "center",
+    //   align: "center",
+    // },
     {
-      field: "username",
-      headerName: "User Name",
-      width: 100,
+      field: "forward_number",
+      headerName: "Forward Number",
       headerClassName: "custom-header",
       headerAlign: "center",
+      width: 140,
+      align: "center",
+    },
+
+    {
+      field: "cc",
+      headerName: "CC",
+      headerClassName: "custom-header",
+      headerAlign: "center",
+      width: 50,
+      align: "center",
+    },
+
+    {
+      field: "current_cc",
+      headerName: "Live Call",
+      headerClassName: "custom-header",
+      headerAlign: "center",
+      width: 100,
+      align: "center",
+    },
+
+    {
+      field: "daily_limit",
+      headerName: "Daily Limit",
+      headerClassName: "custom-header",
+      headerAlign: "center",
+      width: 100,
+      align: "center",
+    },
+    {
+      field: "weightage",
+      headerName: "Weightage",
+      headerClassName: "custom-header",
+      headerAlign: "center",
+      width: 100,
       align: "center",
     },
     {
@@ -505,7 +549,7 @@ function BuyerView() {
                   className="d-flex justify-content-between align-items-center"
                   style={{
                     color: "green",
-                    border: "1px solid green",
+                    //border: "1px solid green",
                     padding: "5px 4.5px",
                     borderRadius: "5px",
                   }}
@@ -519,7 +563,7 @@ function BuyerView() {
                   className="d-flex justify-content-between align-items-center"
                   style={{
                     color: "red",
-                    border: "1px solid red",
+                    //border: "1px solid red",
                     padding: "5px 4.5px",
                     borderRadius: "5px",
                   }}
@@ -531,38 +575,6 @@ function BuyerView() {
           </>
         );
       },
-    },
-    {
-      field: "forward_number",
-      headerName: "Forward Number",
-      headerClassName: "custom-header",
-      headerAlign: "center",
-      width: 140,
-      align: "center",
-    },
-    {
-      field: "cc",
-      headerName: "CC",
-      headerClassName: "custom-header",
-      headerAlign: "center",
-      width: 50,
-      align: "center",
-    },
-    {
-      field: "current_cc",
-      headerName: "Current CC",
-      headerClassName: "custom-header",
-      headerAlign: "center",
-      width: 100,
-      align: "center",
-    },
-    {
-      field: "daily_limit",
-      headerName: "Daily Limit",
-      headerClassName: "custom-header",
-      headerAlign: "center",
-      width: 100,
-      align: "center",
     },
     {
       field: "current_daily_limit",
@@ -614,15 +626,6 @@ function BuyerView() {
     },
 
     {
-      field: "weightage",
-      headerName: "Weightage",
-      headerClassName: "custom-header",
-      headerAlign: "center",
-      width: 100,
-      align: "center",
-    },
-
-    {
       field: "working_start_time",
       headerName: "Start Time",
       headerClassName: "custom-header",
@@ -666,6 +669,8 @@ function BuyerView() {
     });
   return (
     <>
+     <div className={`App ${userThem} `}>
+     <div className="contant_box">
       <div className="main">
         <section className="sidebar-sec">
           <div className="container-fluid">
@@ -689,7 +694,6 @@ function BuyerView() {
                             display: "flex",
                             justifyContent: "space-between",
                             alignItems: "center",
-                            
                           }}
                         >
                           <h3 style={{ margin: "0px" }}>Buyer View</h3>
@@ -724,39 +728,9 @@ function BuyerView() {
                           </FormGroup>
                         </div>
 
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "end",
-                            marginBottom: "0px",
-                          }}
-                        >
-                          <p style={{ fontSize: "17px", color: "#000" }}>
-                            <b className="fnt_bld"> Campaign Name:</b>{" "}
-                            {location.state.data.group_name} 
-
-                             <PopupState variant="popover" popupId="demo-popup-menu" >
-      {(popupState) => (
-        <React.Fragment>
-          <Button variant="contained" {...bindTrigger(popupState)} className="redirect_all_button_clr"
-            endIcon={<KeyboardArrowDownIcon />}
-            style={{marginLeft:'10px'}}>
-            Campaign Number
-          </Button>
-          <Menu {...bindMenu(popupState)} >
-            {campaignNumbers?.map((item, index)=>(
-              
-              <MenuItem key={index} style={{cursor:"context-menu"}}>{item}</MenuItem>
-              
-            ))}
-          </Menu>
-        </React.Fragment>
-      )}
-    </PopupState> 
-                          </p>
-
-                          <div>
+                        {/* mobile-view-start */}
+                        <div className="d-xxl-none d-xl-none d-lg-none d-md-none d-sm-block d-block">
+                          <div className="d-flex justify-content-between">
                             <IconButton
                               style={{
                                 padding: "10px",
@@ -765,7 +739,7 @@ function BuyerView() {
                                 border: "none",
                                 //backgroundColor: "rgb(9, 56, 134)",
                                 color: "#fff",
-                                marginLeft: "auto",
+                                // marginLeft: "auto",
                                 marginRight: "30px",
                               }}
                               className="redirect_all_button_clr"
@@ -789,10 +763,113 @@ function BuyerView() {
                                 border: "none",
                                 //backgroundColor: "rgb(9, 56, 134)",
                                 color: "#fff",
-                                marginLeft: "auto",
+
+                                marginRight: "0px",
+                              }}
+                              className="redirect_all_button_clr "
+                              onClick={handleAddBuyerOpen}
+                            >
+                              Add Buyer
+                              <AddOutlinedIcon />
+                            </IconButton>
+                          </div>
+                        </div>
+                        {/* mobile-view-end */}
+
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "end",
+                            marginBottom: "10px",
+                          }}
+                        >
+                          <p style={{ fontSize: "17px", color: "#000" }}>
+                            <b className="fnt_bld"> Campaign Name:</b>{" "}
+                            {location.state.data.group_name}
+                           
+                            {campaignNumbers[0] ? (
+                              <>
+                                <PopupState
+                                  variant="popover"
+                                  popupId="demo-popup-menu"
+                                  className="d-xxl-block d-xl-block d-lg-block d-md-block d-sm-none d-none"
+                                >
+                                  {(popupState) => (
+                                    <React.Fragment>
+                                      <Button
+                                        variant="contained"
+                                        {...bindTrigger(popupState)}
+                                        className="mt-lg-0 mt-md-0 mt-sm-2 mt-2 ms-3"
+                                        endIcon={<KeyboardArrowDownIcon />}
+                                        style={{
+                                          marginLeft: "0px",
+                                          background: "transparent",
+                                          color: "black",
+                                        }}
+                                      >
+                                        Campaign Number
+                                      </Button>
+                                      <Menu {...bindMenu(popupState)}>
+                                        {campaignNumbers?.map((item, index) => (
+                                          <MenuItem
+                                            key={index}
+                                            style={{ cursor: "context-menu" }}
+                                          >
+                                            {item}
+                                          </MenuItem>
+                                        ))}
+                                      </Menu>
+                                    </React.Fragment>
+                                  )}
+                                </PopupState>
+                              </>
+                            ) : (
+                              <></>
+                            )}
+                          </p>
+
+                          <div
+                            className="d-flex justify-content-between
+                          d-xxl-block d-xl-block d-lg-block d-md-block d-sm-none d-none
+                          "
+                          >
+                            <IconButton
+                              style={{
+                                padding: "10px",
+                                fontSize: "15px",
+                                borderRadius: "5px",
+                                border: "none",
+                                //backgroundColor: "rgb(9, 56, 134)",
+                                color: "#fff",
+                                // marginLeft: "auto",
                                 marginRight: "30px",
                               }}
                               className="redirect_all_button_clr"
+                              onClick={() => {
+                                dispatch({
+                                  type: GET_REDIRECT_BUYER_SUCCESS,
+                                  payload: [],
+                                });
+                                navigate("/redirect_portal/campaigns");
+                              }}
+                            >
+                              <ArrowBackIcon style={{ fontSize: "24px" }} />
+                              {/* Back */}
+                            </IconButton>
+
+                            <IconButton
+                              style={{
+                                padding: "10px",
+                                fontSize: "15px",
+                                borderRadius: "5px",
+                                border: "none",
+                                //backgroundColor: "rgb(9, 56, 134)",
+                                color: "#fff",
+
+                                marginRight: "0px",
+                              }}
+                              className="redirect_all_button_clr "
                               onClick={handleAddBuyerOpen}
                             >
                               Add Buyer
@@ -801,79 +878,51 @@ function BuyerView() {
                           </div>
                         </div>
 
-                        {/* <div style={{display:'flex',flexWrap:'wrap',width:'90%', marginBottom: "40px",marginTop:'5px'}}>
-                              <span style={{ fontSize: "16px", color: "#000",fontWeight:'600' }}>+91123456788, </span>
-                              <span style={{ fontSize: "16px", color: "#000",fontWeight:'600' }}>+91123456788, </span>
-                              <span style={{ fontSize: "16px", color: "#000",fontWeight:'600' }}>+91123456788, </span>
-                              <span style={{ fontSize: "16px", color: "#000",fontWeight:'600' }}>+91123456788, </span>
-                              <span style={{ fontSize: "16px", color: "#000",fontWeight:'600' }}>+91123456788, </span>
-                              <span style={{ fontSize: "16px", color: "#000",fontWeight:'600' }}>+91123456788, </span>
-                              <span style={{ fontSize: "16px", color: "#000",fontWeight:'600' }}>+91123456788, </span>
-                              <span style={{ fontSize: "16px", color: "#000",fontWeight:'600' }}>+91123456788, </span>
-                              <span style={{ fontSize: "16px", color: "#000",fontWeight:'600' }}>+91123456788, </span>
-                              <span style={{ fontSize: "16px", color: "#000",fontWeight:'600' }}>+91123456788, </span>
-                              <span style={{ fontSize: "16px", color: "#000",fontWeight:'600' }}>+91123456788, </span>
-                              <span style={{ fontSize: "16px", color: "#000",fontWeight:'600' }}>+91123456788, </span>
-                            </div> */}
-                        {/* </div> */}
                         {/* -----   Add Buyer Modal Start   ----- */}
 
-                        <Modal
-                          aria-labelledby="transition-modal-title"
-                          aria-describedby="transition-modal-description"
-                          open={open}
-                          closeAfterTransition
-                          slots={{ Backdrop: Backdrop }}
-                          slotProps={{
-                            backdrop: {
-                              timeout: 500,
-                            },
-                          }}
-                        >
-                          <Fade in={open} className="bg_imagess">
-                            <Box
-                              sx={style}
-                              borderRadius={"10px"}
-                              textAlign={"center"}
-                            >
-                              <IconButton
-                                onClick={handleAddBuyerClose}
-                                sx={{ float: "inline-end" }}
-                              >
-                                <Close />
-                              </IconButton>
-                              <br />
-                              <Typography
-                                id="transition-modal-title"
-                                variant="h6"
-                                component="h2"
-                                color={"#092b5f"}
-                                fontSize={"18px"}
-                                fontWeight={"600"}
-                              >
-                                Add Buyer
-                              </Typography>
-                              <Typography
-                                id="transition-modal-description"
-                                sx={{ mt: 2 }}
-                                fontSize={"16px"}
-                                color={"#000"}
-                                paddingBottom={"10px"}
-                              >
-                                {/* A ring group is a set of destinations that can
-                                be called with a ring strategy. */}
-                              </Typography>
+                      
+
+                        <Dialog
+                            open={open}
+                            onClose={handleAddBuyerClose}
+                            sx={{ textAlign: "center" }}
+                          > 
+                           <Box>
+                <IconButton
+                  onClick={handleAddBuyerClose}
+                  sx={{
+                    float: "inline-end",
+                    display: "flex",
+                    justifyContent: "end",
+                    margin: "10px 10px 0px 0px",
+                  }}
+                >
+                  <Close />
+                </IconButton>
+              </Box>
+              <DialogTitle
+               className="modal_heading"
+                sx={{ color: "#133325", fontWeight: "600", width: "500px" }}
+              >
+                
+                Add Buyer
+              </DialogTitle>
+
+
+                            <DialogContent>
+                              <form>
+                            
                               <form
-                                style={{
-                                  textAlign: "center",
-                                  height: "348px",
-                                  overflow: "auto",
-                                  paddingTop: "10px",
-                                  padding: "5px",
-                                  overflowX: "clip",
-                                }}
-                              >
-                                <TextField
+                                     style={{
+                                      textAlign: "center",
+                                      height: "348px",
+                                      // overflow: "auto",
+                                      paddingTop: "10px",
+                                      padding: "5px",
+                                      width: "auto",
+                                    }}
+                                  >
+                                     <TextField
                                   style={{
                                     width: "100%",
                                     margin: " 5px 0 5px 0",
@@ -893,13 +942,21 @@ function BuyerView() {
                                     width: "100%",
                                     margin: " 5px 0 5px 0",
                                   }}
-                                  type="number"
+                                  type="text"
                                   label="Forword Number"
                                   variant="outlined"
                                   name="forwardNumber"
                                   value={forwardNumber}
                                   onChange={(e) => {
-                                    setForwardNumber(e.target.value);
+                                    const numericValue = e.target.value.replace(
+                                      /[^0-9]/g,
+                                      ""
+                                    );
+                                    setForwardNumber(numericValue);
+                                  }}
+                                  inputProps={{
+                                    inputMode: "numeric",
+                                    // pattern: '[0-9]*',
                                   }}
                                 />
                                 <TextField
@@ -1025,9 +1082,18 @@ function BuyerView() {
                                     />
                                   </DemoContainer>
                                 </LocalizationProvider>
+                                  </form>
+                             
                               </form>
-                              <Box>
-                                <Button
+                            </DialogContent>
+                            <DialogActions
+                                  sx={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                   paddingBottom: "20px",
+                                  }}
+                                >
+                                  <Button
                                   variant="contained"
                                   className="all_button_clr"
                                   color="primary"
@@ -1043,10 +1109,9 @@ function BuyerView() {
                                 >
                                   Save
                                 </Button>
-                              </Box>
-                            </Box>
-                          </Fade>
-                        </Modal>
+                                </DialogActions>
+                          </Dialog>
+
                         {/* -----   Add Buyer Modal End   ----- */}
 
                         {/* Delete Confirmation Modal Start  */}
@@ -1060,7 +1125,7 @@ function BuyerView() {
                         >
                           <DialogTitle
                             id="alert-dialog-title"
-                            sx={{ color: "#07285d", fontWeight: "600" }}
+                            sx={{ color: "#133325", fontWeight: "600" }}
                           >
                             {"Delete Confirmation"}
                           </DialogTitle>
@@ -1120,61 +1185,47 @@ function BuyerView() {
 
                         {/* -----   Edit Modal Start   ----- */}
 
-                        <Modal
-                          aria-labelledby="transition-modal-title"
-                          aria-describedby="transition-modal-description"
-                          open={edit}
-                          closeAfterTransition
-                          slots={{ Backdrop: Backdrop }}
-                          slotProps={{
-                            backdrop: {
-                              timeout: 500,
-                            },
-                          }}
-                        >
-                          <Fade in={edit} className="bg_imagess">
-                            <Box
-                              sx={style}
-                              borderRadius={"10px"}
-                              textAlign={"center"}
-                            >
-                              <IconButton
-                                onClick={handleEditClose}
-                                sx={{ float: "inline-end" }}
-                              >
-                                <Close />
-                              </IconButton>
-                              <br />
-                              <Typography
-                                id="transition-modal-title"
-                                variant="h6"
-                                component="h2"
-                                color={"#092b5f"}
-                                fontSize={"18px"}
-                                fontWeight={"600"}
-                              >
-                                Update Buyer
-                              </Typography>
-                              <Typography
-                                id="transition-modal-description"
-                                sx={{ mt: 2 }}
-                                fontSize={"16px"}
-                                color={"#000"}
-                                paddingBottom={"10px"}
-                              >
-                                {/* A ring group is a set of destinations that can
-                                be called with a ring strategy. */}
-                              </Typography>
+                        <Dialog
+                            open={edit}
+                            onClose={handleEditClose}
+                            sx={{ textAlign: "center" }}
+                          > 
+                           <Box>
+                <IconButton
+                  onClick={handleEditClose}
+                  sx={{
+                    float: "inline-end",
+                    display: "flex",
+                    justifyContent: "end",
+                    margin: "10px 10px 0px 0px",
+                  }}
+                >
+                  <Close />
+                </IconButton>
+              </Box>
+              <DialogTitle
+               className="modal_heading"
+                sx={{ color: "#133325", fontWeight: "600", width: "500px" }}
+              >
+                
+                Update Buyer
+              </DialogTitle>
+
+
+                            <DialogContent>
+                              <form>
+                            
                               <form
-                                style={{
-                                  textAlign: "center",
-                                  height: "348px",
-                                  overflow: "auto",
-                                  paddingTop: "10px",
-                                  padding: "5px",
-                                  overflowX: "clip",
-                                }}
-                              >
+                                     style={{
+                                      textAlign: "center",
+                                      height: "348px",
+                                      // overflow: "auto",
+                                      paddingTop: "10px",
+                                      padding: "5px",
+                                      width: "auto",
+                                    }}
+                                  >
+                                    
                                 <TextField
                                   style={{
                                     width: "100%",
@@ -1198,7 +1249,17 @@ function BuyerView() {
                                   variant="outlined"
                                   name="forwardNumber"
                                   value={forwardNumber}
-                                  onChange={handleChange}
+                                  onChange={(e) => {
+                                    const numericValue = e.target.value.replace(
+                                      /[^0-9]/g,
+                                      ""
+                                    );
+                                    setForwardNumber(numericValue);
+                                  }}
+                                  inputProps={{
+                                    inputMode: "numeric",
+                                    // pattern: '[0-9]*',
+                                  }}
                                 />
                                 <TextField
                                   style={{
@@ -1361,9 +1422,19 @@ function BuyerView() {
                                     />
                                   </DemoContainer>
                                 </LocalizationProvider>
+                             
+                                  </form>
+                             
                               </form>
-                              <Box>
-                                <Button
+                            </DialogContent>
+                            <DialogActions
+                                  sx={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                   paddingBottom: "20px",
+                                  }}
+                                >
+                                  <Button
                                   variant="contained"
                                   className="all_button_clr"
                                   color="primary"
@@ -1379,10 +1450,35 @@ function BuyerView() {
                                 >
                                   Update
                                 </Button>
-                              </Box>
-                            </Box>
-                          </Fade>
-                        </Modal>
+                                </DialogActions>
+                          </Dialog>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                         {/* -----   Edit Modal End   ----- */}
 
                         <ThemeProvider theme={theme}>
@@ -1391,7 +1487,7 @@ function BuyerView() {
                               className="custom_header_redirect"
                               rows={mockDataTeam}
                               columns={columns}
-                              density="compact"
+                              density="standard"
                               // getRowClassName={(params) =>
                               //   isRowBordered(params)
                               //     ? "borderedGreen"
@@ -1413,6 +1509,8 @@ function BuyerView() {
             </div>
           </div>
         </section>
+      </div>
+      </div>
       </div>
     </>
   );

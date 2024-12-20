@@ -237,85 +237,8 @@ function Manage_Campaign({ colorThem }) {
 
   const columns = [
     {
-      field: "group_name",
-      headerName: "Campaign Name",
-      headerClassName: "custom-header",
-      headerAlign: "center",
-      flex: 1,
-      align: "center",
-    },
-    {
-      field: "user_name",
-      headerName: "User Name",
-      headerClassName: "custom-header",
-      headerAlign: "center",
-      flex: 1,
-      align: "center",
-    },
-
-    {
-      field: "call_threading",
-      headerName: "Call Threading",
-      flex: 1,
-      headerClassName: "custom-header",
-      headerAlign: "center",
-      align: "center",
-    },
-
-    {
-      field: "description",
-      headerName: "Description",
-      flex: 1,
-      headerClassName: "custom-header",
-      headerAlign: "center",
-      align: "center",
-    },
-    {
-      field: "status",
-      headerName: "Status",
-      type: "number",
-      flex: 1,
-      headerAlign: "center",
-      align: "center",
-      headerClassName: "custom-header",
-      renderCell: (params) => {
-        return (
-          <div className="d-flex justify-content-between align-items-center">
-            {params.row.status === "True" ? (
-              <>
-                <div
-                  style={{
-                    color: "white",
-                    background: "green",
-                    padding: "7px",
-                    borderRadius: "5px",
-                    fontSize: "12px",
-                    textTransform: "capitalize",
-                  }}
-                ></div>
-              </>
-            ) : (
-              <>
-                <div
-                  style={{
-                    color: "white",
-                    background: "red",
-                    padding: "7px",
-                    borderRadius: "5px",
-                    fontSize: "12px",
-                    textTransform: "capitalize",
-                  }}
-                ></div>
-              </>
-            )}
-          </div>
-        );
-      },
-    },
-    {
       field: "view_buyer",
       headerName: "Action",
-      flex: 1,
       headerClassName: "custom-header",
       headerAlign: "center",
       align: "center",
@@ -324,12 +247,12 @@ function Manage_Campaign({ colorThem }) {
       renderCell: (params) => {
         return (
           <div className="d-flex justify-content-between align-items-center">
-            <Tooltip title="view" disableInteractive interactive>
+            <Tooltip title="View" disableInteractive interactive>
               <IconButton onClick={() => handleView(params.row)}>
-                <Visibility style={{ cursor: "pointer", color: "grey" }} />
+                <Visibility style={{ cursor: "pointer", color: "#f5751d" }} />
               </IconButton>
             </Tooltip>
-            <Tooltip title="edit" disableInteractive interactive>
+            <Tooltip title="Edit" disableInteractive interactive>
               <IconButton onClick={() => handleEdit(params.row)}>
                 <Edit
                   index={params.row.id}
@@ -337,7 +260,7 @@ function Manage_Campaign({ colorThem }) {
                 />
               </IconButton>
             </Tooltip>
-            <Tooltip title="delete" disableInteractive interactive>
+            <Tooltip title="Delete" disableInteractive interactive>
               <IconButton onClick={() => handleMessage(params.row)}>
                 <Delete style={{ cursor: "pointer", color: "red" }} />
               </IconButton>
@@ -345,6 +268,101 @@ function Manage_Campaign({ colorThem }) {
           </div>
         );
       },
+    },
+    {
+      field: "group_name",
+      headerName: "Campaign Name",
+      headerClassName: "custom-header",
+      headerAlign: "center",
+      align: "center",
+      width: 200,
+    },
+    {
+      field: "user_name",
+      headerName: "User Name",
+      headerClassName: "custom-header",
+      headerAlign: "center",
+      align: "center",
+      width: 150,
+    },
+
+    {
+      field: "call_threading",
+      headerName: "Call Threading",
+      headerClassName: "custom-header",
+      headerAlign: "center",
+      align: "center",
+      width: 140,
+      renderCell: (params) => (
+        <span style={{ textTransform: 'capitalize' }}>
+          {params.row.call_threading === true ? 'True' : 'False'}
+        </span>
+      )
+    },
+
+    
+    {
+      field: "status",
+      headerName: "Status",
+      type: "number",
+      headerAlign: "center",
+      align: "center",
+      width: 140,
+      headerClassName: "custom-header",
+      renderCell: (params) => {
+        return (
+          <div className="d-flex justify-content-between align-items-center">
+            {params.row.status === "True" ? (
+              <>
+                <div
+                  style={{
+                    color: "green",
+                   // background: "green",
+                   // padding: "7px 0 0 0",
+                   // borderRadius: "5px",
+                   // fontSize: "12px",
+                    textTransform: "capitalize",
+                  //  height: "30px",
+                   // width: "62px",
+                    textAlign:"center"
+                  }}
+                >
+                  Active
+                </div>
+              </>
+            ) : (
+              <>
+              <div
+                  style={{
+                    color: "red",
+                   // background: "red",
+                   // padding: "7px",
+                   // borderRadius: "5px",
+                   // fontSize: "12px",
+                    textTransform: "capitalize",
+                  }}
+                >
+                  Deactive
+                </div>
+              </>
+            )}
+          </div>
+        );
+      },
+    },
+ 
+    {
+      field: "description",
+      headerName: "Description",
+      headerClassName: "custom-header",
+      headerAlign: "center",
+      align: "center",
+      width: 200,
+      renderCell: (params) => (
+        <span style={{ textTransform: 'capitalize' }}>
+          {params.row.description}
+        </span>
+      )
     },
   ];
 
@@ -431,8 +449,9 @@ function Manage_Campaign({ colorThem }) {
                             </IconButton>
                           </Box>
                           <DialogTitle
+                          className="modal_heading"
                             sx={{
-                              color: "#07285d",
+                              color: "#133325",
                               fontWeight: "600",
                               width: "500px",
                             }}
@@ -700,8 +719,9 @@ function Manage_Campaign({ colorThem }) {
                     //className="bg_imagess"
                   >
                     <DialogTitle
+                       className="modal_heading"
                       id="alert-dialog-title"
-                      sx={{ color: "#07285d", fontWeight: "600" }}
+                      sx={{ color: "#133325", fontWeight: "600" }}
                     >
                       {"Delete Confirmation"}
                     </DialogTitle>
@@ -779,8 +799,9 @@ function Manage_Campaign({ colorThem }) {
                       </IconButton>
                     </Box>
                     <DialogTitle
+                       className="modal_heading"
                       sx={{
-                        color: "#07285d",
+                        color: "#133325",
                         fontWeight: "600",
                         width: "500px",
                       }}

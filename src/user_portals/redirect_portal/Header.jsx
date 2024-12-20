@@ -9,12 +9,14 @@ import { useSelector } from "react-redux";
 import Navbar from "./Navbar";
 import { Dropdown } from "react-bootstrap";
 import LiveCall from "../../pages/LiveCall";
-import { AppBar, Box, IconButton, Toolbar, Typography } from "@mui/material";
+import { AppBar, Box, IconButton, Toolbar, Tooltip, Typography } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
+import NightlightIcon from '@mui/icons-material/Nightlight';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
 import CallIcon from "@mui/icons-material/Call";
 import { api } from "../../mockData";
 
-function Header() {
+function Header({userThem, handleClickUser}) {
   const [selectedValue, setSelectedValue] = useState(""); // State to hold the selected value
   const [number, setNumber] = useState(0);
   const [minutest, setMinutest] = useState([]);
@@ -142,29 +144,70 @@ function Header() {
     }
   }, [selectedValue]); // This effect runs whenever selectedValue changes
 
+  const refershLogo = () =>{
+    window.location.href = "/redirect_portal";
+  }
+
   return (
     <>
-      <Box sx={{ flexGrow: 1 }} className="manage_boxx">
+    <div className={`App ${userThem} `}>
+
+<div className="contant_box" >
+      <Box sx={{ flexGrow: 1 }} className={`App ${userThem} manage_boxx`}>
+      <Box className="manage_mobile_logo d-lg-none d-md-none d-sm-block d-block">
+       <Typography
+                    variant="h6"
+                    component="div"
+                    sx={{ flexGrow: 1 }}
+                    style={{margin:"auto",width:'100%' }}
+                    className="d-flex align-items-center logo_image d-lg-none d-md-none d-sm-block d-block text-center"
+                  >
+                       <img
+                  src="/img/logo_white11.png"
+                  alt="Manage Logo"
+                  className="img-fluid d-block"
+                  style={{ cursor: "pointer",margin:"auto",width:'100%' }}
+                  onClick={refershLogo}
+                />
+                  </Typography>
+      </Box>
         <AppBar position="static" className="manage_top_header">
           <Toolbar>
             <Typography
               variant="h6"
               component="div"
               sx={{ flexGrow: 1 }}
-              className="d-flex align-items-center"
+              className="d-flex align-items-center d-xxl-block d-xl-block d-lg-block d-md-block d-sm-none d-none"
             >
-              <a href="/redirect_portal">
-                <img
-                  src="/img/logo_white11.png"
+              
+                {/* <img
+                  src="/img/Tellepsis-green.png"
                   alt="Manage Logo"
                   className="img-fluid d-block"
-                  style={{ cursor: "pointer", width: "85%" }}
-                />
-              </a>
+                  style={{ cursor: "pointer", }}
+                  onClick={refershLogo}
+                /> */}
+                <a href="/redirect_portal">
+      
+      {userThem === "user_theme_white" ? (<> <img
+        src="/img/logo_white11.png"
+        alt="Manage Logo"
+        className="img-fluid d-block admin_logo"
+        style={{cursor:"pointer"}}
+      /></>) : (<>
+         <img
+        // src="/img/logo-4-edit-1.png"
+        src="/img/Tellepsis-green.png"
+        alt="Manage Logo"
+        className="img-fluid d-block admin_logo"
+        style={{cursor:"pointer"}}
+      />
+      </>)}
+      </a>
             </Typography>
 
             <div className="manage_rgiht_bdr d-flex align-items-center">
-            <p style={{color: "#fff",
+            <p style={{color: "#000",
                       textTransform: "capitalize",
                       fontSize: "14px",margin:'0'}}>Balance Min: <span style={{fontSize:'17px',fontWeight:'600',color:'#00f500'}}>{minutest[0]?.remaining_minutes}</span></p>
               <IconButton
@@ -190,6 +233,22 @@ function Header() {
                 Live
                 {/* <LiveCall /> */}
               </IconButton>
+
+               {/* Dark-mode */}
+               
+            <div className="theme_options">
+
+            
+{userThem === "user_theme_white" ? 
+(<><Tooltip title="Light Theme" disableInteractive interactive><IconButton onClick={() => handleClickUser('user_theme_dark')}> <DarkModeIcon  id="user_theme_white"
+ className={`${userThem === 'user_theme_white' ? 'active' : ''}`}
+  /></IconButton></Tooltip></>)
+
+: (<><Tooltip title="Dark Theme" disableInteractive interactive><IconButton onClick={() => handleClickUser('user_theme_white')}> <NightlightIcon id="user_theme_dark" style={{color:'#f5751D '}}
+className={`${userThem === 'user_theme_white' ? 'active' : ''} fa-solid fa-moon`} 
+/></IconButton></Tooltip> </>)}         
+</div>
+
               <div className="dshbrd_hdr_icon">
                 <ul>
                   <li>
@@ -202,55 +261,13 @@ function Header() {
                           alt="profile"
                         />
                         <div className="profile_name">
-                          <b>{user?.user_name}</b>
+                          <b style={{color:'#000'}}>{user?.user_name}</b>
                         </div>
                       </li>
                     </ul>
                   </li>
                 </ul>
               </div>
-
-              {/* {user?.user_type === "admin" ? (
-                <></>
-              ) : (
-                <>
-                  <Dropdown onSelect={handleSelect}>
-                    <Dropdown.Toggle
-                      className="dropbtn"
-                      id="dropdown-basic"
-                      style={{
-                        color: "#fff",
-                        textTransform: "capitalize",
-                        fontSize: "14px",
-                      }}
-                    >
-                      Services
-                    </Dropdown.Toggle>
-
-                    <Dropdown.Menu>
-                      {selectedValue === "Manage" ? (
-                        <>
-                          <Dropdown.Item eventKey="Redirect">
-                            Redirect
-                          </Dropdown.Item>
-                          <Dropdown.Item href="/sip" eventKey="Sip">
-                            Sip
-                          </Dropdown.Item>
-                        </>
-                      ) : (
-                        <>
-                          <Dropdown.Item href="/manage_portal">
-                            Manage
-                          </Dropdown.Item>
-                          <Dropdown.Item href="/sip_portal" eventKey="Sip">
-                            Sip
-                          </Dropdown.Item>
-                        </>
-                      )}
-                    </Dropdown.Menu>
-                  </Dropdown>
-                </>
-              )} */}
 
               <IconButton
                 size="large"
@@ -268,6 +285,8 @@ function Header() {
         {/* <!--navbar-sec--> */}
         <Navbar selectedValue={selectedValue} />
       </Box>
+      </div>
+      </div>
     </>
   );
 }

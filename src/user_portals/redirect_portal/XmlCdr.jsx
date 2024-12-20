@@ -136,7 +136,7 @@ const array = [
   "ANSWERED",
   "FASTAGI_DOWN",
 ];
-function XmlCdr() {
+function XmlCdr({userThem}) {
   const classes = useStyles();
   const current_user = localStorage.getItem("current_user");
   const data = localStorage.getItem(`user_${current_user}`);
@@ -192,7 +192,7 @@ function XmlCdr() {
       to_date: formattedToDate,
       call_direction: callDirection,
       did_number: didNumber,
-      destination: destination,
+      forward_number: destination,
       caller_id: callerId,
       hangup_reason: status,
     });
@@ -305,14 +305,14 @@ function XmlCdr() {
       headerAlign: "center",
       align: "center",
     },
-    {
-      field: "destination",
-      headerName: "Destination",
-      width: 150,
-      headerClassName: "custom-header-redirect",
-      headerAlign: "center",
-      align: "center",
-    },
+    // {
+    //   field: "destination",
+    //   headerName: "Destination",
+    //   width: 150,
+    //   headerClassName: "custom-header-redirect",
+    //   headerAlign: "center",
+    //   align: "center",
+    // },
     {
       field: "duration",
       headerName: "Duration",
@@ -648,6 +648,8 @@ function XmlCdr() {
 
   return (
     <>
+     <div className={`App ${userThem} `}>
+     <div className="contant_box">
     <div className="main">
       <section className="sidebar-sec">
         <div className="container-fluid">
@@ -782,7 +784,7 @@ function XmlCdr() {
                               margin: " 5px 0 5px 0",
                             }}
                             type="text"
-                            label="Destination"
+                            label="Forward Number"
                             variant="outlined"
                             value={destination}
                             onChange={(e) => {
@@ -790,7 +792,7 @@ function XmlCdr() {
                             }}
                           />
                         </Grid>
-                        <Grid
+                        {/* <Grid
                           xl={3}
                           lg={3}
                           md={3}
@@ -823,7 +825,7 @@ function XmlCdr() {
                               <MenuItem value={"Outbound"}>Outbound</MenuItem>
                             </Select>
                           </FormControl>
-                        </Grid>
+                        </Grid> */}
 
                         <Grid
                           xl={3}
@@ -939,7 +941,9 @@ function XmlCdr() {
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "end",
-                            padding: " 0 0 0px",
+                            padding: " 10px 0",
+                            width:"100%",
+                            marginLeft:"auto"
                           }}
                         >
                           <IconButton
@@ -999,6 +1003,8 @@ function XmlCdr() {
           </div>
         </div>
       </section>
+    </div>
+    </div>
     </div>
   </>
   );

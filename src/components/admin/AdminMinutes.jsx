@@ -394,12 +394,13 @@ function AdminMinutes({ colorThem }) {
   const columns = [
     {
       field: "action",
-      headerName: "Recharge/Minues",
+      // headerName: "Recharge/Minues",
+      headerName: "Action",
       headerClassName: "custom-header",
       headerAlign: "center",
       align: "center",
       sortable: false,
-      width: 150,
+      width: 100,
       renderCell: (params) => {
         return (
           <div className="d-flex justify-content-between align-items-center">
@@ -422,6 +423,11 @@ function AdminMinutes({ colorThem }) {
       headerAlign: "center",
       width: 130,
       align: "center",
+      renderCell: (params)=>{
+        return(
+          <span style={{textTransform:'capitalize'}}>{params.row.username}</span>
+        )
+      } 
     },
     {
       field: "total_used_minutes",
@@ -589,30 +595,30 @@ function AdminMinutes({ colorThem }) {
               <>
                 <div
                   style={{
-                    color: "white",
-                    background: "green",
-                    padding: "7px",
-                    borderRadius: "5px",
-                    fontSize: "12px",
+                    color: "green",
+                  //  background: "green",
+                  //  padding: "7px",
+                  //  borderRadius: "5px",
+                  //  fontSize: "12px",
                     textTransform: "capitalize",
                   }}
                 >
-                  Enable
+                  Active
                 </div>
               </>
             ) : (
               <>
                 <div
                   style={{
-                    color: "white",
-                    background: "red",
-                    padding: "7px",
-                    borderRadius: "5px",
-                    fontSize: "12px",
+                    color: "red",
+                  //  background: "red",
+                   // padding: "7px",
+                   // borderRadius: "5px",
+                  //  fontSize: "12px",
                     textTransform: "capitalize",
                   }}
                 >
-                  Disable
+                  Deactive
                 </div>
               </>
             )}
@@ -715,7 +721,7 @@ return(<>{user?.uid === item.user_id ? (<><div  style={{margin:'auto'}} classNam
                           <Dialog
                             open={open}
                             onClose={handleCloseModal}
-                            sx={{ textAlign: "center" }}
+                            sx={{ textAlign: "center",borderRadius:"10px  !important"  }}
                           >
                           <Box>
                             <IconButton
@@ -731,13 +737,15 @@ return(<>{user?.uid === item.user_id ? (<><div  style={{margin:'auto'}} classNam
                             </IconButton>
                           </Box>
                           <DialogTitle
-                            sx={{ color: "#07285d", fontWeight: "600", width: "500px" }}
+                            className="modal_heading"
+                            sx={{ color: "#133325", fontWeight: "600", width: "500px" }}
                           >
                           
                           Add Billing For User
                           </DialogTitle>
                             <DialogContent>
                               <form>
+                              <Typography variant="body1">
                               <form
                                  style={{
                                   textAlign: "center",
@@ -969,6 +977,7 @@ return(<>{user?.uid === item.user_id ? (<><div  style={{margin:'auto'}} classNam
 
                                  
                                 </form>
+                                </Typography>
                               </form>
                             </DialogContent>
                             <DialogActions
@@ -1035,10 +1044,12 @@ return(<>{user?.uid === item.user_id ? (<><div  style={{margin:'auto'}} classNam
                               </IconButton>
                           </Box>
                           <DialogTitle
+                            className="modal_heading"
                             sx={{
-                              color: "#07285d",
+                              color: "#133325",
                               fontWeight: "600",
-                              width: "500px",
+                              width: "100%",
+                              margin:'auto'
                             }}
                           >
                             

@@ -274,7 +274,7 @@ function AdminCarrier({ colorThem }) {
             <IconButton onClick={() => handleButtonClick(params.row)}>
               <Edit
                 index={params.row.id}
-                style={{ cursor: "pointer", color: "#0e397f" }}
+                style={{ cursor: "pointer", color: "#42765f" }}
               />
             </IconButton>
             <Tooltip title="delete" disableInteractive interactive>
@@ -293,6 +293,11 @@ function AdminCarrier({ colorThem }) {
       headerAlign: "center",
       width: 100,
       align: "center",
+      renderCell: (params)=>{
+        return(
+          <span style={{textTransform:'capitalize'}}>{params.row.name}</span>
+        )
+      } 
     },
 
     {
@@ -302,6 +307,11 @@ function AdminCarrier({ colorThem }) {
       headerAlign: "center",
       width: 100,
       align: "center",
+      renderCell: (params)=>{
+        return(
+          <span style={{textTransform:'capitalize'}}>{params.row.username}</span>
+        )
+      } 
     },
     // {
     //   field: "password",
@@ -359,11 +369,11 @@ function AdminCarrier({ colorThem }) {
               <>
                 <div
                   style={{
-                    color: "white",
-                    background: "green",
+                    color: "green",
+                    //background: "green",
                     padding: "7px",
-                    borderRadius: "5px",
-                    fontSize: "12px",
+                   // borderRadius: "5px",
+                   // fontSize: "12px",
                     textTransform: "capitalize",
                   }}
                 >
@@ -374,11 +384,11 @@ function AdminCarrier({ colorThem }) {
               <>
                 <div
                   style={{
-                    color: "white",
-                    background: "red",
-                    padding: "7px",
-                    borderRadius: "5px",
-                    fontSize: "12px",
+                    color: "red",
+                   // background: "red",
+                  //  padding: "7px",
+                  //  borderRadius: "5px",
+                  //  fontSize: "12px",
                     textTransform: "capitalize",
                   }}
                 >
@@ -482,8 +492,9 @@ function AdminCarrier({ colorThem }) {
                 </IconButton>
               </Box>
                             <DialogTitle
+                               className="modal_heading"
                               sx={{
-                                color: "#07285d",
+                                color: "#133325",
                                 fontWeight: "600",
                                 width: "500px",
                               }}
@@ -780,8 +791,9 @@ function AdminCarrier({ colorThem }) {
               </Box>
                             
                             <DialogTitle
+                               className="modal_heading"
                               sx={{
-                                color: "#07285d",
+                                color: "#133325",
                                 fontWeight: "600",
                                 width: "500px",
                               }}
@@ -793,7 +805,7 @@ function AdminCarrier({ colorThem }) {
                               <form>
                                 {/* <SelectComponent handleClose={handleClose} /> */}
                                 <Typography variant="body1">
-                                  <br />
+                               
                                   <form
                                     style={{
                                       textAlign: "center",
@@ -1110,7 +1122,7 @@ function AdminCarrier({ colorThem }) {
                           >
                             <DialogTitle
                               id="alert-dialog-title"
-                              sx={{ color: "#07285d", fontWeight: "600" }}
+                              sx={{ color: "#133325", fontWeight: "600" }}
                             >
                               {"Delete Confirmation"}
                             </DialogTitle>

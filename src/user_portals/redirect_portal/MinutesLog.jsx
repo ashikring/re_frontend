@@ -22,7 +22,7 @@ const theme = createTheme({
     },
   },
 });
-function MinutesLog() {
+function MinutesLog({userThem}) {
   const state = useSelector((state)=>state)
   const dispatch = useDispatch();
 
@@ -129,6 +129,8 @@ function MinutesLog() {
     );
   return (
     <>
+    <div className={`App ${userThem} `}>
+    <div className="contant_box">
       <div className="main">
         <section className="sidebar-sec">
           <div className="container-fluid">
@@ -147,13 +149,13 @@ function MinutesLog() {
                       <div className="tab_cntnt_box">
                         <div className="cntnt_title">
                           <h3>Minute Logs</h3>
-                          <p>
+                          {/* <p>
                             Assign Minutes Details (AMDs) are detailed
                             information on the calls. Use the fields to filter
                             the information for the specific assign Minutes that
                             are desired. Records in the minutes list can be
                             saved locally using the Export button.
-                          </p>
+                          </p> */}
                         </div>
 
                         <ThemeProvider theme={theme}>
@@ -174,6 +176,8 @@ function MinutesLog() {
             </div>
           </div>
         </section>
+      </div>
+      </div>
       </div>
     </>
   );

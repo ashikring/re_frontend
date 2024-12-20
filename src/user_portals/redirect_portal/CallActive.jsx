@@ -25,6 +25,20 @@ const theme = createTheme({
     },
   },
 });
+export function CustomFooterStatusComponent(props) {
+  return (<></>
+    // <Box sx={{ p: 1, display: 'flex' }}>
+    //   <FiberManualRecordIcon
+    //     fontSize="small"
+    //     sx={{
+    //       mr: 1,
+    //       color: props.status === 'connected' ? '#4caf50' : '#d9182e',
+    //     }}
+    //   />
+    //   Status {props.status}
+    // </Box>
+  );
+}
 function CustomToolbar() {
   return (
     <GridToolbarContainer>
@@ -35,7 +49,7 @@ function CustomToolbar() {
   );
 }
 
-function CallActive(){
+function CallActive({userThem}){
   const dispatch = useDispatch();
   const state = useSelector((state) => state);
   const [timeStamp, setTimeStamp] = useState([]);
@@ -457,6 +471,8 @@ function CallActive(){
 
   
 return (<>
+ <div className={`App ${userThem} `}>
+ <div className="contant_box">
 <div className="main">
 <section className="sidebar-sec">
   <div className="container-fluid">
@@ -477,7 +493,7 @@ return (<>
                 >
                   <div>
                   <h3>Active Calls</h3>
-                  <p>Use this to monitor and interact with the active calls.</p>
+                  {/* <p>Use this to monitor and interact with the active calls.</p> */}
                   </div>
                   
                 </div>
@@ -497,6 +513,7 @@ return (<>
                                 components={{ Toolbar: GridToolbar }}
                                 slots={{
                                   toolbar: CustomToolbar,
+                                  footer: CustomFooterStatusComponent,
                                 }}
                                 autoHeight
                               />
@@ -519,7 +536,10 @@ return (<>
     </div>
   </div>
 </section>
-</div></>)
+</div>
+  </div>
+  </div>
+</>)
 }
 
 export default CallActive;

@@ -118,8 +118,6 @@ function Header({colorThem, handleClick}) {
 
 <div className="contant_box" >
       <Box sx={{ flexGrow: 1 }} className={`App ${colorThem} manage_boxx`}>
-
-      
         <AppBar position="static" className="manage_top_header1" 
        // style={{backgroundColor:"#fff"}}
         >
@@ -229,55 +227,17 @@ function Header({colorThem, handleClick}) {
               </Box>
 
             <div className="theme_options">
-
+ 
             
           {colorThem === "theme_white" ? 
-          (<><Tooltip title="Light Theme" disableInteractive interactive><IconButton onClick={() => handleClick('theme_blue')}> <DarkModeIcon id="theme_white"
+          (<><Tooltip title="Light Theme" disableInteractive interactive><IconButton onClick={() => handleClick('theme_blue')}> <DarkModeIcon id="theme_white" 
            className={`${colorThem === 'theme_white' ? 'active' : ''}`}
             /></IconButton></Tooltip></>)
 
-         : (<><Tooltip title="Dark Theme" disableInteractive interactive><IconButton onClick={() => handleClick('theme_white')}> <NightlightIcon id="theme_blue"
+         : (<><Tooltip title="Dark Theme" disableInteractive interactive><IconButton onClick={() => handleClick('theme_white')}> <NightlightIcon id="theme_blue" style={{color:'#f5751D '}}
          className={`${colorThem === 'theme_white' ? 'active' : ''} fa-solid fa-moon`} 
-         /></IconButton></Tooltip> </>)}
-
-            
-        {/* <button id="theme_white"
-         className={`${colorThem === 'theme_white' ? '' : ''}`}
-         onClick={() => handleClick('theme_white')}></button>
-        <button id="theme_blue"
-         className={`${colorThem === 'theme_white' ? '' : ''}`} 
-         onClick={() => handleClick('theme_blue')}></button>
-        <button id="theme_orange"
-         className={`${colorThem === 'theme_white' ? '' : ''}`} 
-         onClick={() => handleClick('theme_orange')}></button>
-        <button id="theme_purple"
-         className={`${colorThem === 'theme_white' ? '' : ''}`} 
-         onClick={() => handleClick('theme_purple')}></button>
-        <button id="theme_green"
-         className={`${colorThem === 'theme_white' ? '' : ''}`} 
-         onClick={() => handleClick('theme_green')}></button>
-        <button id="theme_black"
-         className={`${colorThem === 'theme_white' ? '' : ''}`} 
-         onClick={() => handleClick('theme_black')}></button> */}
-
-         
+         /></IconButton></Tooltip> </>)}         
       </div>
-
-{/* 
-      <Tooltip title="Live Calls" disableInteractive interactive>
-              <IconButton
-                size="large"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                className="manage_call"
-              >
-                <CallIcon className="call_icon" /> */}
-                {/* <LiveCall /> */}
-                {/* Live
-              </IconButton>
-              </Tooltip> */}
-
              
               <div className="dshbrd_hdr_icon">
                 <ul>
@@ -300,30 +260,7 @@ function Header({colorThem, handleClick}) {
                 </ul>
               </div>
 
-              {/* {user?.user_role === "Superadmin" ? (<></>):(<>
-                <Dropdown onSelect={handleSelect}>
-                <Dropdown.Toggle
-                  className="dropbtn"
-                  id="dropdown-basic"
-                  style={{
-                    color: "#000",
-                    textTransform: "capitalize",
-                    fontSize: "14px",
-                  }}
-                >
-                  Services
-                </Dropdown.Toggle>
-
-                <Dropdown.Menu>
-                  {selectedValue === "Manage" ?(<>
-                  <Dropdown.Item  eventKey="Redirect">Redirect</Dropdown.Item>
-                  <Dropdown.Item href="/sip" eventKey="Sip">Sip</Dropdown.Item></>):(<>
-                  <Dropdown.Item  eventKey="Manage">Manage</Dropdown.Item>
-                  <Dropdown.Item href="/sip" eventKey="Sip">Sip</Dropdown.Item></>)}
-                  
-                  
-                </Dropdown.Menu>
-              </Dropdown></>)} */}
+           
              
              <Tooltip title="Logout" disableInteractive interactive>
               <IconButton

@@ -21,6 +21,7 @@ import { IconBase } from "react-icons/lib";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { api } from "../../mockData";
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 const drawerWidth = 240;
 
 const useStyles = makeStyles({
@@ -102,6 +103,21 @@ const theme = createTheme({
     },
   },
 });
+
+export function CustomFooterStatusComponent(props) {
+  return (<></>
+    // <Box sx={{ p: 1, display: 'flex' }}>
+    //   <FiberManualRecordIcon
+    //     fontSize="small"
+    //     sx={{
+    //       mr: 1,
+    //       color: props.status === 'connected' ? '#4caf50' : '#d9182e',
+    //     }}
+    //   />
+    //   Status {props.status}
+    // </Box>
+  );
+}
 
 function CustomToolbar() {
   return (
@@ -555,8 +571,11 @@ function AdminCallActive({ colorThem }) {
                                 components={{ Toolbar: GridToolbar }}
                                 slots={{
                                   toolbar: CustomToolbar,
+                                  footer: CustomFooterStatusComponent,
                                 }}
-                                autoHeight
+                               
+                                autoHeight 
+                                
                               />
                             </div>
                       </ThemeProvider>

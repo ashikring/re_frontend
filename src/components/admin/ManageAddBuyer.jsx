@@ -465,6 +465,11 @@ function ManageAddBuyer({ colorThem }) {
       headerClassName: "custom-header",
       headerAlign: "center",
       align: "center",
+      renderCell: (params) => (
+        <span style={{ textTransform: 'capitalize' }}>
+          {params.row.user_name}
+        </span>
+      )
     },
     {
       field: "status",
@@ -482,7 +487,7 @@ function ManageAddBuyer({ colorThem }) {
                   className="d-flex justify-content-between align-items-center"
                   style={{
                     color: "green",
-                    border: "1px solid green",
+                    //border: "1px solid green",
                     padding: "5px 4.5px",
                     borderRadius: "5px",
                   }}
@@ -496,7 +501,7 @@ function ManageAddBuyer({ colorThem }) {
                   className="d-flex justify-content-between align-items-center"
                   style={{
                     color: "red",
-                    border: "1px solid red",
+                   // border: "1px solid red",
                     padding: "5px 4.5px",
                     borderRadius: "5px",
                   }}
@@ -527,7 +532,7 @@ function ManageAddBuyer({ colorThem }) {
     },
     {
       field: "current_cc",
-      headerName: "Current CC",
+      headerName: "Live Call",
       headerClassName: "custom-header",
       headerAlign: "center",
       width: 100,
@@ -722,6 +727,13 @@ function ManageAddBuyer({ colorThem }) {
                             </FormGroup>
                           </div>
 
+                           {/* mobile_view */}
+                           <p style={{ fontSize: "17px", color: "#000" }} className="d-xxl-none d-xl-none d-lg-none d-md-none d-sm-block d-block">
+                              <b className="fnt_bld"> Campaign Name:</b>{" "}
+                              {location.state.data.group_name}
+                            </p>
+                           {/* mobile_view_end */}
+
                           <div
                             style={{
                               display: "flex",
@@ -729,15 +741,16 @@ function ManageAddBuyer({ colorThem }) {
                               alignItems: "end",
                               marginBottom: "40px",
                             }}
+                            className="mobile_justify_end"
                           >
-                            <p style={{ fontSize: "17px", color: "#000" }}>
+                            <p style={{ fontSize: "17px", color: "#000" }} className="d-xxl-block d-xl-block d-lg-block d-md-block d-sm-none d-none">
                               <b className="fnt_bld"> Campaign Name:</b>{" "}
                               {location.state.data.group_name}
                             </p>
 
                             <div>
                               <IconButton
-                                className="all_button_clr"
+                                className="all_button_clr "
                                 style={{
                                   padding: "10px",
                                   fontSize: "15px",
@@ -794,8 +807,9 @@ function ManageAddBuyer({ colorThem }) {
                                 </IconButton>
                           </Box>
                           <DialogTitle
+                            className="modal_heading"
                             sx={{
-                              color: "#07285d",
+                              color: "#133325",
                               fontWeight: "600",
                               width: "500px",
                             }}
@@ -1007,8 +1021,9 @@ function ManageAddBuyer({ colorThem }) {
               //className="bg_imagess"
             >
               <DialogTitle
+                className="modal_heading"
                 id="alert-dialog-title"
-                sx={{ color: "#07285d", fontWeight: "600" }}
+                sx={{ color: "#133325", fontWeight: "600" }}
               >
                 {"Delete Confirmation"}
               </DialogTitle>
@@ -1082,8 +1097,9 @@ function ManageAddBuyer({ colorThem }) {
                                 </IconButton>
                           </Box>
                           <DialogTitle
+                            className="modal_heading"
                             sx={{
-                              color: "#07285d",
+                              color: "#133325",
                               fontWeight: "600",
                               width: "500px",
                             }}
@@ -1323,6 +1339,7 @@ function ManageAddBuyer({ colorThem }) {
                                   <DataGrid
                                     rows={rows}
                                     columns={columns}
+                                    density="standard"
                                     // getRowClassName={(params) =>
                                     //   isRowBordered(params)
                                     //     ? "borderedGreen"
