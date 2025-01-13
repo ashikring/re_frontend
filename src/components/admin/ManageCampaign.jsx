@@ -299,57 +299,6 @@ function Manage_Campaign({ colorThem }) {
         </span>
       )
     },
-
-    
-    {
-      field: "status",
-      headerName: "Status",
-      type: "number",
-      headerAlign: "center",
-      align: "center",
-      width: 140,
-      headerClassName: "custom-header",
-      renderCell: (params) => {
-        return (
-          <div className="d-flex justify-content-between align-items-center">
-            {params.row.status === "True" ? (
-              <>
-                <div
-                  style={{
-                    color: "green",
-                   // background: "green",
-                   // padding: "7px 0 0 0",
-                   // borderRadius: "5px",
-                   // fontSize: "12px",
-                    textTransform: "capitalize",
-                  //  height: "30px",
-                   // width: "62px",
-                    textAlign:"center"
-                  }}
-                >
-                  Active
-                </div>
-              </>
-            ) : (
-              <>
-              <div
-                  style={{
-                    color: "red",
-                   // background: "red",
-                   // padding: "7px",
-                   // borderRadius: "5px",
-                   // fontSize: "12px",
-                    textTransform: "capitalize",
-                  }}
-                >
-                  Deactive
-                </div>
-              </>
-            )}
-          </div>
-        );
-      },
-    },
  
     {
       field: "description",
@@ -357,7 +306,7 @@ function Manage_Campaign({ colorThem }) {
       headerClassName: "custom-header",
       headerAlign: "center",
       align: "center",
-      width: 200,
+      width: 250,
       renderCell: (params) => (
         <span style={{ textTransform: 'capitalize' }}>
           {params.row.description}

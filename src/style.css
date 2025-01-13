@@ -5,6 +5,40 @@
   padding: 0;
   box-sizing: border-box;
 }
+.css-1e3wlyl-MuiButtonBase-root-MuiMenuItem-root-MuiMultiSectionDigitalClockSection-item.Mui-selected {
+  background-color: #254336 !important;
+  color: #fff;
+ }
+ .css-23p0if-MuiButtonBase-root-MuiPickersDay-root.Mui-selected {
+  color: #fff;
+  background-color: #254336 !important;
+  font-weight: 500;
+ }
+
+.css-1d3z3hw-MuiOutlinedInput-notchedOutline{
+  border-color: rgb(196, 196, 196) !important;
+ }
+
+ .css-1ox9k5z.Mui-selected {
+  background-color: rgb(24 46 36);
+  color: rgb(255, 255, 255);
+ }
+
+ /* .jss3 .MuiInputBase-root{
+  border-color: inherit !important;
+ 
+ }
+
+ .css-1bn53lx {
+  border: 1px solid #fff !important;
+  border-radius: 4px !important;
+ } */
+
+ /* .css-1x5jdmq{
+  border-radius: 4px !important;
+  border: 1px solid #fff !important;
+ } */
+
 /* ====Start_admin_dashboard_card_css==== */
 /* .invoice_download {
   background-color: green !important;
@@ -318,9 +352,13 @@ h4.dshbrd_list_title {
   height: 250px;
   width: 100%;
 }
+.css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root{
+  color: #fff !important;
+}
+
 .profile_tabs{
   padding-right: 0;
-    color: #092b5f;
+    color: #264236;
     background-color: inherit !important;
     border-radius: 0;
     padding: 10px 0 10px !important;
@@ -1027,7 +1065,7 @@ border-bottom: 1px solid #08285d !important;
 }
 .nav-pills .nav-link.active {
 font-weight: 600;
-border-bottom: 1px solid #092a5f;
+border-bottom: 1px solid #264236;
 padding-bottom: 12px !important;
 }
 .nav-tabs .nav-link:focus, .nav-tabs .nav-link:hover {
@@ -1176,7 +1214,7 @@ ul.hdr_profile li img {
 
 .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
   /* color: #fff; */
-  color: #092b5f;
+  color: #264236;
   background-color: inherit !important;
   /* border-bottom: 2px solid #fff; */
   /* color: #000; */

@@ -485,7 +485,7 @@ setOpen(false);
 
                 <Grid container spacing={2}>
                   <Grid item md={4} sm={12} xs={12}>
-                    <Card sx={{ minWidth: 275 }}>
+                    <Card sx={{ minWidth: 275, borderRadius:'0' }}>
                       <CardContent className="card_box">
                         {values?.data?.map((item, index) => {
                           return (
@@ -519,17 +519,17 @@ setOpen(false);
                         })}
                       </CardContent>
                       <CardActions className="card_button_box">
- <Button className="all_button_clr" 
- // variant="contained"
- >Edit</Button>
- <Button className="all_button_clr" 
- // variant="outlined"
- >Message</Button>
- </CardActions>
+                        <Button className="all_button_clr" 
+                       // variant="contained"
+                        >Edit</Button>
+                        <Button className="all_button_clr" 
+                      //  variant="outlined"
+                        >Message</Button>
+                      </CardActions>
                     </Card>
 
                     <Card
-                      sx={{ minWidth: 275 }}
+                      sx={{ minWidth: 275,borderRadius:'0' }}
                       style={{ marginTop: "17px", paddingBottom: "0px" }}
                     >
                       <CardContent className="card_box">
@@ -550,7 +550,7 @@ setOpen(false);
                   </Grid>
 
                   <Grid item md={8} sm={12} xs={12}>
-                    <Card sx={{ minWidth: 275 }} className="form_profile_box">
+                    <Card sx={{ minWidth: 275, borderRadius:'0' }} className="form_profile_box">
                       {values?.data?.map((item, index) => {
                         const date = new Date(item.created_date);
                         const formattedDate = `${date.getDate()}/${
@@ -827,7 +827,7 @@ setOpen(false);
                             <Fade in={open} className="bg_imagess">
                               <Box
                                 sx={style}
-                                borderRadius={"10px"}
+                                borderRadius={"0px"}
                                 textAlign={"center"}
                               >
                                 <IconButton

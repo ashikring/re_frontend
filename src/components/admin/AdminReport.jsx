@@ -21,6 +21,9 @@ import {
   Tooltip,
   InputAdornment,
   Grid,
+  FormControlLabel,
+  RadioGroup,
+  Radio,
 } from "@mui/material";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -63,7 +66,7 @@ const useStyles = makeStyles({
       borderColor: "transparent",
       borderWidth: "1px",
       borderStyle: "solid",
-      height: "45px",
+      height: "50px !important",
       minWidth: "120px",
       justifyContent: "center",
     },
@@ -174,6 +177,7 @@ function AdminReport({ colorThem }) {
   const audioRefs = useRef({}); // Store references to audio elements
   const [users, setUsers] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
+  const [radioValue, setRadioValue] = useState("n");
 
   const handleSelectionChange = (selection) => {
     setSelectedRows(selection);
@@ -691,7 +695,7 @@ function AdminReport({ colorThem }) {
         username: item.username,
         answered_by: item.answered_by,
         transfered_to: item.transfered_to,
-        forwarded_number: item.forwarded_number
+        forwarded_number: item.forwarded_number,
       });
     });
 
@@ -780,6 +784,16 @@ function AdminReport({ colorThem }) {
                               fullWidth
                               style={{ width: "98%", margin: "7px 0" }}
                               className={classes.formControl}
+                              //                             sx={{
+                              //   width: "98%",
+                              //   margin: "5px 0",
+                              //   "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+                              //     borderColor: "#c4c4c4", // Change this to your desired hover color
+                              //   },
+                              //   "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                              //      borderColor: "#fff", // Focus border color
+                              //   },
+                              // }}
                             >
                               <InputLabel id="demo-simple-select-label">
                                 UserName
@@ -790,6 +804,7 @@ function AdminReport({ colorThem }) {
                                 id="demo-simple-select"
                                 label="UserName"
                                 helperText="Select the language."
+                                className="select_items"
                                 style={{ textAlign: "left" }}
                                 value={userId}
                                 onChange={(e) => {
@@ -816,11 +831,21 @@ function AdminReport({ colorThem }) {
                             style={{ display: "flex", alignItems: "center" }}
                           >
                             <TextField
-                              className={classes.formControl}
+                              className={`${classes.formControl} textfield_select`}
                               style={{
                                 width: "98%",
-                                margin: " 5px 0 5px 0",
+                                margin: " 4px 0 4px 0",
                               }}
+                              //                             sx={{
+                              //   width: "98%",
+                              //   margin: "5px 0",
+                              //   "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+                              //     borderColor: "#c4c4c4", // Change this to your desired hover color
+                              //   },
+                              //   "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                              //       borderColor: "#fff", // Focus border color
+                              //     },
+                              // }}
                               type="text"
                               label="Caller Id"
                               variant="outlined"
@@ -859,11 +884,21 @@ function AdminReport({ colorThem }) {
                             style={{ display: "flex", alignItems: "center" }}
                           >
                             <TextField
-                              className={classes.formControl}
+                              className={`${classes.formControl} textfield_select`}
                               style={{
                                 width: "98%",
                                 margin: " 5px 0 5px 0",
                               }}
+                              //                             sx={{
+                              //   width: "98%",
+                              //   margin: "5px 0",
+                              //   "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+                              //     borderColor: "#c4c4c4", // Change this to your desired hover color
+                              //   },
+                              //   "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                              //       borderColor: "#fff", // Focus border color
+                              //     },
+                              // }}
                               type="text"
                               label="DID Number"
                               variant="outlined"
@@ -882,11 +917,21 @@ function AdminReport({ colorThem }) {
                             style={{ display: "flex", alignItems: "center" }}
                           >
                             <TextField
-                              className={classes.formControl}
+                              className={`${classes.formControl} textfield_select`}
                               style={{
                                 width: "98%",
                                 margin: " 5px 0 5px 0",
                               }}
+                              //                             sx={{
+                              //   width: "98%",
+                              //   margin: "5px 0",
+                              //   "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+                              //     borderColor: "#c4c4c4", // Change this to your desired hover color
+                              //   },
+                              //   "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                              //       borderColor: "#fff", // Focus border color
+                              //     },
+                              // }}
                               type="text"
                               label="Forward Number"
                               variant="outlined"
@@ -942,6 +987,16 @@ function AdminReport({ colorThem }) {
                               className={classes.formControl}
                               fullWidth
                               style={{ width: "98.5%", margin: "7px 0px" }}
+                              //                             sx={{
+                              //   width: "98%",
+                              //   margin: "5px 0",
+                              //   "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+                              //     borderColor: "#c4c4c4", // Change this to your desired hover color
+                              //   },
+                              //   "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                              //       borderColor: "#fff", // Focus border color
+                              //     },
+                              // }}
                             >
                               <InputLabel id="demo-simple-select-label">
                                 Status
@@ -950,6 +1005,7 @@ function AdminReport({ colorThem }) {
                               <Select
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
+                                className="select_items"
                                 label="Status"
                                 helperText="Select the language."
                                 style={{ textAlign: "left" }}
@@ -979,9 +1035,11 @@ function AdminReport({ colorThem }) {
                               <DemoContainer
                                 components={["DatePicker"]}
                                 sx={{ width: "98%" }}
+                                className="select_date"
                               >
                                 <DateTimePicker
                                   label="From Date"
+                                  className="select_date_items"
                                   value={
                                     fromDate
                                       ? dayjs(fromDate, "DD/MM/YYYY HH:mm")
@@ -989,7 +1047,10 @@ function AdminReport({ colorThem }) {
                                   } // Convert selectedDate to a dayjs object
                                   onChange={handleFromDateChange}
                                   renderInput={(props) => (
-                                    <TextField {...props} />
+                                    <TextField
+                                      {...props}
+                                      className="select_date_box"
+                                    />
                                   )}
                                   format="DD/MM/YYYY HH:mm"
                                 />
@@ -1011,8 +1072,10 @@ function AdminReport({ colorThem }) {
                               <DemoContainer
                                 components={["DatePicker"]}
                                 sx={{ width: "98%" }}
+                                className="select_date"
                               >
                                 <DateTimePicker
+                                  className="select_date_items"
                                   label="To Date"
                                   value={
                                     toDate
@@ -1021,7 +1084,10 @@ function AdminReport({ colorThem }) {
                                   } // Convert selectedDate to a dayjs object
                                   onChange={handleToDateChange}
                                   renderInput={(props) => (
-                                    <TextField {...props} />
+                                    <TextField
+                                      {...props}
+                                      className="select_date_box"
+                                    />
                                   )}
                                   format="DD/MM/YYYY HH:mm"
                                 />
@@ -1068,7 +1134,13 @@ function AdminReport({ colorThem }) {
                             </div>
                           </Grid>
 
-                          <div>
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              width: "100%",
+                            }}
+                          >
                             <IconButton
                               className="filter_block_btn"
                               style={{
@@ -1082,20 +1154,65 @@ function AdminReport({ colorThem }) {
                               Block &nbsp;
                               <BlockIcon />
                             </IconButton>
+                            {/* <div>
+                              <FormControl>
+                                <RadioGroup
+                                  row
+                                  aria-labelledby="demo-row-radio-buttons-group-label"
+                                  name="row-radio-buttons-group"
+                                  value={radioValue} // Bind the selected value to state
+                                  onChange={(e) =>
+                                    setRadioValue(e.target.value)
+                                  } // Handle change event
+                                >
+                                  <FormControlLabel
+                                    value="n"
+                                    control={<Radio />}
+                                    label="New"
+                                  />
+                                  <FormControlLabel
+                                    value="o"
+                                    control={<Radio />}
+                                    label="Old"
+                                  />
+                                </RadioGroup>
+                              </FormControl>
+                            </div> */}
                           </div>
                         </Grid>
-
-                        <ThemeProvider theme={theme}>
-                          <div style={{ height: 500, width: "100%" }}>
-                            <DataGrid
-                              rows={rows}
-                              columns={columns}
-                              checkboxSelection
-                              components={{ Toolbar: GridToolbar }}
-                              onRowSelectionModelChange={handleSelectionChange}
-                            />
-                          </div>
-                        </ThemeProvider>
+                        {radioValue === "n" ? (
+                          <>
+                            <ThemeProvider theme={theme}>
+                              <div style={{ height: 500, width: "100%" }}>
+                                <DataGrid
+                                  rows={rows}
+                                  columns={columns}
+                                  checkboxSelection
+                                  components={{ Toolbar: GridToolbar }}
+                                  onRowSelectionModelChange={
+                                    handleSelectionChange
+                                  }
+                                />
+                              </div>
+                            </ThemeProvider>
+                          </>
+                        ) : (
+                          <>
+                            <ThemeProvider theme={theme}>
+                              <div style={{ height: 500, width: "100%" }}>
+                                <DataGrid
+                                  rows={[]}
+                                  columns={[]}
+                                  checkboxSelection
+                                  components={{ Toolbar: GridToolbar }}
+                                  onRowSelectionModelChange={
+                                    handleSelectionChange
+                                  }
+                                />
+                              </div>
+                            </ThemeProvider>
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>

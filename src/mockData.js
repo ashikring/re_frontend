@@ -11,7 +11,8 @@ export const usersGroupRolesList = [
         id: 2,
         role: 'Admin',
         description: 'Admin',
-        isActive: true
+        isActive: true,
+        backgroundColor: 'lightblue', // Add background color for id 2
     },
     {
         id: 3,

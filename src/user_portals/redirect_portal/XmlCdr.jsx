@@ -40,6 +40,7 @@ const useStyles = makeStyles({
       backgroundColor: "#fff",
       zIndex: 1,
     },
+    
     formControl: {
       "& .MuiInputBase-root": {
         color: "#666",
@@ -90,6 +91,7 @@ const useStyles = makeStyles({
       },
       "& li.Mui-selected:hover": {
         background: "#6EC177",
+        border:'1px solid #fff'
       },
     },
   },
@@ -693,11 +695,21 @@ function XmlCdr({userThem}) {
                           style={{ display: "flex", alignItems: "center" }}
                         >
                           <TextField
-                            className={classes.formControl}
+                             className={`${classes.formControl} textfield_select`}
                             style={{
                               width: "98%",
                               margin: " 5px 0 5px 0",
                             }}
+  //                           sx={{
+  //   width: "98%",
+  //   margin: "5px 0",
+  //   "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+  //     borderColor: "#c4c4c4", // Change this to your desired hover color
+  //   },
+  //   // "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+  //   //     borderColor: "#264236", // Focus border color
+  //   //   },
+  // }}
                             type="text"
                             label="Caller ID"
                             variant="outlined"
@@ -754,11 +766,21 @@ function XmlCdr({userThem}) {
                           style={{ display: "flex", alignItems: "center" }}
                         >
                           <TextField
-                            className={classes.formControl}
+                            className={`${classes.formControl} textfield_select`}
                             style={{
                               width: "98%",
                               margin: " 5px 0 5px 0",
                             }}
+  //                           sx={{
+  //   width: "98%",
+  //   margin: "5px 0",
+  //   "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+  //     borderColor: "#c4c4c4", // Change this to your desired hover color
+  //   },
+  //   // "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+  //   //     borderColor: "#264236", // Focus border color
+  //   //   },
+  // }}
                             type="text"
                             label="DID Number"
                             variant="outlined"
@@ -778,11 +800,21 @@ function XmlCdr({userThem}) {
                           style={{ display: "flex", alignItems: "center" }}
                         >
                           <TextField
-                            className={classes.formControl}
+                             className={`${classes.formControl} textfield_select`}
                             style={{
                               width: "98%",
                               margin: " 5px 0 5px 0",
                             }}
+  //                           sx={{
+  //   width: "98%",
+  //   margin: "5px 0",
+  //   "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+  //     borderColor: "#c4c4c4", // Change this to your desired hover color
+  //   },
+  //   // "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+  //   //     borderColor: "#264236", // Focus border color
+  //   //   },
+  // }}
                             type="text"
                             label="Forward Number"
                             variant="outlined"
@@ -839,6 +871,16 @@ function XmlCdr({userThem}) {
                             className={classes.formControl}
                             fullWidth
                             style={{ width: "98.5%", margin: "7px 0px" }}
+                            sx={{
+    width: "98%",
+    margin: "5px 0",
+    "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+      borderColor: "#c4c4c4", // Change this to your desired hover color
+    },
+    // "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+    //     borderColor: "#264236", // Focus border color
+    //   },
+  }}
                           >
                             <InputLabel id="demo-simple-select-label">
                               Status
@@ -847,6 +889,7 @@ function XmlCdr({userThem}) {
                             <Select
                               labelId="demo-simple-select-label"
                               id="demo-simple-select"
+                               className="select_items"
                               label="Status"
                               helperText="Select the language."
                               style={{ textAlign: "left" }}
@@ -880,9 +923,11 @@ function XmlCdr({userThem}) {
                             <DemoContainer
                               components={["DatePicker"]}
                               sx={{ width: "100%" }}
+                               className="select_date"
                             >
                               <DateTimePicker
                                 label="From Date"
+                                 className="select_date_items"
                                 value={
                                   fromDate
                                     ? dayjs(fromDate, "DD/MM/YYYY HH:mm") // "DD/MM/YYYY hh:mm A" (format used for 11:01 AM or PM)
@@ -890,7 +935,7 @@ function XmlCdr({userThem}) {
                                 } // Convert selectedDate to a dayjs object
                                 onChange={handleFromDateChange}
                                 renderInput={(props) => (
-                                  <TextField {...props} />
+                                  <TextField {...props} className="select_date_box" />
                                 )}
                                 format="DD/MM/YYYY HH:mm"
                               />
@@ -915,15 +960,17 @@ function XmlCdr({userThem}) {
                             <DemoContainer
                               components={["DatePicker"]}
                               sx={{ width: "100%" }}
+                               className="select_date"
                             >
                               <DateTimePicker
                                 label="To Date"
+                                 className="select_date_items"
                                 value={
                                   toDate ? dayjs(toDate, "DD/MM/YYYY HH:mm") : null
                                 } // Convert selectedDate to a dayjs object
                                 onChange={handleToDateChange}
                                 renderInput={(props) => (
-                                  <TextField {...props} />
+                                  <TextField {...props} className="select_date_box" />
                                 )}
                                 format="DD/MM/YYYY HH:mm"
                               />

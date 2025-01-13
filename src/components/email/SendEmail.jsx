@@ -141,7 +141,7 @@ function SendEmail() {
                       type="text"
                       autoComplete="current-password"
                       margin="normal"
-                      inputProps={{ style: { color: "white" } }}
+                      inputProps={{ style: { color: "white",padding:'15px 10px' } }}
                       onFocus={handleFocus}
                     />
                                        

@@ -8,6 +8,15 @@
       background-color: #182e24;
       color: #f1f1f1;
 
+      .select_date_items .MuiInputBase-formControl{
+        border: 1px solid #fff !important;
+        border-radius: 4px !important;
+        }
+     
+      .select_items {
+        border: 1px solid #fff !important;
+        border-radius: 4px !important;
+        }
       .custom_header_redirect {
         background-color: #182e24;
       }
@@ -101,7 +110,7 @@
   }
   
   .css-10jhk8h {
-    background-color: #23304a !important;
+    background-color: #224234 !important;
   }
   
   .MuiDataGrid-columnHeaders.MuiDataGrid-withBorderColor.css-1iyq7zh-MuiDataGrid-columnHeaders {
@@ -131,13 +140,14 @@
   //   color: #fff;
   // }
   .select_title {
-    background-color: #23304A;
+    background-color: #264236;
     width: 100%;
     text-align: center;
     margin: 0 !important;
   }
+  
   .selectgroup_box {
-    border-right: 1px solid #23304A;
+    border-right: 1px solid #264236;
   }
   .manage_mobile_logo {
     padding: 8px;
@@ -248,7 +258,7 @@
   }
   
   .MuiDataGrid-columnHeaders.MuiDataGrid-withBorderColor.css-y599qu {
-    background: #23304a !important;
+    background: #254336 !important;
     display: block;
   }
   
@@ -328,6 +338,32 @@
     background-color: #141B2B;
     color: #f1f1f1;
 
+
+    // .select_date_items.MuiInputAdornment-outlined{
+    //   border: 0px solid #fff !important;
+    // }
+    .select_date_items .MuiInputBase-formControl{
+      border: 1px solid #fff !important;
+      border-radius: 4px !important;
+      }
+   
+    .select_items {
+      border: 1px solid #fff !important;
+      border-radius: 4px !important;
+      }
+
+    
+
+     
+   
+      // .textfield_select div input{
+      // border: 1px solid #fff !important;
+      // border-radius: 4px !important;
+      // }
+
+    .jss3 .MuiInputBase-root {
+      border-color: 0;
+     }
 
     .card_box{
       background-color: #224234 !important;
@@ -414,7 +450,7 @@ body .App.theme_white .contant_box::-webkit-scrollbar-thumb {
 }
 
 .css-10jhk8h {
-  background-color: #23304a !important;
+  background-color: #224234 !important;
 }
 
 .MuiDataGrid-columnHeaders.MuiDataGrid-withBorderColor.css-1iyq7zh-MuiDataGrid-columnHeaders {
@@ -444,13 +480,13 @@ main.right_sidebox.user_profile_page {
 //   color: #fff;
 // }
 .select_title {
-  background-color: #23304A;
+  background-color: #264236;
   width: 100%;
   text-align: center;
   margin: 0 !important;
 }
 .selectgroup_box {
-  border-right: 1px solid #23304A;
+  border-right: 1px solid #264236;
 }
 .manage_mobile_logo {
   padding: 8px;
@@ -559,11 +595,14 @@ label{
   border: 1px solid #fff;
   border-radius: 4px;
 }
-
-.MuiDataGrid-columnHeaders.MuiDataGrid-withBorderColor.css-y599qu {
-  background: #23304a !important;
-  display: block;
+.MuiDataGrid-columnHeader.MuiDataGrid-columnHeader--alignCenter.MuiDataGrid-withBorderColor.MuiDataGrid-columnHeaderCheckbox {
+  background: #224234 !important;
 }
+
+// .MuiDataGrid-columnHeaders.MuiDataGrid-withBorderColor.css-y599qu {
+//   background: #23304a !important;
+//   display: block;
+// }
 
 .pro-sidebar-inner
 {
@@ -614,6 +653,9 @@ label{
         p{
             color: #000;
         }
+        .jss3 .MuiInputBase-root {
+          border: 0;
+         }
       
         .card_box {
           text-align: center;

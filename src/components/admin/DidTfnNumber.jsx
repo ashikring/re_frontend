@@ -329,7 +329,7 @@ function DID_TFN_number({ colorThem }) {
         user_id: userId,
         recording: recording,
         carrier_name: carrierName,
-        reseller_id: resellerId === "" ? null : resellerId,
+        reseller_id: resellerId,
         didnumber: tfnNumber,
         redirect_group_id: redirectGroup,
         ivr_authendication: ivrAuthentication
@@ -592,14 +592,14 @@ function DID_TFN_number({ colorThem }) {
         )
       }
     },
-    {
-      field: "total_call_duration",
-      headerName: "Total Call Duration",
-      headerClassName: "custom-header",
-      width: 150,
-      headerAlign: "center",
-      align: "center",
-    },
+    // {
+    //   field: "total_call_duration",
+    //   headerName: "Total Call Duration",
+    //   headerClassName: "custom-header",
+    //   width: 150,
+    //   headerAlign: "center",
+    //   align: "center",
+    // },
 
     {
       field: "ivr_authendication",

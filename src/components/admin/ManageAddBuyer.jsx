@@ -68,6 +68,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { makeStyles } from "@mui/styles";
 import "../admin/adminstyle.css";
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import PauseIcon from '@mui/icons-material/Pause';
 import dayjs from "dayjs";
 
 // import React from 'react'
@@ -253,11 +255,18 @@ function ManageAddBuyer({ colorThem }) {
   const [alertMessage, setAlertMessage] = useState(false);
   const [id, setId] = useState("");
   const [name, setName] = useState("");
+  // State to manage the switch value
+  const [isSwitchChecked, setIsSwitchChecked] = useState(false);
+
+  // Handler function for switch toggle
+  const handleSwitchChange = (event) => {
+    setIsSwitchChecked(event.target.checked);
+  };
   const handleAddBuyerOpen = () => setOpen(true);
 
   const handleAlertClose = () => {
     setAlertMessage(false);
-  }
+  };
   const handleAddBuyerClose = () => {
     setOpen(false);
     setWeightage("");
@@ -283,20 +292,23 @@ function ManageAddBuyer({ colorThem }) {
     setFollowWorkTime(false);
   };
 
-  const handleEdit = useCallback((data) => {
-    handleEditrOpen();
-    setForwardNumber(data?.forward_number);
-    setBuyerName(data?.buyer_name);
-    setCc(data?.cc);
-    setWeightage(data?.weightage);
-    setDailyLimit(data?.daily_limit);
-    setStatus(data?.status);
-    setBuyerId(data?.buyer_id);
-    setRedirectId(data?.redirect_group_id);
-    setFromDate(data?.working_start_time);
-    setToDate(data?.working_end_time);
-    setFollowWorkTime(data?.follow_working_time === false ? "f" : "t");
-  },[setFromDate, setToDate]);
+  const handleEdit = useCallback(
+    (data) => {
+      handleEditrOpen();
+      setForwardNumber(data?.forward_number);
+      setBuyerName(data?.buyer_name);
+      setCc(data?.cc);
+      setWeightage(data?.weightage);
+      setDailyLimit(data?.daily_limit);
+      setStatus(data?.status);
+      setBuyerId(data?.buyer_id);
+      setRedirectId(data?.redirect_group_id);
+      setFromDate(data?.working_start_time);
+      setToDate(data?.working_end_time);
+      setFollowWorkTime(data?.follow_working_time === false ? "f" : "t");
+    },
+    [setFromDate, setToDate]
+  );
 
   const handleFromDateChange = (date) => {
     if (dayjs(date, "HH:mm", true).isValid()) {
@@ -359,19 +371,19 @@ function ManageAddBuyer({ colorThem }) {
     dispatch(createAdminAddBuyer(data, handleAddBuyerClose, setResponse));
   };
 
-  const handleMessage = useCallback((data) => {
-    setName(data?.buyer_name)
-    setId(data?.buyer_id)
-    setAlertMessage(true);
-  }, [setName]); // Memoize event handler
-
-  const handleDelete = useCallback(
-    () => {
-      dispatch(deleteAdminAddBuyer(JSON.stringify({ id: id }), setResponse));
-       setAlertMessage(false);
+  const handleMessage = useCallback(
+    (data) => {
+      setName(data?.buyer_name);
+      setId(data?.buyer_id);
+      setAlertMessage(true);
     },
-    [dispatch, setResponse, id])
+    [setName]
+  ); // Memoize event handler
 
+  const handleDelete = useCallback(() => {
+    dispatch(deleteAdminAddBuyer(JSON.stringify({ id: id }), setResponse));
+    setAlertMessage(false);
+  }, [dispatch, setResponse, id]);
 
   const handleUpdate = (e) => {
     e.preventDefault();
@@ -391,6 +403,32 @@ function ManageAddBuyer({ colorThem }) {
     dispatch(updateAdminAddBuyer(data, handleEditClose, setResponse));
   };
 
+  const handleTrigger = (val) => {
+    let data = JSON.stringify({
+      id: val.buyer_id,
+      status: val.status === true ? false : true,
+      redirect_group_id: val?.redirect_group_id,
+      buyer_name: val.buyer_name,
+      cc: val.cc,
+      daily_limit: val.daily_limit,
+      forward_number: val.forward_number,
+      weightage: val.weightage,
+      working_start_time: val.working_start_time,
+      working_end_time: val.working_end_time,
+      follow_working_time: val.follow_working_time === false ? "f" : "t",
+    });
+    if (
+      window.confirm(
+        `Are you sure! Do you want to ${
+          val.status === true ? "Deactive" : "Active"
+        }`
+      )
+    ) {
+      setResponse(data);
+      dispatch(updateAdminAddBuyer(data, setResponse));
+    }
+  };
+
   useEffect(() => {
     dispatch(getAdminAddBuyer(location.state.data.campaign_id));
   }, [response, deleteRow, location.state.data.campaign_id]);
@@ -408,18 +446,31 @@ function ManageAddBuyer({ colorThem }) {
       renderCell: (params) => {
         return (
           <div className="d-flex justify-content-between align-items-center">
-           <Tooltip title="edit" disableInteractive interactive>
-            <IconButton onClick={() => handleEdit(params.row)}>
-              <Edit
-                index={params.row.id}
-                style={{ cursor: "pointer", color: "#42765f" }}
-              />
-            </IconButton>
+            <Tooltip title="Edit" disableInteractive interactive>
+              <IconButton onClick={() => handleEdit(params.row)}>
+                <Edit
+                  index={params.row.id}
+                  style={{ cursor: "pointer", color: "#42765f" }}
+                />
+              </IconButton>
             </Tooltip>
-            <Tooltip title="delete" disableInteractive interactive>
-            <IconButton onClick={() => handleMessage(params.row)}>
-              <Delete style={{ cursor: "pointer", color: "red" }} />
-            </IconButton>
+            {params.row.status === true ? (
+            <Tooltip title="Deactive" disableInteractive interactive>
+              <IconButton onClick={() => handleTrigger(params.row)}>
+                <PauseIcon style={{ cursor: "pointer", color: "#254336" }} />
+              </IconButton>
+            </Tooltip>
+             ) : (
+              <Tooltip title="Active" disableInteractive interactive>
+              <IconButton onClick={() => handleTrigger(params.row)}>
+                <PlayArrowIcon style={{ cursor: "pointer", color: "#ff7d00" }} />
+              </IconButton>
+            </Tooltip>
+             )}
+            <Tooltip title="Delete" disableInteractive interactive>
+              <IconButton onClick={() => handleMessage(params.row)}>
+                <Delete style={{ cursor: "pointer", color: "red" }} />
+              </IconButton>
             </Tooltip>
           </div>
         );
@@ -466,10 +517,10 @@ function ManageAddBuyer({ colorThem }) {
       headerAlign: "center",
       align: "center",
       renderCell: (params) => (
-        <span style={{ textTransform: 'capitalize' }}>
+        <span style={{ textTransform: "capitalize" }}>
           {params.row.user_name}
         </span>
-      )
+      ),
     },
     {
       field: "status",
@@ -483,31 +534,42 @@ function ManageAddBuyer({ colorThem }) {
           <>
             {params.row.status === true ? (
               <>
-                <div
-                  className="d-flex justify-content-between align-items-center"
-                  style={{
-                    color: "green",
-                    //border: "1px solid green",
-                    padding: "5px 4.5px",
-                    borderRadius: "5px",
-                  }}
-                >
-                  Active
-                </div>
+                <Tooltip title="Active" disableInteractive interactive>
+                  <div
+                    className="d-flex justify-content-between align-items-center"
+                    style={{
+                      color: "#254336",
+                      padding: "5px 12.5px",
+                      // borderRadius: "5px",
+                      // background: "#254336",
+                      // width: "65px",
+                      // cursor: "pointer",
+                      //transition: "background 0.3s, transform 0.2s",
+                    }}
+                    
+                  >
+                    Active
+                  </div>
+                </Tooltip>
               </>
             ) : (
               <>
-                <div
-                  className="d-flex justify-content-between align-items-center"
-                  style={{
-                    color: "red",
-                   // border: "1px solid red",
-                    padding: "5px 4.5px",
-                    borderRadius: "5px",
-                  }}
-                >
-                  Deactive
-                </div>
+                <Tooltip title="Deactivated" disableInteractive interactive>
+                  <div
+                    className="d-flex justify-content-between align-items-center"
+                    style={{
+                      color: "#ff7d00",
+                      // border: "1px solid red",
+                      padding: "5px 4.5px",
+                      // borderRadius: "5px",
+                      // width: "65px",
+                      // background: "rgb(255 0 0)",
+                      // cursor: "pointer",
+                    }}
+                  >
+                    Deactivated
+                  </div>
+                </Tooltip>
               </>
             )}
           </>
@@ -538,7 +600,7 @@ function ManageAddBuyer({ colorThem }) {
       width: 100,
       align: "center",
     },
-    
+
     {
       field: "daily_limit",
       headerName: "Daily Limit",
@@ -626,28 +688,30 @@ function ManageAddBuyer({ colorThem }) {
     const calculatedRows = [];
     state?.getAdminAddBuyer?.AddBuyer &&
       state?.getAdminAddBuyer?.AddBuyer.forEach((item, index) => {
-        calculatedRows.push({
-          id: index + 1,
-          buyer_name: item?.buyer_name,
-          cc: item?.cc,
-          current_cc: item?.current_cc,
-          current_daily_limit: item?.current_daily_limit,
-          daily_limit: item?.daily_limit,
-          forward_number: item.forward_number,
-          group_name: item.group_name,
-          buyer_id: item.id,
-          redirect_group_id: item.redirect_group_id,
-          status: item.status,
-          user_name: item.username,
-          weightage: item.weightage,
-          createdAt: item.createdAt,
-          follow_working_time: item.follow_working_time,
-          working_end_time: item.working_end_time,
-          working_start_time: item.working_start_time,
-        });
+        if (isSwitchChecked ? item.status === true : true) {
+          calculatedRows.push({
+            id: index + 1,
+            buyer_name: item?.buyer_name,
+            cc: item?.cc,
+            current_cc: item?.current_cc,
+            current_daily_limit: item?.current_daily_limit,
+            daily_limit: item?.daily_limit,
+            forward_number: item.forward_number,
+            group_name: item.group_name,
+            buyer_id: item.id,
+            redirect_group_id: item.redirect_group_id,
+            status: item.status,
+            user_name: item.username,
+            weightage: item.weightage,
+            createdAt: item.createdAt,
+            follow_working_time: item.follow_working_time,
+            working_end_time: item.working_end_time,
+            working_start_time: item.working_start_time,
+          });
+        }
       });
     return calculatedRows;
-  }, [state?.getAdminAddBuyer?.AddBuyer]);
+  }, [state?.getAdminAddBuyer?.AddBuyer, isSwitchChecked]);
 
   const handleBackClick = () => {
     // clear table data
@@ -718,7 +782,13 @@ function ManageAddBuyer({ colorThem }) {
                                   All
                                 </Typography>
                                 <FormControlLabel
-                                  control={<IOSSwitch defaultChecked />}
+                                  control={
+                                    <IOSSwitch
+                                      defaultChecked
+                                      checked={isSwitchChecked}
+                                      onChange={handleSwitchChange}
+                                    />
+                                  }
                                 />
                                 <Typography style={{ fontSize: "15px" }}>
                                   Active
@@ -727,12 +797,15 @@ function ManageAddBuyer({ colorThem }) {
                             </FormGroup>
                           </div>
 
-                           {/* mobile_view */}
-                           <p style={{ fontSize: "17px", color: "#000" }} className="d-xxl-none d-xl-none d-lg-none d-md-none d-sm-block d-block">
-                              <b className="fnt_bld"> Campaign Name:</b>{" "}
-                              {location.state.data.group_name}
-                            </p>
-                           {/* mobile_view_end */}
+                          {/* mobile_view */}
+                          <p
+                            style={{ fontSize: "17px", color: "#000" }}
+                            className="d-xxl-none d-xl-none d-lg-none d-md-none d-sm-block d-block"
+                          >
+                            <b className="fnt_bld"> Campaign Name:</b>{" "}
+                            {location.state.data.group_name}
+                          </p>
+                          {/* mobile_view_end */}
 
                           <div
                             style={{
@@ -743,7 +816,10 @@ function ManageAddBuyer({ colorThem }) {
                             }}
                             className="mobile_justify_end"
                           >
-                            <p style={{ fontSize: "17px", color: "#000" }} className="d-xxl-block d-xl-block d-lg-block d-md-block d-sm-none d-none">
+                            <p
+                              style={{ fontSize: "17px", color: "#000" }}
+                              className="d-xxl-block d-xl-block d-lg-block d-md-block d-sm-none d-none"
+                            >
                               <b className="fnt_bld"> Campaign Name:</b>{" "}
                               {location.state.data.group_name}
                             </p>
@@ -790,533 +866,551 @@ function ManageAddBuyer({ colorThem }) {
                             </div>
                           </div>
                           {/* </div> */}
-                    
-                           {/* -----   Add Campaigns Modal Start   ----- */}
 
-                        <Dialog
-                          open={open}
-                       //   onClose={handleClose}
-                          sx={{ textAlign: "center" }}
-                        >
-                          <Box>
-                          <IconButton
-                                  onClick={handleAddBuyerClose}
-                                  sx={{ float: "inline-end" }}
-                                >
-                                  <Close />
-                                </IconButton>
-                          </Box>
-                          <DialogTitle
-                            className="modal_heading"
-                            sx={{
-                              color: "#133325",
-                              fontWeight: "600",
-                              width: "500px",
-                            }}
+                          {/* -----   Add Campaigns Modal Start   ----- */}
+
+                          <Dialog
+                            open={open}
+                            //   onClose={handleClose}
+                            sx={{ textAlign: "center" }}
                           >
-                            Add Buyer
-                          </DialogTitle>
-                          <DialogContent>
-                          <form
+                            <Box>
+                              <IconButton
+                                onClick={handleAddBuyerClose}
+                                sx={{ float: "inline-end" }}
+                              >
+                                <Close />
+                              </IconButton>
+                            </Box>
+                            <DialogTitle
+                              className="modal_heading"
+                              sx={{
+                                color: "#133325",
+                                fontWeight: "600",
+                                width: "500px",
+                              }}
+                            >
+                              Add Buyer
+                            </DialogTitle>
+                            <DialogContent>
+                              <form
+                                style={{
+                                  textAlign: "center",
+                                  height: "348px",
+                                  // overflow: "auto",
+                                  paddingTop: "10px",
+                                  padding: "5px",
+                                  overflowX: "clip",
+                                }}
+                              >
+                                <TextField
                                   style={{
-                                    textAlign: "center",
-                                    height: "348px",
-                                    // overflow: "auto",
-                                    paddingTop: "10px",
-                                    padding: "5px",
-                                    overflowX: "clip",
+                                    width: "100%",
+                                    margin: " 5px 0 5px 0",
                                   }}
+                                  type="text"
+                                  label="Buyer Name"
+                                  variant="outlined"
+                                  name="buyerName"
+                                  value={buyerName}
+                                  onChange={(e) => {
+                                    setBuyerName(e.target.value);
+                                  }}
+                                />
+                                <br />
+                                <TextField
+                                  style={{
+                                    width: "100%",
+                                    margin: " 5px 0 5px 0",
+                                  }}
+                                  type="number"
+                                  label="Forword Number"
+                                  variant="outlined"
+                                  name="forwardNumber"
+                                  value={forwardNumber}
+                                  onChange={(e) => {
+                                    setForwardNumber(e.target.value);
+                                  }}
+                                />
+                                <TextField
+                                  style={{
+                                    width: "100%",
+                                    margin: " 5px 0 5px 0",
+                                  }}
+                                  type="text"
+                                  label="CC (Concurrent Call)"
+                                  variant="outlined"
+                                  name="cc"
+                                  value={cc}
+                                  onChange={(e) => {
+                                    setCc(e.target.value);
+                                  }}
+                                />
+
+                                <br />
+                                <TextField
+                                  style={{
+                                    width: "100%",
+                                    margin: " 5px 0 5px 0",
+                                  }}
+                                  type="text"
+                                  label="Weightage"
+                                  variant="outlined"
+                                  name="weightage"
+                                  value={weightage}
+                                  onChange={(e) => {
+                                    setWeightage(e.target.value);
+                                  }}
+                                />
+                                <br />
+                                <TextField
+                                  style={{
+                                    width: "100%",
+                                    margin: " 5px 0 5px 0",
+                                  }}
+                                  type="text"
+                                  label="Daily Limit"
+                                  variant="outlined"
+                                  value={dailyLimit}
+                                  onChange={(e) => {
+                                    setDailyLimit(e.target.value);
+                                  }}
+                                />
+                                <FormControl
+                                  fullWidth
+                                  style={{ margin: " 5px 0 5px 0" }}
                                 >
-                                  <TextField
-                                    style={{
-                                      width: "100%",
-                                      margin: " 5px 0 5px 0",
-                                    }}
-                                    type="text"
-                                    label="Buyer Name"
-                                    variant="outlined"
-                                    name="buyerName"
-                                    value={buyerName}
-                                    onChange={(e) => {
-                                      setBuyerName(e.target.value);
-                                    }}
-                                  />
-                                  <br />
-                                  <TextField
-                                    style={{
-                                      width: "100%",
-                                      margin: " 5px 0 5px 0",
-                                    }}
-                                    type="number"
-                                    label="Forword Number"
-                                    variant="outlined"
-                                    name="forwardNumber"
-                                    value={forwardNumber}
-                                    onChange={(e) => {
-                                      setForwardNumber(e.target.value);
-                                    }}
-                                  />
-                                  <TextField
-                                    style={{
-                                      width: "100%",
-                                      margin: " 5px 0 5px 0",
-                                    }}
-                                    type="text"
-                                    label="CC (Concurrent Call)"
-                                    variant="outlined"
-                                    name="cc"
-                                    value={cc}
-                                    onChange={(e) => {
-                                      setCc(e.target.value);
-                                    }}
-                                  />
-
-                                  <br />
-                                  <TextField
-                                    style={{
-                                      width: "100%",
-                                      margin: " 5px 0 5px 0",
-                                    }}
-                                    type="text"
-                                    label="Weightage"
-                                    variant="outlined"
-                                    name="weightage"
-                                    value={weightage}
-                                    onChange={(e) => {
-                                      setWeightage(e.target.value);
-                                    }}
-                                  />
-                                  <br />
-                                  <TextField
-                                    style={{
-                                      width: "100%",
-                                      margin: " 5px 0 5px 0",
-                                    }}
-                                    type="text"
-                                    label="Daily Limit"
-                                    variant="outlined"
-                                    value={dailyLimit}
-                                    onChange={(e) => {
-                                      setDailyLimit(e.target.value);
-                                    }}
-                                  />
-                                   <FormControl
-                                    fullWidth
-                                    style={{ margin: " 5px 0 5px 0" }}
+                                  <InputLabel id="demo-simple-select-label">
+                                    Follow Work Time
+                                  </InputLabel>
+                                  <Select
+                                    style={{ textAlign: "left" }}
+                                    labelId="demo-simple-select-label"
+                                    id="demo-simple-select"
+                                    label="Follow Work Time"
+                                    value={followWorkTime}
+                                    onChange={(e) =>
+                                      setFollowWorkTime(e.target.value)
+                                    }
                                   >
-                                    <InputLabel id="demo-simple-select-label">
-                                      Follow Work Time
-                                    </InputLabel>
-                                    <Select
-                                      style={{ textAlign: "left" }}
-                                      labelId="demo-simple-select-label"
-                                      id="demo-simple-select"
-                                      label="Follow Work Time"
-                                      value={followWorkTime}
-                                      onChange={(e) =>
-                                        setFollowWorkTime(e.target.value)
+                                    <MenuItem value={true}>True</MenuItem>
+                                    <MenuItem value={false}>False</MenuItem>
+                                  </Select>
+                                </FormControl>
+                                <LocalizationProvider
+                                  dateAdapter={AdapterDayjs}
+                                  className={classes.formControl}
+                                >
+                                  <DemoContainer
+                                    components={["TimePicker"]}
+                                    sx={{ width: "100%" }}
+                                  >
+                                    <MobileTimePicker
+                                      className="frm_date"
+                                      label="Working Start Time"
+                                      value={
+                                        fromDate
+                                          ? dayjs(fromDate, "HH:mm")
+                                          : null
                                       }
-                                    >
-                                      <MenuItem value={true}>True</MenuItem>
-                                      <MenuItem value={false}>False</MenuItem>
-                                    </Select>
-                                  </FormControl>
-                                  <LocalizationProvider
-                                    dateAdapter={AdapterDayjs}
-                                    className={classes.formControl}
-                                  >
-                                    <DemoContainer
-                                      components={["TimePicker"]}
-                                      sx={{ width: "100%" }}
-                                    >
-                                      <MobileTimePicker
-                                        className="frm_date"
-                                        label="Working Start Time"
-                                        value={
-                                          fromDate
-                                            ? dayjs(fromDate, "HH:mm")
-                                            : null
-                                        }
-                                        onChange={handleFromDateChange}
-                                        renderInput={(props) => (
-                                          <TextField
-                                            {...props}
-                                            style={{ width: "100%" }}
-                                            InputProps={{
-                                              startAdornment: (
-                                                <InputAdornment position="start">
-                                                  <AccessTimeIcon />
-                                                </InputAdornment>
-                                              ),
-                                            }}
-                                          />
-                                        )}
-                                      />
-                                    </DemoContainer>
-                                  </LocalizationProvider>
+                                      onChange={handleFromDateChange}
+                                      renderInput={(props) => (
+                                        <TextField
+                                          {...props}
+                                          style={{ width: "100%" }}
+                                          InputProps={{
+                                            startAdornment: (
+                                              <InputAdornment position="start">
+                                                <AccessTimeIcon />
+                                              </InputAdornment>
+                                            ),
+                                          }}
+                                        />
+                                      )}
+                                    />
+                                  </DemoContainer>
+                                </LocalizationProvider>
 
-                                  <LocalizationProvider
-                                    dateAdapter={AdapterDayjs}
-                                    className={classes.formControl}
+                                <LocalizationProvider
+                                  dateAdapter={AdapterDayjs}
+                                  className={classes.formControl}
+                                >
+                                  <DemoContainer
+                                    components={["TimePicker"]}
+                                    sx={{ width: "100%" }}
                                   >
-                                    <DemoContainer
-                                      components={["TimePicker"]}
-                                      sx={{ width: "100%" }}
-                                    >
-                                      <MobileTimePicker
-                                        className="frm_date"
-                                        label="Working End Time"
-                                        value={
-                                          toDate ? dayjs(toDate, "HH:mm") : null
-                                        } // Convert selectedDate to a dayjs object
-                                        onChange={handleToDateChange}
-                                        renderInput={(props) => (
-                                          <TextField
-                                            {...props}
-                                            style={{ width: "100%" }}
-                                          /> // Ensures TextField takes full width
-                                        )}
-                                      />
-                                    </DemoContainer>
-                                  </LocalizationProvider>
-                                </form>
-                          </DialogContent>
-                          <DialogActions
-                            sx={{
-                              display: "flex",
-                              justifyContent: "center",
-                              paddingBottom: "20px",
-                            }}
+                                    <MobileTimePicker
+                                      className="frm_date"
+                                      label="Working End Time"
+                                      value={
+                                        toDate ? dayjs(toDate, "HH:mm") : null
+                                      } // Convert selectedDate to a dayjs object
+                                      onChange={handleToDateChange}
+                                      renderInput={(props) => (
+                                        <TextField
+                                          {...props}
+                                          style={{ width: "100%" }}
+                                        /> // Ensures TextField takes full width
+                                      )}
+                                    />
+                                  </DemoContainer>
+                                </LocalizationProvider>
+                              </form>
+                            </DialogContent>
+                            <DialogActions
+                              sx={{
+                                display: "flex",
+                                justifyContent: "center",
+                                paddingBottom: "20px",
+                              }}
+                            >
+                              <Button
+                                variant="contained"
+                                className="all_button_clr"
+                                color="primary"
+                                sx={{
+                                  fontSize: "16px !impotant",
+                                  background: "#092b5f",
+
+                                  marginLeft: "10px !important",
+                                  padding: "10px 20px !important",
+                                  textTransform: "capitalize !important",
+                                }}
+                                onClick={handleSubmit}
+                              >
+                                Save
+                              </Button>
+                            </DialogActions>
+                          </Dialog>
+
+                          {/* -----   Add Campaigns Modal End   ----- */}
+
+                          {/* Delete Confirmation Modal Start  */}
+                          <Dialog
+                            open={alertMessage}
+                            onClose={handleAlertClose}
+                            aria-labelledby="alert-dialog-title"
+                            aria-describedby="alert-dialog-description"
+                            sx={{ textAlign: "center" }}
+                            //className="bg_imagess"
                           >
-                           <Button
-                                    variant="contained"
-                                    className="all_button_clr"
-                                    color="primary"
-                                    sx={{
-                                      fontSize: "16px !impotant",
-                                      background: "#092b5f",
-
-                                      marginLeft: "10px !important",
-                                      padding: "10px 20px !important",
-                                      textTransform: "capitalize !important",
-                                    }}
-                                    onClick={handleSubmit}
-                                  >
-                                    Save
-                                  </Button>
-                          </DialogActions>
-                        </Dialog>
-
-                        {/* -----   Add Campaigns Modal End   ----- */}
-                           
-
-
-                           {/* Delete Confirmation Modal Start  */}
-                      <Dialog
-              open={alertMessage}
-              onClose={handleAlertClose}
-              aria-labelledby="alert-dialog-title"
-              aria-describedby="alert-dialog-description"
-              sx={{ textAlign: "center" }}
-              //className="bg_imagess"
-            >
-              <DialogTitle
-                className="modal_heading"
-                id="alert-dialog-title"
-                sx={{ color: "#133325", fontWeight: "600" }}
-              >
-                {"Delete Confirmation"}
-              </DialogTitle>
-              <DialogContent>
-                <DialogContentText
-                  id="alert-dialog-description"
-                  sx={{ paddingBottom: "0px !important" }}
-                >
-                  Are you sure you want to delete {name} ?
-                </DialogContentText>
-              </DialogContent>
-              <DialogActions
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  paddingBottom: "20px",
-                }}
-              >
-                <Button
-                  variant="contained"
-                  sx={{
-                    fontSize: "16px !impotant",
-                    background:
-                      "linear-gradient(180deg, #0E397F 0%, #001E50 100%) !important",
-                    marginTop: "20px",
-                    marginLeft: "0px !important",
-                    padding: "10px 20px !important",
-                    textTransform: "capitalize !important",
-                  }}
-                  className="all_button_clr"
-                  color="info"
-                  onClick={handleAlertClose}
-                  autoFocus
-                >
-                  Cancel
-                </Button>
-                <Button
-                  variant="contained"
-                  sx={{
-                    fontSize: "16px !impotant",
-                    marginTop: "20px",
-                    padding: "10px 20px !important",
-                    textTransform: "capitalize !important",
-                    marginLeft: "0px !important",
-                    marginRight: "0px !important",
-                  }}
-                  className="all_button_clr"
-                  color="error"
-                  onClick={handleDelete}
-                  startIcon={<DeleteIcon />}
-                >
-                  Delete
-                </Button>
-              </DialogActions>
-            </Dialog>
-            {/* Delete Confirmation Modal End  */}
+                            <DialogTitle
+                              className="modal_heading"
+                              id="alert-dialog-title"
+                              sx={{ color: "#133325", fontWeight: "600" }}
+                            >
+                              {"Delete Confirmation"}
+                            </DialogTitle>
+                            <DialogContent>
+                              <DialogContentText
+                                id="alert-dialog-description"
+                                sx={{ paddingBottom: "0px !important" }}
+                              >
+                                Are you sure you want to delete {name} ?
+                              </DialogContentText>
+                            </DialogContent>
+                            <DialogActions
+                              sx={{
+                                display: "flex",
+                                justifyContent: "center",
+                                paddingBottom: "20px",
+                              }}
+                            >
+                              <Button
+                                variant="contained"
+                                sx={{
+                                  fontSize: "16px !impotant",
+                                  background:
+                                    "linear-gradient(180deg, #0E397F 0%, #001E50 100%) !important",
+                                  marginTop: "20px",
+                                  marginLeft: "0px !important",
+                                  padding: "10px 20px !important",
+                                  textTransform: "capitalize !important",
+                                }}
+                                className="all_button_clr"
+                                color="info"
+                                onClick={handleAlertClose}
+                                autoFocus
+                              >
+                                Cancel
+                              </Button>
+                              <Button
+                                variant="contained"
+                                sx={{
+                                  fontSize: "16px !impotant",
+                                  marginTop: "20px",
+                                  padding: "10px 20px !important",
+                                  textTransform: "capitalize !important",
+                                  marginLeft: "0px !important",
+                                  marginRight: "0px !important",
+                                }}
+                                className="all_button_clr"
+                                color="error"
+                                onClick={handleDelete}
+                                startIcon={<DeleteIcon />}
+                              >
+                                Delete
+                              </Button>
+                            </DialogActions>
+                          </Dialog>
+                          {/* Delete Confirmation Modal End  */}
 
                           {/* -----   Edit Modal Start   ----- */}
-                                 
+
                           <Dialog
-                          open={edit}
-                       //   onClose={handleClose}
-                          sx={{ textAlign: "center" }}
-                        >
-                          <Box>
-                          <IconButton
-                                  onClick={handleEditClose}
-                                  sx={{ float: "inline-end" }}
-                                >
-                                  <Close />
-                                </IconButton>
-                          </Box>
-                          <DialogTitle
-                            className="modal_heading"
-                            sx={{
-                              color: "#133325",
-                              fontWeight: "600",
-                              width: "500px",
-                            }}
+                            open={edit}
+                            //   onClose={handleClose}
+                            sx={{ textAlign: "center" }}
                           >
-                            Add Buyer
-                          </DialogTitle>
-                          <DialogContent>
-                          <form
+                            <Box>
+                              <IconButton
+                                onClick={handleEditClose}
+                                sx={{ float: "inline-end" }}
+                              >
+                                <Close />
+                              </IconButton>
+                            </Box>
+                            <DialogTitle
+                              className="modal_heading"
+                              sx={{
+                                color: "#133325",
+                                fontWeight: "600",
+                                width: "500px",
+                              }}
+                            >
+                              Add Buyer
+                            </DialogTitle>
+                            <DialogContent>
+                              <form
+                                style={{
+                                  textAlign: "center",
+                                  height: "348px",
+                                  // overflow: "auto",
+                                  paddingTop: "10px",
+                                  padding: "5px",
+                                  overflowX: "clip",
+                                }}
+                              >
+                                <TextField
                                   style={{
-                                    textAlign: "center",
-                                    height: "348px",
-                                    // overflow: "auto",
-                                    paddingTop: "10px",
-                                    padding: "5px",
-                                    overflowX: "clip",
+                                    width: "100%",
+                                    margin: " 5px 0 5px 0",
                                   }}
+                                  type="text"
+                                  label="Buyer Name"
+                                  variant="outlined"
+                                  name="buyerName"
+                                  value={buyerName}
+                                  onChange={handleChange}
+                                />
+                                <br />
+                                <TextField
+                                  style={{
+                                    width: "100%",
+                                    margin: " 5px 0 5px 0",
+                                  }}
+                                  type="text"
+                                  label="Forword Number"
+                                  variant="outlined"
+                                  name="forwardNumber"
+                                  value={forwardNumber}
+                                  onChange={handleChange}
+                                />
+                                <TextField
+                                  style={{
+                                    width: "100%",
+                                    margin: " 5px 0 5px 0",
+                                  }}
+                                  type="text"
+                                  label="CC (Concurrent Call)"
+                                  variant="outlined"
+                                  name="cc"
+                                  value={cc}
+                                  onChange={handleChange}
+                                />
+
+                                <br />
+                                <TextField
+                                  style={{
+                                    width: "100%",
+                                    margin: " 5px 0 5px 0",
+                                  }}
+                                  type="text"
+                                  label="Weightage"
+                                  variant="outlined"
+                                  name="weightage"
+                                  value={weightage}
+                                  onChange={handleChange}
+                                />
+                                <br />
+                                <TextField
+                                  style={{
+                                    width: "100%",
+                                    margin: " 5px 0 5px 0",
+                                  }}
+                                  type="text"
+                                  label="Daily Limit"
+                                  variant="outlined"
+                                  name="dailyLimit"
+                                  value={dailyLimit}
+                                  onChange={handleChange}
+                                />
+
+                                <FormControl
+                                  fullWidth
+                                  style={{ margin: " 5px 0 5px 0" }}
                                 >
-                                  <TextField
-                                    style={{
-                                      width: "100%",
-                                      margin: " 5px 0 5px 0",
-                                    }}
-                                    type="text"
-                                    label="Buyer Name"
-                                    variant="outlined"
-                                    name="buyerName"
-                                    value={buyerName}
-                                    onChange={handleChange}
-                                  />
-                                  <br />
-                                  <TextField
-                                    style={{
-                                      width: "100%",
-                                      margin: " 5px 0 5px 0",
-                                    }}
-                                    type="text"
-                                    label="Forword Number"
-                                    variant="outlined"
-                                    name="forwardNumber"
-                                    value={forwardNumber}
-                                    onChange={handleChange}
-                                  />
-                                  <TextField
-                                    style={{
-                                      width: "100%",
-                                      margin: " 5px 0 5px 0",
-                                    }}
-                                    type="text"
-                                    label="CC (Concurrent Call)"
-                                    variant="outlined"
-                                    name="cc"
-                                    value={cc}
-                                    onChange={handleChange}
-                                  />
-
-                                  <br />
-                                  <TextField
-                                    style={{
-                                      width: "100%",
-                                      margin: " 5px 0 5px 0",
-                                    }}
-                                    type="text"
-                                    label="Weightage"
-                                    variant="outlined"
-                                    name="weightage"
-                                    value={weightage}
-                                    onChange={handleChange}
-                                  />
-                                  <br />
-                                  <TextField
-                                    style={{
-                                      width: "100%",
-                                      margin: " 5px 0 5px 0",
-                                    }}
-                                    type="text"
-                                    label="Daily Limit"
-                                    variant="outlined"
-                                    name="dailyLimit"
-                                    value={dailyLimit}
-                                    onChange={handleChange}
-                                  />
-
-                                  <FormControl
-                                    fullWidth
-                                    style={{ margin: " 5px 0 5px 0" }}
+                                  <InputLabel id="demo-simple-select-label">
+                                    Status
+                                  </InputLabel>
+                                  <Select
+                                    style={{ textAlign: "left" }}
+                                    labelId="demo-simple-select-label"
+                                    id="demo-simple-select"
+                                    value={status}
+                                    label="Status"
+                                    onChange={(e) => setStatus(e.target.value)}
                                   >
-                                    <InputLabel id="demo-simple-select-label">
-                                      Status
-                                    </InputLabel>
-                                    <Select
-                                      style={{ textAlign: "left" }}
-                                      labelId="demo-simple-select-label"
-                                      id="demo-simple-select"
-                                      value={status}
-                                      label="Status"
-                                      onChange={(e) =>
-                                        setStatus(e.target.value)
+                                    <MenuItem value={true}>Active</MenuItem>
+                                    <MenuItem value={false}>Deactive</MenuItem>
+                                  </Select>
+                                </FormControl>
+
+                                <FormControl
+                                  fullWidth
+                                  style={{ margin: " 5px 0 5px 0" }}
+                                >
+                                  <InputLabel id="demo-simple-select-label">
+                                    Follow Work Time
+                                  </InputLabel>
+                                  <Select
+                                    style={{ textAlign: "left" }}
+                                    labelId="demo-simple-select-label"
+                                    id="demo-simple-select"
+                                    label="Follow Work Time"
+                                    value={followWorkTime}
+                                    onChange={(e) =>
+                                      setFollowWorkTime(e.target.value)
+                                    }
+                                  >
+                                    <MenuItem value={"t"}>True</MenuItem>
+                                    <MenuItem value={"f"}>False</MenuItem>
+                                  </Select>
+                                </FormControl>
+
+                                <LocalizationProvider
+                                  dateAdapter={AdapterDayjs}
+                                  className={classes.formControl}
+                                >
+                                  <DemoContainer
+                                    components={["TimePicker"]}
+                                    sx={{ width: "100%" }}
+                                  >
+                                    <MobileTimePicker
+                                      className="frm_date"
+                                      label="Working Start Time"
+                                      value={
+                                        fromDate
+                                          ? dayjs()
+                                              .hour(
+                                                parseInt(
+                                                  fromDate.split(":")[0],
+                                                  10
+                                                )
+                                              )
+                                              .minute(
+                                                parseInt(
+                                                  fromDate.split(":")[1],
+                                                  10
+                                                )
+                                              )
+                                              .second(0) // Set the time using the stored string (11:00:00)
+                                          : null
                                       }
-                                    >
-                                      <MenuItem value={true}>Active</MenuItem>
-                                      <MenuItem value={false}>
-                                        Deactive
-                                      </MenuItem>
-                                    </Select>
-                                  </FormControl>
+                                      onChange={(newValue) => {
+                                        // Save only the time in "HH:mm:ss" format when the user changes the time
+                                        handleFromDateChange(
+                                          newValue
+                                            ? dayjs(newValue).format("HH:mm:ss")
+                                            : null
+                                        );
+                                      }}
+                                      renderInput={(props) => (
+                                        <TextField
+                                          {...props}
+                                          style={{ width: "100%" }}
+                                        />
+                                      )}
+                                    />
+                                  </DemoContainer>
+                                </LocalizationProvider>
 
-                                  <FormControl
-                                    fullWidth
-                                    style={{ margin: " 5px 0 5px 0" }}
+                                <LocalizationProvider
+                                  dateAdapter={AdapterDayjs}
+                                  className={classes.formControl}
+                                >
+                                  <DemoContainer
+                                    components={["TimePicker"]}
+                                    sx={{ width: "100%" }}
                                   >
-                                    <InputLabel id="demo-simple-select-label">
-                                      Follow Work Time
-                                    </InputLabel>
-                                    <Select
-                                      style={{ textAlign: "left" }}
-                                      labelId="demo-simple-select-label"
-                                      id="demo-simple-select"
-                                      label="Follow Work Time"
-                                      value={followWorkTime}
-                                      onChange={(e) =>
-                                        setFollowWorkTime(e.target.value)
-                                      }
-                                    >
-                                      <MenuItem value={"t"}>True</MenuItem>
-                                      <MenuItem value={"f"}>False</MenuItem>
-                                    </Select>
-                                  </FormControl>
+                                    <MobileTimePicker
+                                      className="frm_date"
+                                      label="Working End Time"
+                                      value={
+                                        toDate
+                                          ? dayjs()
+                                              .hour(
+                                                parseInt(
+                                                  toDate.split(":")[0],
+                                                  10
+                                                )
+                                              )
+                                              .minute(
+                                                parseInt(
+                                                  toDate.split(":")[1],
+                                                  10
+                                                )
+                                              )
+                                              .second(0) // Set the time using the stored string (11:00:00)
+                                          : null
+                                      } // Convert selectedDate to a dayjs object
+                                      onChange={handleToDateChange}
+                                      renderInput={(props) => (
+                                        <TextField
+                                          {...props}
+                                          style={{ width: "100%" }}
+                                        /> // Ensures TextField takes full width
+                                      )}
+                                    />
+                                  </DemoContainer>
+                                </LocalizationProvider>
+                              </form>
+                            </DialogContent>
+                            <DialogActions
+                              sx={{
+                                display: "flex",
+                                justifyContent: "center",
+                                paddingBottom: "20px",
+                              }}
+                            >
+                              <Button
+                                variant="contained"
+                                className="all_button_clr"
+                                color="primary"
+                                sx={{
+                                  fontSize: "16px !impotant",
+                                  background: "#092b5f",
 
-                                  <LocalizationProvider
-  dateAdapter={AdapterDayjs}
-  className={classes.formControl}
->
-  <DemoContainer
-    components={["TimePicker"]}
-    sx={{ width: "100%" }}
-  >
-    <MobileTimePicker
-      className="frm_date"
-      label="Working Start Time"
-      value={
-        fromDate
-          ? dayjs().hour(parseInt(fromDate.split(":")[0], 10))
-                  .minute(parseInt(fromDate.split(":")[1], 10))
-                  .second(0) // Set the time using the stored string (11:00:00)
-          : null
-      }
-      onChange={(newValue) => {
-        // Save only the time in "HH:mm:ss" format when the user changes the time
-        handleFromDateChange(newValue ? dayjs(newValue).format("HH:mm:ss") : null);
-      }}
-      renderInput={(props) => (
-        <TextField
-          {...props}
-          style={{ width: "100%" }}
-        />
-      )}
-    />
-  </DemoContainer>
-</LocalizationProvider>
-
-
-
-                                  <LocalizationProvider
-                                    dateAdapter={AdapterDayjs}
-                                    className={classes.formControl}
-                                  >
-                                    <DemoContainer
-                                      components={["TimePicker"]}
-                                      sx={{ width: "100%" }}
-                                    >
-                                      <MobileTimePicker
-                                        className="frm_date"
-                                        label="Working End Time"
-                                        value={
-                                          toDate
-          ? dayjs().hour(parseInt(toDate.split(":")[0], 10))
-                  .minute(parseInt(toDate.split(":")[1], 10))
-                  .second(0) // Set the time using the stored string (11:00:00)
-          : null
-                                        } // Convert selectedDate to a dayjs object
-                                        onChange={handleToDateChange}
-                                        renderInput={(props) => (
-                                          <TextField
-                                            {...props}
-                                            style={{ width: "100%" }}
-                                          /> // Ensures TextField takes full width
-                                        )}
-                                      />
-                                    </DemoContainer>
-                                  </LocalizationProvider>
-                                </form>
-                          </DialogContent>
-                          <DialogActions
-                            sx={{
-                              display: "flex",
-                              justifyContent: "center",
-                              paddingBottom: "20px",
-                            }}
-                          >
-                           <Button
-                                    variant="contained"
-                                    className="all_button_clr"
-                                    color="primary"
-                                    sx={{
-                                      fontSize: "16px !impotant",
-                                      background: "#092b5f",
-
-                                      marginLeft: "10px !important",
-                                      padding: "10px 20px !important",
-                                      textTransform: "capitalize !important",
-                                    }}
-                                    onClick={handleUpdate}
-                                  >
-                                    Update
-                                  </Button>
-                          </DialogActions>
-                        </Dialog>
+                                  marginLeft: "10px !important",
+                                  padding: "10px 20px !important",
+                                  textTransform: "capitalize !important",
+                                }}
+                                onClick={handleUpdate}
+                              >
+                                Update
+                              </Button>
+                            </DialogActions>
+                          </Dialog>
 
                           {/* -----   Edit Modal End   ----- */}
                           {state?.getAdminAddBuyer?.AddBuyer === undefined ? (

@@ -80,9 +80,6 @@ function PrivateRoute() {
   const reseller = JSON.parse(localStorage.getItem("reseller"));
   const current_user = localStorage.getItem("current_user");
 
- 
-
-
   const yValues = [
     "Jan",
     "Feb",
@@ -106,7 +103,6 @@ function PrivateRoute() {
 
   const [colorThem, setColorTheme] = useState(color);
   const [userThem, setUserThem] = useState(usercolor); 
-  //alert(colorThem)
 
   //effect
   useEffect(() => {
@@ -127,15 +123,12 @@ function PrivateRoute() {
 
   }, []);
 
-  //set theme
   const handleClick = (theme) => {
-    //alert(theme)
     setColorTheme(theme);
     localStorage.setItem("theme-color", theme);
   };
   // -------------
   const handleClickUser = (usertheme) => {
-    //alert(theme)
     setUserThem(usertheme);
     localStorage.setItem("user-color", usertheme);
   };

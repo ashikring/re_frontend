@@ -263,6 +263,7 @@ function AdminPermission({ colorThem }) {
                     <Autocomplete
                       disablePortal
                       id="user-dropdown"
+
                       value={autoCompleteValue} // Make sure autoCompleteValue matches an option object
                       onChange={(event, newValue) => {
                         userGroupChange(newValue);
@@ -363,13 +364,17 @@ function AdminPermission({ colorThem }) {
                         </Box>
                       </Grid>
                       <Grid item lg={3} sm={12} xs={12}>
-                        <Box className="selectgroup_box">
+                        <Box className="selectgroup_box"
+                          
+                        >
                           <FormControlLabel
                             className="select_title"
                             control={<Checkbox defaultChecked />}
                             label="Delete"
                           />
-                          <FormGroup className="selectgroup_row">
+                          <FormGroup className="selectgroup_row"
+                          
+                           >
                             {deleteList.map((del) => {
                               return (
                                 <FormControlLabel key={del.id}

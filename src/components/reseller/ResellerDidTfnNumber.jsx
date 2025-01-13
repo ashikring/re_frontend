@@ -22,7 +22,15 @@ import {
   Radio,
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { DataGrid, GridToolbar, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarExport, GridToolbarFilterButton } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridToolbar,
+  GridToolbarColumnsButton,
+  GridToolbarContainer,
+  GridToolbarDensitySelector,
+  GridToolbarExport,
+  GridToolbarFilterButton,
+} from "@mui/x-data-grid";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import ImportExportIcon from "@mui/icons-material/ImportExport";
 import Backdrop from "@mui/material/Backdrop";
@@ -32,9 +40,17 @@ import { useSelector, useDispatch } from "react-redux";
 import { getExtension } from "../../redux/actions/extensionAction";
 import { makeStyles } from "@mui/styles";
 import { api } from "../../mockData";
-import FileDownloadIcon from '@mui/icons-material/FileDownload';
-import { getResellerRemainingMinutesList, getResellerUsersList } from "../../redux/actions/adminPortal_listAction";
-import { createDestinationReseller, getDidReseller, updateAssignmentReseller, updateDestinationReseller } from "../../redux/actions/resellerPortal/resellerPortal_destinationAction";
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
+import {
+  getResellerRemainingMinutesList,
+  getResellerUsersList,
+} from "../../redux/actions/adminPortal_listAction";
+import {
+  createDestinationReseller,
+  getDidReseller,
+  updateAssignmentReseller,
+  updateDestinationReseller,
+} from "../../redux/actions/resellerPortal/resellerPortal_destinationAction";
 import { getAllUsersReseller } from "../../redux/actions/resellerPortal/resellerPortal_usersAction";
 const drawerWidth = 240;
 const style = {
@@ -97,13 +113,13 @@ const sub_type = ["Extension", "Queue"];
 function CustomToolbar() {
   return (
     <GridToolbarContainer>
-      <GridToolbarColumnsButton/>
+      <GridToolbarColumnsButton />
       <GridToolbarDensitySelector />
-      <GridToolbarFilterButton/>
-      <GridToolbarExport/>
+      <GridToolbarFilterButton />
+      <GridToolbarExport />
     </GridToolbarContainer>
   );
-};
+}
 
 function ResellerDidTfnNumber({ colorThem }) {
   const token = JSON.parse(localStorage.getItem("reseller"));
@@ -139,11 +155,12 @@ function ResellerDidTfnNumber({ colorThem }) {
   const [radioValue, setRadioValue] = useState("");
   const [users, setUsers] = useState([]);
   const [validation, setValidation] = useState({
-    
-    tfnNumber:"",
+    tfnNumber: "",
     userId: "",
     serviceType: "",
-    recording:"",selectedValue:"",carrierName:""
+    recording: "",
+    selectedValue: "",
+    carrierName: "",
   });
 
   const state = useSelector((state) => state);
@@ -152,12 +169,9 @@ function ResellerDidTfnNumber({ colorThem }) {
   const handleOpen = () => setOpen(true);
   const classes = useStyles();
 
-
-
   const handleClick = () => {
     window.open("/file/upload_destination_number.csv", "_blank");
-  }
-
+  };
 
   const handleClose = () => {
     setOpen(false);
@@ -176,8 +190,15 @@ function ResellerDidTfnNumber({ colorThem }) {
     setSubType("");
     setUserId("");
     setCarrierName("");
-    setValidation({tfnNumber:"",userId:"",serviceType:"",recording:"",selectedValue:"",carrierName:""});
-    setResellerId("")
+    setValidation({
+      tfnNumber: "",
+      userId: "",
+      serviceType: "",
+      recording: "",
+      selectedValue: "",
+      carrierName: "",
+    });
+    setResellerId("");
   };
 
   const handleEditOpen = () => setEdit(true);
@@ -200,9 +221,15 @@ function ResellerDidTfnNumber({ colorThem }) {
     //setServiceType([]);
     setSuspendValue("");
     setCarrierName("");
-    setValidation({tfnNumber:"",userId:"",serviceType:"",recording:"",selectedValue:"",carrierName:""});
-    setResellerId("")
-    
+    setValidation({
+      tfnNumber: "",
+      userId: "",
+      serviceType: "",
+      recording: "",
+      selectedValue: "",
+      carrierName: "",
+    });
+    setResellerId("");
   };
 
   useEffect(() => {
@@ -246,7 +273,7 @@ function ResellerDidTfnNumber({ colorThem }) {
         });
     }
   }, [userId]);
-  
+
   const handleSelectChange = (event) => {
     setSelectedValue(event.target.value);
   };
@@ -264,7 +291,7 @@ function ResellerDidTfnNumber({ colorThem }) {
   const checkValidation = useCallback(() => {
     let errors = { ...validation };
     let isValid = true;
- 
+
     if (!tfnNumber) {
       errors.tfnNumber = "Field is required";
       isValid = false;
@@ -278,17 +305,17 @@ function ResellerDidTfnNumber({ colorThem }) {
     // } else {
     //   errors.userId = "";
     // }
-  //   if(service){
-  //     isValid = true;
-  //     errors.serviceType = "";
-  //   }else{
-  //   if (serviceType.length === 0 ) {
-  //     errors.serviceType = "Field is required";
-  //     isValid = false;
-  //   } else {
-  //     errors.serviceType = "";
-  //   }
-  // }
+    //   if(service){
+    //     isValid = true;
+    //     errors.serviceType = "";
+    //   }else{
+    //   if (serviceType.length === 0 ) {
+    //     errors.serviceType = "Field is required";
+    //     isValid = false;
+    //   } else {
+    //     errors.serviceType = "";
+    //   }
+    // }
 
     // if (!selectedValue) {
     //   errors.selectedValue = "Field is required";
@@ -310,29 +337,38 @@ function ResellerDidTfnNumber({ colorThem }) {
     } else {
       errors.carrierName = "";
     }
-    
+
     setValidation(errors);
     return isValid;
-  }, [validation, tfnNumber,userId, service, serviceType,recording,selectedValue,carrierName]);
+  }, [
+    validation,
+    tfnNumber,
+    userId,
+    service,
+    serviceType,
+    recording,
+    selectedValue,
+    carrierName,
+  ]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const isValid = checkValidation();
-      if (isValid) {
-    let data = JSON.stringify({
-      user_id: userId,
-      reseller_id: resellerId,
-      didnumber: tfnNumber,
-      details: destinationAction,
-      description: destinationDescription,
-      is_active: selectedValue,
-      service_type: serviceType[0].toUpperCase(),
-      sub_type: subType.toUpperCase(),
-      recording: recording.toString().charAt(0),
-      carrier_name: carrierName
-    });
-    dispatch(createDestinationReseller(data, setOpen, setResponse));
-  }
+    if (isValid) {
+      let data = JSON.stringify({
+        user_id: userId,
+        reseller_id: resellerId,
+        didnumber: tfnNumber,
+        details: destinationAction,
+        description: destinationDescription,
+        is_active: selectedValue,
+        service_type: serviceType[0].toUpperCase(),
+        sub_type: subType.toUpperCase(),
+        recording: recording.toString().charAt(0),
+        carrier_name: carrierName,
+      });
+      dispatch(createDestinationReseller(data, setOpen, setResponse));
+    }
   };
 
   const handleDelete = (value) => {
@@ -368,48 +404,45 @@ function ResellerDidTfnNumber({ colorThem }) {
       });
   };
 
-  
-  
-  const handleUpdateAssignment = useCallback((data) =>{
-   
+  const handleUpdateAssignment = useCallback((data) => {
     //  if(data.user_id !== null){
-    let form = JSON.stringify({  
+    let form = JSON.stringify({
       id: data.did_id,
       user_id: "None",
     });
-      dispatch(updateAssignmentReseller(form, setResponse));
-    
- // }
-  },[]) 
+    dispatch(updateAssignmentReseller(form, setResponse));
 
-  const handleEdit =
-    (data) => {
-      handleEditOpen();
-      setTfnNumber(data?.tfn_number);
-      setClientName(data?.user_uuid);
-      setMaxCall(data?.max_call);
-      setSelectedValue(data?.status === "Active" ? "t" : "f");
-      setExtension(data?.extension);
-      setDestinationAction(data?.details);
-      setRecord(data?.record);
-      setCarrierName(data?.carrier_name);
-      setDestinationDescription(data?.description);
-      setDidId(data?.did_id);
-      setRecording(data?.recording.toString());
-      setUserId(data.user_id);
-      setResellerId(data?.reseller_id)
-      setSubType(data?.sub_type.charAt(0) + data?.sub_type.slice(1).toLowerCase());
-      setService(
-        data?.service_type.charAt(0).toUpperCase() +
-          data?.service_type.slice(1).toLowerCase()
-      );
-      
-    };
+    // }
+  }, []);
 
-    const handleUpdate = (e) => {
-      e.preventDefault();
-      const isValid = checkValidation();
-      if (isValid) {
+  const handleEdit = (data) => {
+    handleEditOpen();
+    setTfnNumber(data?.tfn_number);
+    setClientName(data?.user_uuid);
+    setMaxCall(data?.max_call);
+    setSelectedValue(data?.status === "Active" ? "t" : "f");
+    setExtension(data?.extension);
+    setDestinationAction(data?.details);
+    setRecord(data?.record);
+    setCarrierName(data?.carrier_name);
+    setDestinationDescription(data?.description);
+    setDidId(data?.did_id);
+    setRecording(data?.recording.toString());
+    setUserId(data.user_id);
+    setResellerId(data?.reseller_id);
+    setSubType(
+      data?.sub_type.charAt(0) + data?.sub_type.slice(1).toLowerCase()
+    );
+    setService(
+      data?.service_type.charAt(0).toUpperCase() +
+        data?.service_type.slice(1).toLowerCase()
+    );
+  };
+
+  const handleUpdate = (e) => {
+    e.preventDefault();
+    const isValid = checkValidation();
+    if (isValid) {
       let data = JSON.stringify({
         description: destinationDescription,
         is_active: selectedValue?.charAt(0),
@@ -419,13 +452,28 @@ function ResellerDidTfnNumber({ colorThem }) {
         sub_type: subType?.toUpperCase(),
         recording: recording?.charAt(0),
         details: destinationAction,
-        is_suspended:suspendValue,
-        carrier_name: carrierName
+        is_suspended: suspendValue,
+        carrier_name: carrierName,
       });
-  
-      dispatch(updateDestinationReseller(data, setResponse, setEdit, setTfnNumber, setDestinationDescription, setSelectedValue, setUserId, setSubType, setRecording, setDestinationAction, setSuspendValue, setCarrierName));
+
+      dispatch(
+        updateDestinationReseller(
+          data,
+          setResponse,
+          setEdit,
+          setTfnNumber,
+          setDestinationDescription,
+          setSelectedValue,
+          setUserId,
+          setSubType,
+          setRecording,
+          setDestinationAction,
+          setSuspendValue,
+          setCarrierName
+        )
+      );
     }
-    };
+  };
 
   // ======import
 
@@ -525,7 +573,7 @@ function ResellerDidTfnNumber({ colorThem }) {
     dispatch(getExtension());
     dispatch(getAllUsersReseller(""));
     dispatch(getResellerUsersList());
-    dispatch(getResellerRemainingMinutesList())
+    dispatch(getResellerRemainingMinutesList());
   }, []);
 
   const handleChange = (event) => {
@@ -551,8 +599,6 @@ function ResellerDidTfnNumber({ colorThem }) {
     }
   };
 
-  
-
   const isRowBordered = (params) => {
     const { row } = params;
 
@@ -560,26 +606,25 @@ function ResellerDidTfnNumber({ colorThem }) {
     return row.status === true;
   };
 
-  useMemo(()=>{
-    if(state?.getResellerUsersList?.userList){
-    const usersArray = Object.keys(state?.getResellerUsersList?.userList)?.map(key => ({
-      
-      user_id: key,
-      username: state?.getResellerUsersList?.userList[key]
-      
-    }));
-    setUsers(usersArray);
-  }
-   },[state?.getResellerUsersList?.userList])
+  useMemo(() => {
+    if (state?.getResellerUsersList?.userList) {
+      const usersArray = Object.keys(
+        state?.getResellerUsersList?.userList
+      )?.map((key) => ({
+        user_id: key,
+        username: state?.getResellerUsersList?.userList[key],
+      }));
+      setUsers(usersArray);
+    }
+  }, [state?.getResellerUsersList?.userList]);
   const resellers = state?.allUsers?.users?.filter(
     (user) => user.role === "Reseller"
   );
-  
+
   const columns = [
-       
     {
       field: "action",
-      headerName:"Action",
+      headerName: "Action",
       headerClassName: "custom-header",
       headerAlign: "center",
       align: "center",
@@ -591,14 +636,14 @@ function ResellerDidTfnNumber({ colorThem }) {
             {/* <IconButton>
               <PlayArrow style={{ cursor: "pointer", color: "grey" }} />
             </IconButton> */}
-           
+
             <IconButton onClick={() => handleEdit(params.row)}>
               <Edit
                 index={params.row.id}
                 style={{ cursor: "pointer", color: "#0e397f" }}
               />
             </IconButton>
-           
+
             {/* <IconButton onClick={() => handleDelete(params.row)}>
               <Delete style={{ cursor: "pointer", color: "red" }} />
             </IconButton> */}
@@ -612,7 +657,7 @@ function ResellerDidTfnNumber({ colorThem }) {
       headerClassName: "custom-header",
       width: 120,
       headerAlign: "center",
-      align: "center", 
+      align: "center",
       renderCell: (params) => {
         // Slice the first 5 digits of the tfn_number
         const truncatedNumber = params.row.tfn_number?.substring(0, 5);
@@ -624,8 +669,9 @@ function ResellerDidTfnNumber({ colorThem }) {
             }}
           >
             {truncatedNumber}
-          </div>)}
-
+          </div>
+        );
+      },
     },
     {
       field: "username",
@@ -635,14 +681,14 @@ function ResellerDidTfnNumber({ colorThem }) {
       headerAlign: "center",
       align: "center",
     },
-    {
-      field: "total_call_duration",
-      headerName: "Total Call Duration",
-      headerClassName: "custom-header",
-      width: 150,
-      headerAlign: "center",
-      align: "center",
-    },
+    // {
+    //   field: "total_call_duration",
+    //   headerName: "Total Call Duration",
+    //   headerClassName: "custom-header",
+    //   width: 150,
+    //   headerAlign: "center",
+    //   align: "center",
+    // },
     {
       field: "details",
       headerName: "Extension",
@@ -651,7 +697,7 @@ function ResellerDidTfnNumber({ colorThem }) {
       headerAlign: "center",
       align: "center",
     },
-   
+
     {
       field: "sub_type",
       headerName: "Sub Type",
@@ -662,7 +708,8 @@ function ResellerDidTfnNumber({ colorThem }) {
       renderCell: (params) => {
         return (
           <div className="d-flex justify-content-between align-items-center">
-            {params.row.sub_type === "EXTENSION" || params.row.sub_type === "Extension"  ? (
+            {params.row.sub_type === "EXTENSION" ||
+            params.row.sub_type === "Extension" ? (
               <>
                 <div
                   style={{
@@ -678,9 +725,11 @@ function ResellerDidTfnNumber({ colorThem }) {
                 </div>
               </>
             ) : (
-             <></>
+              <></>
             )}
-            {params.row.sub_type === "QUEUE" || params.row.sub_type === "Queue" ? (<>
+            {params.row.sub_type === "QUEUE" ||
+            params.row.sub_type === "Queue" ? (
+              <>
                 <div
                   style={{
                     color: "white",
@@ -693,7 +742,10 @@ function ResellerDidTfnNumber({ colorThem }) {
                 >
                   {params.row.sub_type?.toString()?.toLowerCase()}
                 </div>
-              </>):(<></>)}
+              </>
+            ) : (
+              <></>
+            )}
           </div>
         );
       },
@@ -717,7 +769,7 @@ function ResellerDidTfnNumber({ colorThem }) {
       align: "center",
       renderCell: (params) => {
         return (
-          <div className="d-flex justify-content-between align-items-center" >
+          <div className="d-flex justify-content-between align-items-center">
             {params.row.Assignment === "Assign" ? (
               <>
                 <div
@@ -729,7 +781,7 @@ function ResellerDidTfnNumber({ colorThem }) {
                     fontSize: "12px",
                     textTransform: "capitalize",
                     // textDecoration: "underline",
-                     cursor: "pointer",
+                    cursor: "pointer",
                   }}
                   onClick={() => handleEdit(params.row)}
                 >
@@ -749,7 +801,7 @@ function ResellerDidTfnNumber({ colorThem }) {
                     fontSize: "12px",
                     textTransform: "capitalize",
                   }}
-                  onClick={()=>handleUpdateAssignment(params.row)}
+                  onClick={() => handleUpdateAssignment(params.row)}
                 >
                   Unassign
                 </div>
@@ -831,9 +883,11 @@ function ResellerDidTfnNumber({ colorThem }) {
       renderCell: (params) => {
         const valueFormatter = (params) => {
           const date = new Date(params.value);
-          return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+          return `${date.getDate()}/${
+            date.getMonth() + 1
+          }/${date.getFullYear()}`;
         };
-    
+
         return (
           <div className="d-flex justify-content-between align-items-center">
             <p
@@ -850,7 +904,7 @@ function ResellerDidTfnNumber({ colorThem }) {
         );
       },
     },
-    
+
     // {
     //   field: "created_date",
     //   headerName: "Create Date",
@@ -877,7 +931,7 @@ function ResellerDidTfnNumber({ colorThem }) {
     //       </div>
     //     );
     //   },
-     
+
     // },
     {
       field: "updated_date",
@@ -890,10 +944,11 @@ function ResellerDidTfnNumber({ colorThem }) {
       renderCell: (params) => {
         const valueFormatter = (params) => {
           const date = new Date(params.value);
-          return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
-        
+          return `${date.getDate()}/${
+            date.getMonth() + 1
+          }/${date.getFullYear()}`;
         };
-    
+
         return (
           <div className="d-flex justify-content-between align-items-center">
             <p
@@ -910,12 +965,9 @@ function ResellerDidTfnNumber({ colorThem }) {
         );
       },
 
-      valueFormatter: (params) => {
-       
-      },
+      valueFormatter: (params) => {},
     },
 
-    
     {
       field: "status",
       headerName: "Status",
@@ -963,7 +1015,6 @@ function ResellerDidTfnNumber({ colorThem }) {
         );
       },
     },
- 
   ];
   const rows = useMemo(() => {
     const calculatedRows = [];
@@ -991,7 +1042,7 @@ function ResellerDidTfnNumber({ colorThem }) {
           sub_type: item.sub_type,
           carrier_name: item.carrier_name,
           total_call_duration: item.total_call_duration,
-          Assignment: item.Assignment
+          Assignment: item.Assignment,
         });
       });
     return calculatedRows;
@@ -1040,38 +1091,98 @@ function ResellerDidTfnNumber({ colorThem }) {
                               </p> */}
                             </div>
 
-                            {state?.getResellerRemainingMinutes?.remainingMinutes?.remaining_dides ? (<>
-                            <div  style={{margin:'auto'}} className="billing_minute">
-<div style={{color:"white", padding:"8px", fontSize:"20px"}}>Remaining DIDs: <span style={{color:'rgb(78 255 8)'}}>{state?.getResellerRemainingMinutes?.remainingMinutes?.remaining_dides}</span></div>
-</div></>) : (<>
-  <div  style={{margin:'auto'}} className="billing_minute">
-<div style={{color:"white", padding:"8px", fontSize:"20px"}}>Remaining DIDs: <span style={{color:'rgb(78 255 8)'}}>{0}</span></div>
-</div></>)}
-
-                            <div style={{ display: "flex",alignItems:'center',position:"relative",top:'0',}}>
-
-
-                              {/* import */}
-                              {user?.user_role === "Reseller"? (<></>):(<> 
-                              <Typography onClick={handleClick} target="_blank" className="hover-content" style={{ cursor: "pointer"}}>
-                                  <IconButton>
-                                    <FileDownloadIcon/> 
-                                  </IconButton>
-                                </Typography>
-     
-                             
-                              <div className="n-ppost" style={{paddingRight:'20px'}}>Sample</div>
-                               <img className="n-ppost-name" 
-                               src="https://i.ibb.co/rMkhnrd/sample2.png" alt="Image" />
-                               
-                              <div>
-                                <IconButton
-                                  className="all_button_clr"
-                                  onClick={handleOpenImport}
+                            {state?.getResellerRemainingMinutes
+                              ?.remainingMinutes?.remaining_dides ? (
+                              <>
+                                <div
+                                  style={{ margin: "auto" }}
+                                  className="billing_minute"
                                 >
-                                  Import <ImportExportIcon />
-                                </IconButton>
-                              </div></>)}
+                                  <div
+                                    style={{
+                                      color: "white",
+                                      padding: "8px",
+                                      fontSize: "20px",
+                                    }}
+                                  >
+                                    Remaining DIDs:{" "}
+                                    <span style={{ color: "rgb(78 255 8)" }}>
+                                      {
+                                        state?.getResellerRemainingMinutes
+                                          ?.remainingMinutes?.remaining_dides
+                                      }
+                                    </span>
+                                  </div>
+                                </div>
+                              </>
+                            ) : (
+                              <>
+                                <div
+                                  style={{ margin: "auto" }}
+                                  className="billing_minute"
+                                >
+                                  <div
+                                    style={{
+                                      color: "white",
+                                      padding: "8px",
+                                      fontSize: "20px",
+                                    }}
+                                  >
+                                    Remaining DIDs:{" "}
+                                    <span style={{ color: "rgb(78 255 8)" }}>
+                                      {0}
+                                    </span>
+                                  </div>
+                                </div>
+                              </>
+                            )}
+
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                position: "relative",
+                                top: "0",
+                              }}
+                            >
+                              {/* import */}
+                              {user?.user_role === "Reseller" ? (
+                                <></>
+                              ) : (
+                                <>
+                                  <Typography
+                                    onClick={handleClick}
+                                    target="_blank"
+                                    className="hover-content"
+                                    style={{ cursor: "pointer" }}
+                                  >
+                                    <IconButton>
+                                      <FileDownloadIcon />
+                                    </IconButton>
+                                  </Typography>
+
+                                  <div
+                                    className="n-ppost"
+                                    style={{ paddingRight: "20px" }}
+                                  >
+                                    Sample
+                                  </div>
+                                  <img
+                                    className="n-ppost-name"
+                                    src="https://i.ibb.co/rMkhnrd/sample2.png"
+                                    alt="Image"
+                                  />
+
+                                  <div>
+                                    <IconButton
+                                      className="all_button_clr"
+                                      onClick={handleOpenImport}
+                                    >
+                                      Import <ImportExportIcon />
+                                    </IconButton>
+                                  </div>
+                                </>
+                              )}
 
                               <Modal
                                 open={openimport}
@@ -1178,14 +1289,21 @@ function ResellerDidTfnNumber({ colorThem }) {
 
                               {/* ==Add-modal== */}
 
-                              {user?.user_role === "Reseller"? (<></>):(<> <div>
-                                <IconButton
-                                  className="all_button_clr"
-                                  onClick={handleOpen}
-                                >
-                                  Add <AddOutlinedIcon />
-                                </IconButton>
-                              </div></>)}
+                              {user?.user_role === "Reseller" ? (
+                                <></>
+                              ) : (
+                                <>
+                                  {" "}
+                                  <div>
+                                    <IconButton
+                                      className="all_button_clr"
+                                      onClick={handleOpen}
+                                    >
+                                      Add <AddOutlinedIcon />
+                                    </IconButton>
+                                  </div>
+                                </>
+                              )}
 
                               {/* -----   Add Campaigns Modal Start   ----- */}
 
@@ -1254,23 +1372,22 @@ function ResellerDidTfnNumber({ colorThem }) {
                                             );
                                           setTfnNumber(numericValue);
                                         }}
-                                        
                                         inputProps={{
                                           inputMode: "numeric",
                                           // pattern: '[0-9]*',
                                         }}
                                       />
-                                       {validation.tfnNumber && (
-                                      <p
-                                        className="mb-0"
-                                        style={{
-                                          color: "red",
-                                          textAlign: "left",
-                                        }}
-                                      >
-                                        {validation.tfnNumber}
-                                      </p>
-                                       )}
+                                      {validation.tfnNumber && (
+                                        <p
+                                          className="mb-0"
+                                          style={{
+                                            color: "red",
+                                            textAlign: "left",
+                                          }}
+                                        >
+                                          {validation.tfnNumber}
+                                        </p>
+                                      )}
 
                                       <br />
 
@@ -1295,69 +1412,69 @@ function ResellerDidTfnNumber({ colorThem }) {
                                           onChange={(e) => {
                                             setUserId(e.target.value);
                                           }}
-                                          
                                         >
-                                          {users?.map(
-                                            (item, index) => {
-                                              return (
-                                                <MenuItem
-                                                  key={index}
-                                                  value={item?.user_id}
-                                                >
-                                                  {item.username}
-                                                </MenuItem>
-                                              );
-                                            }
-                                          )}
+                                          {users?.map((item, index) => {
+                                            return (
+                                              <MenuItem
+                                                key={index}
+                                                value={item?.user_id}
+                                              >
+                                                {item.username}
+                                              </MenuItem>
+                                            );
+                                          })}
                                         </Select>
                                       </FormControl>
                                       {validation.userId && (
-                                      <p
-                                        className="mb-0"
-                                        style={{
-                                          color: "red",
-                                          textAlign: "left",
-                                        }}
-                                      >
-                                        {validation.userId}
-                                      </p>
-                                       )}
+                                        <p
+                                          className="mb-0"
+                                          style={{
+                                            color: "red",
+                                            textAlign: "left",
+                                          }}
+                                        >
+                                          {validation.userId}
+                                        </p>
+                                      )}
 
                                       <br />
 
                                       <FormControl
-                              fullWidth
-                              style={{ width: "100%", margin: "7px 0" }}
-                              className={classes.formControl}
-                            >
-                              <InputLabel id="demo-simple-select-label">
-                                Reseller 
-                              </InputLabel>
+                                        fullWidth
+                                        style={{
+                                          width: "100%",
+                                          margin: "7px 0",
+                                        }}
+                                        className={classes.formControl}
+                                      >
+                                        <InputLabel id="demo-simple-select-label">
+                                          Reseller
+                                        </InputLabel>
 
-                              <Select
-                                labelId="demo-simple-select-label"
-                                id="demo-simple-select"
-                                label="Reseller"
-                                helperText="Select the language."
-                                style={{ textAlign: "left" }}
-                                value={resellerId}
-                                onChange={(e) => {
-                                  setResellerId(e.target.value);
-                                }}
-                                required
-                              >
-                                {resellers?.map((item, index) => {
-                                  return (
-                                    <MenuItem
-                                      key={index}
-                                      value={item?.reseller_id}
-                                    >
-                                      {item.username}
-                                    </MenuItem>
-                                  );
-                                })}
-                              </Select>
-                            </FormControl>
+                                        <Select
+                                          labelId="demo-simple-select-label"
+                                          id="demo-simple-select"
+                                          label="Reseller"
+                                          helperText="Select the language."
+                                          style={{ textAlign: "left" }}
+                                          value={resellerId}
+                                          onChange={(e) => {
+                                            setResellerId(e.target.value);
+                                          }}
+                                          required
+                                        >
+                                          {resellers?.map((item, index) => {
+                                            return (
+                                              <MenuItem
+                                                key={index}
+                                                value={item?.reseller_id}
+                                              >
+                                                {item.username}
+                                              </MenuItem>
+                                            );
+                                          })}
+                                        </Select>
+                                      </FormControl>
 
                                       <FormControl
                                         style={{
@@ -1399,16 +1516,16 @@ function ResellerDidTfnNumber({ colorThem }) {
                                         </Select>
                                       </FormControl>
                                       {validation.serviceType && (
-                                      <p
-                                        className="mb-0"
-                                        style={{
-                                          color: "red",
-                                          textAlign: "left",
-                                        }}
-                                      >
-                                        {validation.serviceType}
-                                      </p>
-                                       )}
+                                        <p
+                                          className="mb-0"
+                                          style={{
+                                            color: "red",
+                                            textAlign: "left",
+                                          }}
+                                        >
+                                          {validation.serviceType}
+                                        </p>
+                                      )}
 
                                       {serviceType.map((item, index) => {
                                         return (
@@ -1437,11 +1554,18 @@ function ResellerDidTfnNumber({ colorThem }) {
                                                     fullWidth
                                                     value={subType}
                                                     onChange={(e) => {
-                                                      const newSubType = e.target.value;
+                                                      const newSubType =
+                                                        e.target.value;
                                                       setSubType(newSubType);
                                                       // Clear destinationAction if subType is Extension or Queue
-                                                      if (newSubType === "Extension" || newSubType === "Queue") {
-                                                        setDestinationAction([]);
+                                                      if (
+                                                        newSubType ===
+                                                          "Extension" ||
+                                                        newSubType === "Queue"
+                                                      ) {
+                                                        setDestinationAction(
+                                                          []
+                                                        );
                                                       }
                                                     }}
                                                     // input={
@@ -1554,7 +1678,7 @@ function ResellerDidTfnNumber({ colorThem }) {
                                                         style={{
                                                           textAlign: "left",
                                                         }}
-                                                       // multiple
+                                                        // multiple
                                                         value={
                                                           destinationAction
                                                         }
@@ -1639,17 +1763,16 @@ function ResellerDidTfnNumber({ colorThem }) {
                                         </Select>
                                       </FormControl>
                                       {validation.selectedValue && (
-                                      <p
-                                        className="mb-0"
-                                        style={{
-                                          color: "red",
-                                          textAlign: "left",
-                                        }}
-                                      >
-                                        {validation.selectedValue}
-                                      </p>
-                                       )}
-
+                                        <p
+                                          className="mb-0"
+                                          style={{
+                                            color: "red",
+                                            textAlign: "left",
+                                          }}
+                                        >
+                                          {validation.selectedValue}
+                                        </p>
+                                      )}
 
                                       {/* <br />
 
@@ -1709,16 +1832,16 @@ function ResellerDidTfnNumber({ colorThem }) {
                                         </Select>
                                       </FormControl>
                                       {validation.recording && (
-                                      <p
-                                        className="mb-0"
-                                        style={{
-                                          color: "red",
-                                          textAlign: "left",
-                                        }}
-                                      >
-                                        {validation.recording}
-                                      </p>
-                                       )}
+                                        <p
+                                          className="mb-0"
+                                          style={{
+                                            color: "red",
+                                            textAlign: "left",
+                                          }}
+                                        >
+                                          {validation.recording}
+                                        </p>
+                                      )}
 
                                       <br />
                                       <TextField
@@ -1732,25 +1855,22 @@ function ResellerDidTfnNumber({ colorThem }) {
                                         name="carrier_name"
                                         value={carrierName}
                                         onChange={(e) => {
-                                          setCarrierName(
-                                            e.target.value
-                                          );
+                                          setCarrierName(e.target.value);
                                         }}
-                                        
                                       />
-                                       {validation.carrierName && (
-                                      <p
-                                        className="mb-0"
-                                        style={{
-                                          color: "red",
-                                          textAlign: "left",
-                                        }}
-                                      >
-                                        {validation.carrierName}
-                                      </p>
-                                       )}
+                                      {validation.carrierName && (
+                                        <p
+                                          className="mb-0"
+                                          style={{
+                                            color: "red",
+                                            textAlign: "left",
+                                          }}
+                                        >
+                                          {validation.carrierName}
+                                        </p>
+                                      )}
 
-                                       <br/>
+                                      <br />
 
                                       <TextField
                                         style={{
@@ -1767,46 +1887,41 @@ function ResellerDidTfnNumber({ colorThem }) {
                                             e.target.value
                                           );
                                         }}
-                                        
                                       />
                                       <br />
-                                     
-
                                     </form>
-                                    
+
                                     <Button
-                                        variant="contained"
-                                        className="all_button_clr"
-                                        color="primary"
-                                        sx={{
-                                          fontSize: "16px !impotant",
-                                          background:
-                                            "linear-gradient(180deg, #0E397F 0%, #001E50 100%) !important",
-                                          marginTop: "20px",
-                                          padding: "10px 20px !important",
-                                          textTransform:
-                                            "capitalize !important",
-                                        }}
-                                        onClick={handleClose}
-                                      >
-                                        Cancel
-                                      </Button>
-                                      <Button
-                                        variant="contained"
-                                        className="all_button_clr"
-                                        color="primary"
-                                        sx={{
-                                          fontSize: "16px !impotant",
-                                          background: "#092b5f",
-                                          marginTop: "20px",
-                                          padding: "10px 20px !important",
-                                          textTransform:
-                                            "capitalize !important",
-                                        }}
-                                        onClick={handleSubmit}
-                                      >
-                                        save
-                                      </Button>
+                                      variant="contained"
+                                      className="all_button_clr"
+                                      color="primary"
+                                      sx={{
+                                        fontSize: "16px !impotant",
+                                        background:
+                                          "linear-gradient(180deg, #0E397F 0%, #001E50 100%) !important",
+                                        marginTop: "20px",
+                                        padding: "10px 20px !important",
+                                        textTransform: "capitalize !important",
+                                      }}
+                                      onClick={handleClose}
+                                    >
+                                      Cancel
+                                    </Button>
+                                    <Button
+                                      variant="contained"
+                                      className="all_button_clr"
+                                      color="primary"
+                                      sx={{
+                                        fontSize: "16px !impotant",
+                                        background: "#092b5f",
+                                        marginTop: "20px",
+                                        padding: "10px 20px !important",
+                                        textTransform: "capitalize !important",
+                                      }}
+                                      onClick={handleSubmit}
+                                    >
+                                      save
+                                    </Button>
                                   </Box>
                                 </Fade>
                               </Modal>
@@ -1840,24 +1955,24 @@ function ResellerDidTfnNumber({ colorThem }) {
                       ) : (
                         <> */}
 
-
-
                           <ThemeProvider theme={theme}>
-      <div style={{ height: '100%', width: '100%' }}>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          getRowClassName={(params) =>
-            isRowBordered(params) ? 'borderedGreen' : 'borderedRed'
-          }
-          components={{ Toolbar: GridToolbar }}
-          slots={{
-            toolbar: CustomToolbar,
-          }}
-          autoHeight // Automatically adjust the height to fit all rows
-        />
-      </div>
-    </ThemeProvider>
+                            <div style={{ height: "100%", width: "100%" }}>
+                              <DataGrid
+                                rows={rows}
+                                columns={columns}
+                                getRowClassName={(params) =>
+                                  isRowBordered(params)
+                                    ? "borderedGreen"
+                                    : "borderedRed"
+                                }
+                                components={{ Toolbar: GridToolbar }}
+                                slots={{
+                                  toolbar: CustomToolbar,
+                                }}
+                                autoHeight // Automatically adjust the height to fit all rows
+                              />
+                            </div>
+                          </ThemeProvider>
                           {/* </>
                       )} */}
 
@@ -1887,7 +2002,7 @@ function ResellerDidTfnNumber({ colorThem }) {
                                   <Close />
                                 </IconButton>
                                 <br />
-                                <br/>
+                                <br />
                                 <Typography
                                   id="transition-modal-title"
                                   variant="h6"
@@ -1947,18 +2062,16 @@ function ResellerDidTfnNumber({ colorThem }) {
                                       required
                                     >
                                       <MenuItem value="None">none</MenuItem>
-                                      {users?.map(
-                                        (item, index) => {
-                                          return (
-                                            <MenuItem
-                                              key={index}
-                                              value={item?.user_id}
-                                            >
-                                              {item.username}
-                                            </MenuItem>
-                                          );
-                                        }
-                                      )}
+                                      {users?.map((item, index) => {
+                                        return (
+                                          <MenuItem
+                                            key={index}
+                                            value={item?.user_id}
+                                          >
+                                            {item.username}
+                                          </MenuItem>
+                                        );
+                                      })}
                                     </Select>
                                   </FormControl>
 
@@ -2105,7 +2218,10 @@ function ResellerDidTfnNumber({ colorThem }) {
                                             const newSubType = e.target.value;
                                             setSubType(newSubType);
                                             // Clear destinationAction if subType is Extension or Queue
-                                            if (newSubType === "Extension" || newSubType === "Queue") {
+                                            if (
+                                              newSubType === "Extension" ||
+                                              newSubType === "Queue"
+                                            ) {
                                               setDestinationAction([]);
                                             }
                                           }}
@@ -2146,7 +2262,7 @@ function ResellerDidTfnNumber({ colorThem }) {
                                               labelId="demo-multiple-checkbox-label"
                                               label="Extension"
                                               id="demo-multiple-checkbox"
-                                            //  multiple
+                                              //  multiple
                                               fullWidth
                                               value={destinationAction}
                                               onChange={(e) => {
@@ -2208,7 +2324,7 @@ function ResellerDidTfnNumber({ colorThem }) {
                                               label="Queue"
                                               helperText="Select the language."
                                               style={{ textAlign: "left" }}
-                                             // multiple
+                                              // multiple
                                               value={destinationAction}
                                               onChange={(e) => {
                                                 setDestinationAction(
@@ -2342,97 +2458,91 @@ function ResellerDidTfnNumber({ colorThem }) {
                                   <MenuItem value={"SIP"}>SIP</MenuItem>
                                 </Select>
                               </FormControl> */}
-                                 <FormControl
-                                        fullWidth
-                                        style={{
-                                          width: "100%",
-                                          margin: "7px 0",
-                                        }}
-                                      >
-                                        <InputLabel id="demo-simple-select-label">
-                                          Status
-                                        </InputLabel>
-                                        <Select
-                                          labelId="demo-simple-select-label"
-                                          id="demo-simple-select"
-                                          label="Status"
-                                          helperText="Select the language."
-                                          style={{ textAlign: "left" }}
-                                          value={selectedValue}
-                                          onChange={handleSelectChange}
-                                          required
-                                        >
-                                          <MenuItem value={"t"}>
-                                            Active
-                                          </MenuItem>
-                                          <MenuItem value={"f"}>
-                                            Deactive
-                                          </MenuItem>
-                                        </Select>
-                                      </FormControl>
+                                  <FormControl
+                                    fullWidth
+                                    style={{
+                                      width: "100%",
+                                      margin: "7px 0",
+                                    }}
+                                  >
+                                    <InputLabel id="demo-simple-select-label">
+                                      Status
+                                    </InputLabel>
+                                    <Select
+                                      labelId="demo-simple-select-label"
+                                      id="demo-simple-select"
+                                      label="Status"
+                                      helperText="Select the language."
+                                      style={{ textAlign: "left" }}
+                                      value={selectedValue}
+                                      onChange={handleSelectChange}
+                                      required
+                                    >
+                                      <MenuItem value={"t"}>Active</MenuItem>
+                                      <MenuItem value={"f"}>Deactive</MenuItem>
+                                    </Select>
+                                  </FormControl>
 
                                   <br />
 
                                   <FormControl
-                                        fullWidth
-                                        style={{
-                                          width: "100%",
-                                          margin: "7px 0",
-                                        }}
-                                      >
-                                        <InputLabel id="demo-simple-select-label">
-                                        Suspend
-                                        </InputLabel>
-                                        <Select
-                                          labelId="demo-simple-select-label"
-                                          id="demo-simple-select"
-                                          label="Suspend"
-                                          helperText="Select the language."
-                                          style={{ textAlign: "left" }}
-                                          value={suspendValue}
-                                          onChange={(e)=> setSuspendValue(e.target.value)}
-                                          required
-                                        >
-                                          <MenuItem value={0}>
-                                          Not Suspended
-                                          </MenuItem>
-                                          <MenuItem value={1}>
-                                            Suspended
-                                          </MenuItem>
-                                        </Select>
-                                      </FormControl>
+                                    fullWidth
+                                    style={{
+                                      width: "100%",
+                                      margin: "7px 0",
+                                    }}
+                                  >
+                                    <InputLabel id="demo-simple-select-label">
+                                      Suspend
+                                    </InputLabel>
+                                    <Select
+                                      labelId="demo-simple-select-label"
+                                      id="demo-simple-select"
+                                      label="Suspend"
+                                      helperText="Select the language."
+                                      style={{ textAlign: "left" }}
+                                      value={suspendValue}
+                                      onChange={(e) =>
+                                        setSuspendValue(e.target.value)
+                                      }
+                                      required
+                                    >
+                                      <MenuItem value={0}>
+                                        Not Suspended
+                                      </MenuItem>
+                                      <MenuItem value={1}>Suspended</MenuItem>
+                                    </Select>
+                                  </FormControl>
 
                                   <br />
 
                                   <TextField
-                                        style={{
-                                          width: "100%",
-                                          margin: "7px 0",
-                                        }}
-                                        type="text"
-                                        label="Carrier Name"
-                                        variant="outlined"
-                                        name="carrier_name"
-                                        value={carrierName}
-                                        onChange={(e) => {
-                                          setCarrierName(
-                                            e.target.value
-                                          );
-                                        }}
-                                        required
-                                      />
-                                       {validation.carrierName && (
-                                      <p
-                                        className="mb-0"
-                                        style={{
-                                          color: "red",
-                                          textAlign: "left",
-                                        }}
-                                      >
-                                        {validation.carrierName}
-                                      </p>
-                                       )}
-                                      <br />
+                                    style={{
+                                      width: "100%",
+                                      margin: "7px 0",
+                                    }}
+                                    type="text"
+                                    label="Carrier Name"
+                                    variant="outlined"
+                                    name="carrier_name"
+                                    value={carrierName}
+                                    onChange={(e) => {
+                                      setCarrierName(e.target.value);
+                                    }}
+                                    required
+                                  />
+                                  {validation.carrierName && (
+                                    <p
+                                      className="mb-0"
+                                      style={{
+                                        color: "red",
+                                        textAlign: "left",
+                                      }}
+                                    >
+                                      {validation.carrierName}
+                                    </p>
+                                  )}
+                                  <br />
 
                                   <TextField
                                     style={{ width: "100%", margin: "7px 0" }}
@@ -2446,43 +2556,40 @@ function ResellerDidTfnNumber({ colorThem }) {
                                     }}
                                   />
                                   <br />
-                                 
-
-                                  
                                 </form>
                                 <Button
-                              variant="contained"
-                              sx={{
-                                fontSize: "16px !impotant",
-                                background:
-                                  "linear-gradient(180deg, #0E397F 0%, #001E50 100%) !important",
-                                marginTop: "20px",
-                                marginLeft: "0px !important",
-                                padding: "10px 20px !important",
-                                textTransform: "capitalize !important",
-                              }}
-                              className="all_button_clr"
-                              color="info"
-                              onClick={handleEditClose}
-                              autoFocus
-                            >
-                              Cancel
-                            </Button>
-                            <Button
-                                    className="all_button_clr"
-                                    sx={{
-                                      fontSize: "16px !impotant",
-                                      marginTop: "20px",
-                                      marginLeft: "0px !important",
-                                      padding: "10px 20px !important",
-                                      textTransform: "capitalize !important",
-                                    }}
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={handleUpdate}
-                                  >
-                                    Update
-                                  </Button>
+                                  variant="contained"
+                                  sx={{
+                                    fontSize: "16px !impotant",
+                                    background:
+                                      "linear-gradient(180deg, #0E397F 0%, #001E50 100%) !important",
+                                    marginTop: "20px",
+                                    marginLeft: "0px !important",
+                                    padding: "10px 20px !important",
+                                    textTransform: "capitalize !important",
+                                  }}
+                                  className="all_button_clr"
+                                  color="info"
+                                  onClick={handleEditClose}
+                                  autoFocus
+                                >
+                                  Cancel
+                                </Button>
+                                <Button
+                                  className="all_button_clr"
+                                  sx={{
+                                    fontSize: "16px !impotant",
+                                    marginTop: "20px",
+                                    marginLeft: "0px !important",
+                                    padding: "10px 20px !important",
+                                    textTransform: "capitalize !important",
+                                  }}
+                                  variant="contained"
+                                  color="primary"
+                                  onClick={handleUpdate}
+                                >
+                                  Update
+                                </Button>
                               </Box>
                             </Fade>
                           </Modal>
@@ -2492,9 +2599,7 @@ function ResellerDidTfnNumber({ colorThem }) {
                     </div>
                   </div>
                 </div>
-                <div>
-
-</div>
+                <div></div>
               </div>
             </div>
           </Box>

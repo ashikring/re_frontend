@@ -65,6 +65,8 @@ import Menu from "@mui/material/Menu";
 import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import axios from "axios";
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import PauseIcon from '@mui/icons-material/Pause';
 import { api } from "../../mockData";
 import { toast } from "react-toastify";
 
@@ -251,6 +253,13 @@ function BuyerView({userThem}) {
   const [campaignNumbers, setCampaignNumbers] = useState([]);
   const [id, setId] = useState("");
   const [name, setName] = useState("");
+      // State to manage the switch value
+      const [isSwitchChecked, setIsSwitchChecked] = useState(false);
+  
+      // Handler function for switch toggle
+      const handleSwitchChange = (event) => {
+        setIsSwitchChecked(event.target.checked);
+      };
   const handleAddBuyerOpen = () => setOpen(true);
   const handleAddBuyerClose = () => {
     setOpen(false);
@@ -419,11 +428,36 @@ function BuyerView({userThem}) {
     }
   }, []);
 
+   const handleTrigger = (val) => {
+      let data = JSON.stringify({
+        id: val.buyer_id,
+        status: val.status === true ? false : true,
+        redirect_group_id: val?.redirect_group_id,
+        buyer_name: val.buyer_name,
+        cc: val.cc,
+        daily_limit: val.daily_limit,
+        forward_number: val.forward_number,
+        weightage: val.weightage,
+        working_start_time: val.working_start_time,
+        working_end_time: val.working_end_time,
+        follow_working_time: val.follow_working_time === false ? "f" : "t",
+      });
+      if (
+        window.confirm(
+          `Are you sure! Do you want to ${
+            val.status === true ? "Deactive" : "Active"
+          }`
+        )
+      ) {
+        setResponse(data);
+        dispatch(updateRedirectBuyer(data, setResponse));
+      }
+    };
+
   const columns = [
     {
       field: "action",
       headerName: "Action",
-      width: 100,
       headerClassName: "custom-header",
       headerAlign: "center",
       align: "center",
@@ -440,6 +474,19 @@ function BuyerView({userThem}) {
                 />
               </IconButton>
             </Tooltip>
+            {params.row.status === true ? (
+            <Tooltip title="Deactive" disableInteractive interactive>
+              <IconButton onClick={() => handleTrigger(params.row)}>
+                <PauseIcon style={{ cursor: "pointer", color: "#254336" }} />
+              </IconButton>
+            </Tooltip>
+             ) : (
+              <Tooltip title="Active" disableInteractive interactive>
+              <IconButton onClick={() => handleTrigger(params.row)}>
+                <PlayArrowIcon style={{ cursor: "pointer", color: "#ff7d00" }} />
+              </IconButton>
+            </Tooltip>
+             )}
             <Tooltip title="Delete" disableInteractive interactive>
               <IconButton onClick={() => handleMessage(params.row)}>
                 <Delete style={{ cursor: "pointer", color: "red" }} />
@@ -533,49 +580,131 @@ function BuyerView({userThem}) {
       width: 100,
       align: "center",
     },
+    // {
+    //      field: "status",
+    //      headerName: "Status",
+    //      width: 120,
+    //      headerAlign: "center",
+    //      align: "center",
+    //      headerClassName: "custom-header",
+    //      renderCell: (params) => {
+    //        return (
+    //          <>
+    //            {params.row.status === true ? (
+    //              <>
+    //                <Tooltip title="Active" disableInteractive interactive>
+    //                  <div
+    //                    className="d-flex justify-content-between align-items-center"
+    //                    style={{
+    //                      color: "#ffff",
+    //                      padding: "5px 12.5px",
+    //                      borderRadius: "5px",
+    //                      background: "#254336",
+    //                      width: "65px",
+    //                      cursor: "pointer",
+    //                      //transition: "background 0.3s, transform 0.2s",
+    //                    }}
+    //                    onMouseEnter={(e) => {
+    //                      e.currentTarget.style.background = "#1a2f25"; // Darker shade on hover
+    //                      e.currentTarget.style.transform = "scale(1.05)"; // Slight scaling
+    //                    }}
+    //                    onMouseLeave={(e) => {
+    //                      e.currentTarget.style.background = "#254336"; // Revert to original background
+    //                      e.currentTarget.style.transform = "scale(1.05)"; // Reset scaling
+    //                    }}
+    //                    onClick={() => handleTrigger(params.row)}
+    //                  >
+    //                    Active
+    //                  </div>
+    //                </Tooltip>
+    //              </>
+    //            ) : (
+    //              <>
+    //                <Tooltip title="Deactive" disableInteractive interactive>
+    //                  <div
+    //                    className="d-flex justify-content-between align-items-center"
+    //                    style={{
+    //                      color: "#ffff",
+    //                      // border: "1px solid red",
+    //                      padding: "5px 4.5px",
+    //                      borderRadius: "5px",
+    //                      width: "65px",
+    //                      background: "rgb(255 0 0)",
+    //                      cursor: "pointer",
+    //                    }}
+    //                    onMouseEnter={(e) => {
+    //                      e.currentTarget.style.background = "rgb(255 0 0)"; // Darker shade on hover
+    //                      e.currentTarget.style.transform = "scale(1.05)"; // Slight scaling
+    //                    }}
+    //                    onMouseLeave={(e) => {
+    //                      e.currentTarget.style.background = "rgb(228 20 2)"; // Revert to original background
+    //                      e.currentTarget.style.transform = "scale(1.05)"; // Reset scaling
+    //                    }}
+    //                    onClick={() => handleTrigger(params.row)}
+    //                  >
+    //                    Deactive
+    //                  </div>
+    //                </Tooltip>
+    //              </>
+    //            )}
+    //          </>
+    //        );
+    //      },
+    //    },
     {
-      field: "status",
-      headerName: "Status",
-      width: 120,
-      headerAlign: "center",
-      align: "center",
-      headerClassName: "custom-header",
-      renderCell: (params) => {
-        return (
-          <>
-            {params.row.status === true ? (
+          field: "status",
+          headerName: "Status",
+          width: 120,
+          headerAlign: "center",
+          align: "center",
+          headerClassName: "custom-header",
+          renderCell: (params) => {
+            return (
               <>
-                <div
-                  className="d-flex justify-content-between align-items-center"
-                  style={{
-                    color: "green",
-                    //border: "1px solid green",
-                    padding: "5px 4.5px",
-                    borderRadius: "5px",
-                  }}
-                >
-                  Active
-                </div>
+                {params.row.status === true ? (
+                  <>
+                    <Tooltip title="Active" disableInteractive interactive>
+                      <div
+                        className="d-flex justify-content-between align-items-center"
+                        style={{
+                          color: "#254336",
+                          padding: "5px 12.5px",
+                          // borderRadius: "5px",
+                          // background: "#254336",
+                          // width: "65px",
+                          // cursor: "pointer",
+                          //transition: "background 0.3s, transform 0.2s",
+                        }}
+                        
+                      >
+                        Active
+                      </div>
+                    </Tooltip>
+                  </>
+                ) : (
+                  <>
+                    <Tooltip title="Deactivated" disableInteractive interactive>
+                      <div
+                        className="d-flex justify-content-between align-items-center"
+                        style={{
+                          color: "#ff7d00",
+                          // border: "1px solid red",
+                          padding: "5px 4.5px",
+                          // borderRadius: "5px",
+                          // width: "65px",
+                          // background: "rgb(255 0 0)",
+                          // cursor: "pointer",
+                        }}
+                      >
+                        Deactivated
+                      </div>
+                    </Tooltip>
+                  </>
+                )}
               </>
-            ) : (
-              <>
-                <div
-                  className="d-flex justify-content-between align-items-center"
-                  style={{
-                    color: "red",
-                    //border: "1px solid red",
-                    padding: "5px 4.5px",
-                    borderRadius: "5px",
-                  }}
-                >
-                  Deactive
-                </div>
-              </>
-            )}
-          </>
-        );
-      },
-    },
+            );
+          },
+        },
     {
       field: "current_daily_limit",
       headerName: "Current Daily Limit",
@@ -646,6 +775,7 @@ function BuyerView({userThem}) {
   const mockDataTeam = [];
   state?.getRedirectBuyer?.RedirectBuyer?.data &&
     state?.getRedirectBuyer?.RedirectBuyer?.data?.forEach((item, index) => {
+      if (isSwitchChecked ? item.status === true : true) {
       mockDataTeam.push({
         id: index + 1,
         cc: item.cc,
@@ -664,8 +794,8 @@ function BuyerView({userThem}) {
         weightage: item.weightage,
         working_end_time: item.working_end_time,
         working_start_time: item.working_start_time,
-        follow_working_time: item.follow_working_time,
       });
+    }
     });
   return (
     <>
@@ -719,7 +849,8 @@ function BuyerView({userThem}) {
                                 All
                               </Typography>
                               <FormControlLabel
-                                control={<IOSSwitch defaultChecked />}
+                                control={<IOSSwitch defaultChecked checked={isSwitchChecked}
+                                onChange={handleSwitchChange}/>}
                               />
                               <Typography style={{ fontSize: "15px" }}>
                                 Active

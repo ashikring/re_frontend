@@ -297,13 +297,11 @@ function AdminCallBlock({ colorThem }) {
                 onClick={() => handleButtonClick(params.row)}
                 style={{
                   fontSize: "15px",
-                 // color: "#42765f",
+                  color: "#42765f",
                   marginRight: "10px",
                 }}
               >
-                <Edit index={params.row.id}
-                  style={{ cursor: "pointer", color: "#42765f" }}
-                />
+                <Edit index={params.row.id} />
               </IconButton>
             </Tooltip>
             <Tooltip title="delete" disableInteractive interactive>
