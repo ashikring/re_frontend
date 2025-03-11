@@ -5,6 +5,209 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+.frm_date {
+  margin-right: 0px;
+}
+
+/* =========table css start=================
+============================= */
+
+.custom-header {
+  white-space: normal !important; /* Allows header text to break */
+  word-wrap: break-word;
+  text-align: left;
+  text-overflow: ellipsis; 
+  /* max-width: 100px; */
+   /* Adjust as needed */
+}
+
+.wrap-text {
+  white-space: normal !important; /* Ensures content wraps */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+ 
+}
+
+
+@media (max-width: 576px) {
+  .frm_date {
+    margin-right: 7px;
+}
+    
+  .custom-header .MuiDataGrid-columnHeaderDraggableContainer .MuiDataGrid-columnHeaderTitleContainer .MuiDataGrid-columnHeaderTitleContainerContent
+  .MuiDataGrid-columnHeaderTitle{
+    white-space: break-spaces !important;
+    line-height: 15px;
+  }
+  .css-1ckupud {
+    display: flex
+;
+    padding: 8px;
+    flex-direction: column;
+    /* flex: 1 1; */
+}
+
+  .css-1t5wrdm-MuiDataGrid-filterForm {
+    display: flex;
+    padding: 8px;
+    flex-direction: column !important;
+    }
+  
+  .MuiDataGrid-root {
+  overflow-x: auto; /* Allows horizontal scrolling on small screens */
+  }
+  
+  .MuiDataGrid-columnHeaders {
+  font-size: 12px;
+  }
+  /* Tble css start */
+  .css-1lfl7ts {
+    display: inline-flex;
+    flex-direction: column;
+    position: relative;
+    min-width: 0px;
+    padding: 0px;
+    margin: 0px;
+    border: 0px;
+    vertical-align: top;
+    width: auto !important;
+}
+.css-14wd8o {
+  display: inline-flex;
+  flex-direction: column;
+  position: relative;
+  min-width: 0px;
+  padding: 0px;
+  margin: 0px;
+  border: 0px;
+  vertical-align: top;
+  width: auto !important;
+}
+.css-1tx315l {
+  display: inline-flex;
+  flex-direction: column;
+  position: relative;
+  min-width: 0px;
+  padding: 0px;
+  margin: 0px;
+  border: 0px;
+  vertical-align: top;
+  width: auto !important;
+}
+ /* Tble css end */
+}
+
+@media (max-width: 600px) {
+ 
+  .custom-header .MuiDataGrid-columnHeaderDraggableContainer .MuiDataGrid-columnHeaderTitleContainer .MuiDataGrid-columnHeaderTitleContainerContent
+  .MuiDataGrid-columnHeaderTitle{
+    white-space: break-spaces !important;
+    line-height: 15px;
+  }
+}
+
+@media (max-width: 767.98px) { 
+  
+  .custom-header .MuiDataGrid-columnHeaderDraggableContainer .MuiDataGrid-columnHeaderTitleContainer .MuiDataGrid-columnHeaderTitleContainerContent
+  .MuiDataGrid-columnHeaderTitle{
+    white-space: break-spaces !important;
+    line-height: 15px;
+  }
+  .css-1ckupud {
+    display: flex
+;
+    padding: 8px;
+    flex-direction: column;
+    /* flex: 1 1; */
+}
+
+  .css-1t5wrdm-MuiDataGrid-filterForm {
+    display: flex;
+    padding: 8px;
+    flex-direction: column !important;
+    }
+  
+  .MuiDataGrid-root {
+  overflow-x: auto; /* Allows horizontal scrolling on small screens */
+  }
+  
+  .MuiDataGrid-columnHeaders {
+  font-size: 12px;
+  }
+  .css-1lfl7ts {
+    display: inline-flex;
+    flex-direction: column;
+    position: relative;
+    min-width: 0px;
+    padding: 0px;
+    margin: 0px;
+    border: 0px;
+    vertical-align: top;
+    width: auto !important;
+}
+.css-14wd8o {
+  display: inline-flex;
+  flex-direction: column;
+  position: relative;
+  min-width: 0px;
+  padding: 0px;
+  margin: 0px;
+  border: 0px;
+  vertical-align: top;
+  width: auto !important;
+}
+.css-1tx315l {
+  display: inline-flex;
+  flex-direction: column;
+  position: relative;
+  min-width: 0px;
+  padding: 0px;
+  margin: 0px;
+  border: 0px;
+  vertical-align: top;
+  width: auto !important;
+}
+ }
+
+@media (max-width: 991.98px) { 
+  
+  .custom-header .MuiDataGrid-columnHeaderDraggableContainer .MuiDataGrid-columnHeaderTitleContainer .MuiDataGrid-columnHeaderTitleContainerContent
+  .MuiDataGrid-columnHeaderTitle{
+    white-space: break-spaces !important;
+    line-height: 15px;
+  }
+ }
+
+@media (max-width: 1199.98px) { 
+  
+  .custom-header .MuiDataGrid-columnHeaderDraggableContainer .MuiDataGrid-columnHeaderTitleContainer .MuiDataGrid-columnHeaderTitleContainerContent
+  .MuiDataGrid-columnHeaderTitle{
+    white-space: break-spaces !important;
+    line-height: 15px;
+  }
+ }
+
+@media (max-width: 1399.98px) { 
+
+  /* .custom-header{
+    flex: 1;
+  min-width: 120px;
+  max-width: 100%;
+  } */
+  .custom-header .MuiDataGrid-columnHeaderDraggableContainer .MuiDataGrid-columnHeaderTitleContainer .MuiDataGrid-columnHeaderTitleContainerContent
+  .MuiDataGrid-columnHeaderTitle{
+    white-space: break-spaces !important;
+    line-height: 15px;
+  }
+
+ }
+
+ 
+
+/* =========table css end=================
+============================= */
+
 .css-1e3wlyl-MuiButtonBase-root-MuiMenuItem-root-MuiMultiSectionDigitalClockSection-item.Mui-selected {
   background-color: #254336 !important;
   color: #fff;
@@ -250,6 +453,9 @@ h4.dshbrd_list_title {
     width: 100% !important;
     margin: auto;
   }
+  .css-9l3uo3{
+    padding-top: 15px;
+  }
   .mobile_justify_end{
     display: flex;
     justify-content: end !important;
@@ -437,6 +643,7 @@ h4.dshbrd_list_title {
   font-weight: 500;
   line-height: 1.4;
   visibility: hidden;
+  display: none;
   pointer-events: none;
   position: absolute;
     z-index: 999999;
@@ -445,6 +652,7 @@ h4.dshbrd_list_title {
 .n-ppost:hover + .n-ppost-name {
   opacity: 1;
   visibility: visible;
+  display: block;
   -webkit-transform: translate3d(0, 0, 0);
           transform: translate3d(0, 0, 0);
 }
@@ -549,6 +757,9 @@ label[data-shrink=false]+.MuiInputBase-formControl .css-nxo287-MuiInputBase-inpu
 .MuiInputBase-input {
   padding: 10px;
 }
+.pro-sidebar {
+  color: #ffffff !important;
+}
 /* ==End=calender-css=== */
 .css-wf16b5 {
   background-color: rgb(7 40 93) !important;
@@ -613,6 +824,14 @@ label[data-shrink=false]+.MuiInputBase-formControl .css-nxo287-MuiInputBase-inpu
   overflow-x: hidden !important; /* Hide inner horizontal scrollbar */
 }
 
+.css-1o6xmxv>.MuiTextField-root {
+  min-width: auto;
+  width: 99% !important;
+  /* border: 1px solid #fff; */
+  border-radius: 4px;
+  /* padding: 4px 0; */
+  margin: 4px 0;
+ }
 
 .chart_title_1 {
   position: absolute;
@@ -1806,6 +2025,42 @@ box-shadow: 0 0 0 .25rem rgb(194, 109, 109) !important;
     background: linear-gradient(179deg, rgb(65 140 107) -12%, rgb(255 255 255) 62%);
   }
   
+  /* Custom CSS to make sure weekends look the same */ 
+.react-calendar__month-view__days__day--weekend{
+  color: inherit !important;
+}
+.react-datetime-picker__wrapper .react-datetime-picker__calendar-day--weekend {
+  color: inherit !important; /* Ensure weekend days use the same color as weekdays */
+}
+
+.react-datetime-picker__wrapper{
+  border: none !important;
+}
+.datefield_select{
+  padding:4.4px 0px !important;
+  border: 1px solid #c4c4c4 !important;
+  font-size: 17px;
+  color: #000000;
+  border-radius: 4px;
+  width: 98%;
+  margin: 5px 0;
+}
+.new_input{
+  margin-right: 7px !important;
+}
+.datefield_select input {
+  background: transparent;
+  border: 0;
+  margin: " 5px 0 5px 0",
+}
+
+.datefield_select input:focus {
+  color: var(--bs-body-color);
+    background-color: transparent;
+    border-color: #ffffff;
+    outline: 0;
+    box-shadow: none !important;
+}
 
 .all_button_clr{
   padding: 10px !important;
@@ -2027,10 +2282,34 @@ div#app {
   .MuiTabs-flexContainer.css-heg063-MuiTabs-flexContainer {
     overflow: scroll !important;
   }
+  .login-logo {
+    width: 100%;
+    }
  
 }
+@media (max-width: 1199.98px) { 
+  .login-logo {
+  width: 100%;
+  }
+  .d_card_left h2 {
+  font-size: 15px;
+  font-weight: 600;
+  text-transform: capitalize;
+  color: white !important;
+ }
+  }
+ 
+ 
+  @media (max-width: 991.98px) { 
+  .login-logo {
+  width: 100%;
+  }
+  }
 
 @media (max-width: 575.98px) { 
+  .login-logo {
+    width: 100%;
+    }
   .css-1x5jdmq {
     font: inherit;
     letter-spacing: inherit;
@@ -2050,11 +2329,28 @@ div#app {
     justify-content: space-between;
 }
   .cntnt_title h3 {
-    color: #04255c;
-    font-size: 18px;
+    color: #254336;
+    font-size: 20px !important;
     font-weight: 600;
     text-transform: capitalize;
 }
+.cntnt_title h3 {
+  font-size: 22px;
+  text-transform: capitalize;
+  font-weight: 400;
+  color: #254336;
+}
+.redirect_all_button_clr {
+  padding: 5px !important;
+  font-size: 13px !important;
+  border-radius: 5px !important;
+  /* background-color: rgb(245, 117, 29) !important; */
+  background-color: rgb(37, 67, 54) !important;
+  color: rgb(255, 255, 255) !important;
+  margin-left: auto;
+  /* margin-right: 15px !important; */
+}
+
 
   ul.hdr_profile li img {
     width: 30px;
@@ -2129,12 +2425,12 @@ div#app {
   padding-top: 0px;
 }
 .menu_icon_button {
-  background-color: #254336 !important;
+  background-color: #f5751d !important;
   color: #fff !important;
   font-size: 14px !important;
   border-radius: 5px !important;
   padding: 4px !important;
-  top: 162px !important;
+  top: 16px !important;
   right: 10px;
   position: fixed !important;
   
@@ -2160,8 +2456,12 @@ ul.hdr_profile {
   justify-content: space-between;
   width: 100%;
 }
+.redirect_all_button_clr{
+  margin-right: 0px !important;
+}
 .tab_cntnt_box {
-  padding-top: 80px !important;
+  /* padding-top: 80px !important; */
+  padding-top: 15px !important;
 }
 .manage_mobile_logo {
   padding: 8px;
@@ -2174,7 +2474,7 @@ ul.hdr_profile {
 }
 .mobile_top_pddng {
   /* padding-top: 13em !important; */
-  padding: 13em 8px !important;
+  padding: 9em 8px 20px!important;
 }
 .manage_top_header {
   position: relative !important;
@@ -2242,6 +2542,11 @@ main.right_sidebox {
     width: 100% !important;
     margin: auto;
   }
+  .manage_mobile_logo {
+    padding: 8px;
+    /* background-color: #fff; */
+    background: linear-gradient(180deg, rgba(37, 67, 54, 1) 35%, rgba(107, 138, 122, 1) 100%);
+}
   .mobile_justify_end{
     display: flex;
     justify-content: end !important;
@@ -2268,7 +2573,7 @@ main.right_sidebox {
   margin-top: 0px !important;
 }
 .pie-container {
-  margin: 34px 0 0;
+  /* margin: 34px 0 0; */
 }
 .form_flied_box {
   width: 94% !important;

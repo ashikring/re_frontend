@@ -11,6 +11,7 @@ import {
 } from "@mui/x-data-grid";
 import { useDispatch, useSelector } from "react-redux";
 import { getAdminAuditLogs } from "../../redux/actions/adminPortal_auditLogs";
+import { StyledDataGrid } from "../../pages/CustomDataGrid";
 
 const drawerWidth = 240;
 
@@ -67,7 +68,7 @@ function AdminAuditLog({ colorThem }) {
     {
       field: "log_id",
       headerName: "Log ID",
-      width: 80,
+      width: 90,
       headerClassName: "custom-header",
       headerAlign: "center",
       align: "center",
@@ -122,7 +123,7 @@ function AdminAuditLog({ colorThem }) {
     {
       field: "event_time",
       headerName: "Event Time",
-      width: 100,
+      width: 125,
       headerClassName: "custom-header",
       headerAlign: "center",
       align: "center",
@@ -147,7 +148,7 @@ function AdminAuditLog({ colorThem }) {
     {
       field: "event_details",
       headerName: "Event Details",
-      width: 120,
+      width: 130,
       headerAlign: "center",
       align: "center",
       headerClassName: "custom-header",
@@ -193,7 +194,7 @@ function AdminAuditLog({ colorThem }) {
     {
       field: "event_type",
       headerName: "Event Type",
-      width: 100,
+      width: 115,
       headerClassName: "custom-header",
       headerAlign: "center",
       align: "center",
@@ -298,7 +299,7 @@ function AdminAuditLog({ colorThem }) {
                     <div className="row">
                       <ThemeProvider theme={theme}>
                       <div style={{ height: '100%', width: '100%' }}>
-                          <DataGrid
+                          <StyledDataGrid
                             // checkboxSelection
                             className="tbl_innr_box"
                             rows={mockDataTeam}

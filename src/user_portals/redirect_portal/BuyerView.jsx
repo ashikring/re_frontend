@@ -1,9 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import "../../../src/style.css";
-import Backdrop from "@mui/material/Backdrop";
 import Box from "@mui/material/Box";
-import Modal from "@mui/material/Modal";
-import Fade from "@mui/material/Fade";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
@@ -25,7 +22,6 @@ import {
   Tooltip,
 } from "@mui/material";
 import {
-  DataGrid,
   GridToolbar,
   GridToolbarColumnsButton,
   GridToolbarContainer,
@@ -33,9 +29,7 @@ import {
   GridToolbarFilterButton,
 } from "@mui/x-data-grid";
 import {
-  Delete,
   Edit,
-  PlayArrow,
   Close,
   AccessTime as AccessTimeIcon,
 } from "@mui/icons-material";
@@ -61,14 +55,14 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { makeStyles } from "@mui/styles";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Menu from "@mui/material/Menu";
-// import MenuItem from '@mui/material/MenuItem';
 import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import axios from "axios";
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import PauseIcon from '@mui/icons-material/Pause';
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import PauseIcon from "@mui/icons-material/Pause";
 import { api } from "../../mockData";
 import { toast } from "react-toastify";
+import { StyledDataGrid } from "../../pages/CustomDataGrid";
 
 const useStyles = makeStyles({
   borderedGreen: {
@@ -132,7 +126,7 @@ const useStyles = makeStyles({
     },
   },
 });
-// ============>
+// ---------------><-----------------
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -215,20 +209,22 @@ function CustomToolbar() {
     </GridToolbarContainer>
   );
 }
-
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 500,
-  bgcolor: "background.paper",
-  // border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
+const InitialValues = {
+  buyerId: "",
+  buyerName: "",
+  status: "",
+  forwardNumber: "",
+  cc: "",
+  weightage: "",
+  dailyLimit: "",
+  redirectId: "",
+  fromDate: null,
+  toDate: null,
+  followWorkTime: false,
+  ringTimeout: 60,
 };
 
-function BuyerView({userThem}) {
+function BuyerView({ userThem }) {
   const state = useSelector((state) => state);
   const dispatch = useDispatch();
   const classes = useStyles();
@@ -237,162 +233,160 @@ function BuyerView({userThem}) {
   const [response, setResponse] = useState("");
   const [open, setOpen] = useState(false);
   const [edit, setEdit] = useState(false);
-  const [selectedValue, setSelectedValue] = useState("");
-  const [buyerId, setBuyerId] = useState("");
-  const [buyerName, setBuyerName] = useState("");
-  const [status, setStatus] = useState("");
-  const [forwardNumber, setForwardNumber] = useState("");
-  const [cc, setCc] = useState("");
-  const [weightage, setWeightage] = useState("");
-  const [dailyLimit, setDailyLimit] = useState("");
-  const [redirectId, setRedirectId] = useState("");
-  const [fromDate, setFromDate] = useState(null);
-  const [toDate, setToDate] = useState(null);
-  const [followWorkTime, setFollowWorkTime] = useState(false);
   const [alertMessage, setAlertMessage] = useState(false);
   const [campaignNumbers, setCampaignNumbers] = useState([]);
-  const [id, setId] = useState("");
-  const [name, setName] = useState("");
-      // State to manage the switch value
-      const [isSwitchChecked, setIsSwitchChecked] = useState(false);
-  
-      // Handler function for switch toggle
-      const handleSwitchChange = (event) => {
-        setIsSwitchChecked(event.target.checked);
-      };
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [isSwitchChecked, setIsSwitchChecked] = useState(false);
+  const [buyerData, setBuyerData] = useState(InitialValues);
+
+  const handleSwitchChange = (event) => {
+    setIsSwitchChecked(event.target.checked);
+  };
+
   const handleAddBuyerOpen = () => setOpen(true);
   const handleAddBuyerClose = () => {
     setOpen(false);
-    setWeightage("");
-    setForwardNumber("");
-    setBuyerName("");
-    setDailyLimit("");
-    setCc("");
-    setFromDate(null);
-    setToDate(null);
-    setFollowWorkTime(false);
+    setBuyerData({
+      buyerId: "",
+      buyerName: "",
+      status: "",
+      forwardNumber: "",
+      cc: "",
+      weightage: "",
+      dailyLimit: "",
+      redirectId: "",
+      fromDate: null,
+      toDate: null,
+      followWorkTime: false,
+      ringTimeout: 60,
+    });
   };
+
   const handleAlertClose = () => {
     setAlertMessage(false);
   };
+
   const handleEditrOpen = () => setEdit(true);
   const handleEditClose = () => {
     setEdit(false);
-    setWeightage("");
-    setForwardNumber("");
-    setBuyerName("");
-    setDailyLimit("");
-    setCc("");
-    setStatus("");
-    setFromDate(null);
-    setToDate(null);
-    setFollowWorkTime(false);
+    setBuyerData({
+      buyerId: "",
+      buyerName: "",
+      status: "",
+      forwardNumber: "",
+      cc: "",
+      weightage: "",
+      dailyLimit: "",
+      redirectId: "",
+      fromDate: null,
+      toDate: null,
+      followWorkTime: false,
+      ringTimeout: 60,
+    });
+  };
+
+  const handleSelectionChange = (selection) => {
+    setSelectedRows(selection);
   };
 
   const handleEdit = (data) => {
     handleEditrOpen();
-    setForwardNumber(data?.forward_number);
-    setBuyerName(data?.buyer_name);
-    setCc(data?.cc);
-    setWeightage(data?.weightage);
-    setDailyLimit(data?.daily_limit);
-    setStatus(data?.status);
-    setBuyerId(data?.buyer_id);
-    setRedirectId(data?.redirect_group_id);
-    setFromDate(data.working_start_time);
-    setToDate(data.working_end_time);
-    setFollowWorkTime(data.follow_working_time === false ? "f" : "t");
+    setBuyerData({
+      buyerId: data?.buyer_id,
+      buyerName: data?.buyer_name,
+      status: data?.status,
+      forwardNumber: data?.forward_number,
+      cc: data?.cc,
+      weightage: data?.weightage,
+      dailyLimit: data?.daily_limit,
+      redirectId: data?.redirect_group_id,
+      fromDate: data.working_start_time,
+      toDate: data.working_end_time,
+      followWorkTime: data.follow_working_time === false ? "f" : "t",
+      ringTimeout: data.ring_timeout,
+    });
   };
 
   const handleFromDateChange = (date) => {
     if (dayjs(date, "HH:mm", true).isValid()) {
-      // Convert the selected date to the desired format before updating state
-      setFromDate(dayjs(date).format("HH:mm"));
+      setBuyerData((prevData) => ({
+        ...prevData,
+        fromDate: dayjs(date).format("HH:mm"),
+      }));
     } else {
-      setFromDate(null);
+      setBuyerData((prevData) => ({
+        ...prevData,
+        fromDate: null,
+      }));
     }
   };
+
   const handleToDateChange = (date) => {
     if (dayjs(date, "HH:mm", true).isValid()) {
-      // Convert the selected date to the desired format before updating state
-      setToDate(dayjs(date).format("HH:mm"));
+      setBuyerData((prevData) => ({
+        ...prevData,
+        toDate: dayjs(date).format("HH:mm"),
+      }));
     } else {
-      setToDate(null);
+      setBuyerData((prevData) => ({
+        ...prevData,
+        toDate: null,
+      }));
     }
   };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    switch (name) {
-      case "forwardNumber":
-        const trimmedValue = value.trim();
-        setForwardNumber(trimmedValue);
-        break;
-      case "buyerName":
-        setBuyerName(value);
-        break;
-      case "dailyLimit":
-        setDailyLimit(value);
-        break;
-      case "cc":
-        setCc(value);
-        break;
-      case "weightage":
-        setWeightage(value);
-        break;
-      case "status":
-        setSelectedValue(value);
-        break;
-
-      default:
-        break;
-    }
+    setBuyerData((prevData) => ({
+      ...prevData,
+       [name]: name === "forwardNumber" ? value.trim() : value,
+    }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     let data = JSON.stringify({
       redirect_group_id: location.state.data.campaignId,
-      buyer_name: buyerName,
-      forward_number: forwardNumber,
-      cc: cc,
-      weightage: weightage,
-      daily_limit: dailyLimit,
-      working_start_time: fromDate,
-      working_end_time: toDate,
-      follow_working_time: followWorkTime === false ? "f" : "t",
+      buyer_name: buyerData.buyerName,
+      forward_number: buyerData.forwardNumber,
+      cc: buyerData.cc,
+      weightage: buyerData.weightage,
+      daily_limit: buyerData.dailyLimit,
+      working_start_time: buyerData.fromDate,
+      working_end_time: buyerData.toDate,
+      follow_working_time: buyerData.followWorkTime === false ? "f" : "t",
+      ring_timeout: JSON.parse(buyerData.ringTimeout),
     });
     dispatch(createRedirectBuyer(data, setResponse, handleAddBuyerClose));
   };
 
   const handleMessage = useCallback(
     (data) => {
-      setName(data?.buyer_name);
-      setId(data?.buyer_id);
+      setBuyerData((prevData) => ({
+        ...prevData,
+        buyerName: data?.buyer_name,
+        buyerId: data?.buyer_id,
+      }));
       setAlertMessage(true);
     },
-    [setName]
-  ); // Memoize event handler
-
-  const handleDelete = useCallback(() => {
-    dispatch(deleteRedirectBuyer(JSON.stringify({ id: id }), setResponse));
-    setAlertMessage(false);
-  }, [dispatch, setResponse, id]);
+    [setBuyerData]
+  );
 
   const handleUpdate = (e) => {
     e.preventDefault();
     let data = JSON.stringify({
-      id: buyerId,
-      redirect_group_id: redirectId,
-      buyer_name: buyerName,
-      cc: cc,
-      daily_limit: dailyLimit,
-      forward_number: forwardNumber,
-      status: status,
-      weightage: weightage,
-      working_start_time: fromDate,
-      working_end_time: toDate,
-      follow_working_time: followWorkTime,
+      id: buyerData.buyerId,
+      redirect_group_id: buyerData.redirectId,
+      buyer_name: buyerData.buyerName,
+      cc: buyerData.cc,
+      daily_limit: buyerData.dailyLimit,
+      forward_number: buyerData.forwardNumber,
+      status: buyerData.status,
+      weightage: buyerData.weightage,
+      working_start_time: buyerData.fromDate,
+      working_end_time: buyerData.toDate,
+      follow_working_time: buyerData.followWorkTime,
+      ring_timeout: JSON.parse(buyerData.ringTimeout),
     });
     dispatch(updateRedirectBuyer(data, handleEditClose, setResponse));
   };
@@ -428,31 +422,31 @@ function BuyerView({userThem}) {
     }
   }, []);
 
-   const handleTrigger = (val) => {
-      let data = JSON.stringify({
-        id: val.buyer_id,
-        status: val.status === true ? false : true,
-        redirect_group_id: val?.redirect_group_id,
-        buyer_name: val.buyer_name,
-        cc: val.cc,
-        daily_limit: val.daily_limit,
-        forward_number: val.forward_number,
-        weightage: val.weightage,
-        working_start_time: val.working_start_time,
-        working_end_time: val.working_end_time,
-        follow_working_time: val.follow_working_time === false ? "f" : "t",
-      });
-      if (
-        window.confirm(
-          `Are you sure! Do you want to ${
-            val.status === true ? "Deactive" : "Active"
-          }`
-        )
-      ) {
-        setResponse(data);
-        dispatch(updateRedirectBuyer(data, setResponse));
-      }
-    };
+  const handleTrigger = (val) => {
+    let data = JSON.stringify({
+      id: val.buyer_id,
+      status: val.status === true ? false : true,
+      redirect_group_id: val?.redirect_group_id,
+      buyer_name: val.buyer_name,
+      cc: val.cc,
+      daily_limit: val.daily_limit,
+      forward_number: val.forward_number,
+      weightage: val.weightage,
+      working_start_time: val.working_start_time,
+      working_end_time: val.working_end_time,
+      follow_working_time: val.follow_working_time === false ? "f" : "t",
+    });
+    if (
+      window.confirm(
+        `Are you sure! Do you want to ${
+          val.status === true ? "Deactive" : "Active"
+        }`
+      )
+    ) {
+      setResponse(data);
+      dispatch(updateRedirectBuyer(data, setResponse));
+    }
+  };
 
   const columns = [
     {
@@ -462,39 +456,34 @@ function BuyerView({userThem}) {
       headerAlign: "center",
       align: "center",
       sortable: false,
-      width: 140,
-      renderCell: (params) => {
-        return (
-          <div className="d-flex justify-content-between align-items-center">
-            <Tooltip title="Edit" disableInteractive interactive>
-              <IconButton onClick={() => handleEdit(params.row)}>
-                <Edit
-                  index={params.row.id}
-                  style={{ cursor: "pointer", color: "#42765f" }}
-                />
-              </IconButton>
-            </Tooltip>
-            {params.row.status === true ? (
+      width: 85,
+      renderCell: (params) => (
+        <div className="d-flex justify-content-between align-items-center">
+          <Tooltip title="Edit" disableInteractive interactive>
+            <IconButton onClick={() => handleEdit(params.row)}>
+              <Edit
+                index={params.row.id}
+                style={{ cursor: "pointer", color: "#42765f" }}
+              />
+            </IconButton>
+          </Tooltip>
+          {params.row.status === true ? (
             <Tooltip title="Deactive" disableInteractive interactive>
               <IconButton onClick={() => handleTrigger(params.row)}>
                 <PauseIcon style={{ cursor: "pointer", color: "#254336" }} />
               </IconButton>
             </Tooltip>
-             ) : (
-              <Tooltip title="Active" disableInteractive interactive>
+          ) : (
+            <Tooltip title="Active" disableInteractive interactive>
               <IconButton onClick={() => handleTrigger(params.row)}>
-                <PlayArrowIcon style={{ cursor: "pointer", color: "#ff7d00" }} />
+                <PlayArrowIcon
+                  style={{ cursor: "pointer", color: "#ff7d00" }}
+                />
               </IconButton>
             </Tooltip>
-             )}
-            <Tooltip title="Delete" disableInteractive interactive>
-              <IconButton onClick={() => handleMessage(params.row)}>
-                <Delete style={{ cursor: "pointer", color: "red" }} />
-              </IconButton>
-            </Tooltip>
-          </div>
-        );
-      },
+          )}
+        </div>
+      ),
     },
     {
       field: "buyer_name",
@@ -504,268 +493,154 @@ function BuyerView({userThem}) {
       width: 150,
       align: "center",
       renderCell: (params) => {
-        const formattedDate = dayjs(params.row.createdAt).format(
+        const formattedDate = dayjs(params.row.created_at).format(
           "DD MMM, YYYY"
         );
         return (
-          <>
-            <p style={{ margin: "0", lineHeight: "20px" }}>
-              {params.row.buyer_name}
-              <br />
-              <i style={{ margin: "0", fontSize: "13px" }}>
-                {" "}
-                <b>Created: {formattedDate}</b>
-              </i>
-            </p>
-          </>
+          <p style={{ margin: "0", lineHeight: "20px" }}>
+            {params.row.buyer_name}
+            <br />
+            <i style={{ margin: "0", fontSize: "13px" }}>
+              <b>Created: {formattedDate}</b>
+            </i>
+          </p>
         );
       },
     },
-    // {
-    //   field: "group_name",
-    //   headerName: "Group Name",
-    //   headerClassName: "custom-header",
-    //   headerAlign: "center",
-    //   width: 140,
-    //   align: "center",
-    // },
-    // {
-    //   field: "username",
-    //   headerName: "User Name",
-    //   width: 100,
-    //   headerClassName: "custom-header",
-    //   headerAlign: "center",
-    //   align: "center",
-    // },
     {
       field: "forward_number",
       headerName: "Forward Number",
       headerClassName: "custom-header",
       headerAlign: "center",
-      width: 140,
+      width: 150,
       align: "center",
+      renderCell: ((params)=>{
+        return(
+          <span style={{fontWeight: "bold"}}>
+            {params.row.forward_number}
+          </span>
+        )
+      })
     },
-
     {
       field: "cc",
-      headerName: "CC",
+      headerName: "CC Limit",
       headerClassName: "custom-header",
       headerAlign: "center",
-      width: 50,
+      width: 110,
       align: "center",
     },
-
     {
       field: "current_cc",
-      headerName: "Live Call",
+      headerName: "Live Calls",
       headerClassName: "custom-header",
       headerAlign: "center",
-      width: 100,
+      width: 110,
       align: "center",
+      renderCell: ((params)=>{
+        return(
+          <span style={{fontWeight: "bold"}}>
+            {params.row.current_cc}
+          </span>
+        )
+      })
     },
-
     {
       field: "daily_limit",
       headerName: "Daily Limit",
       headerClassName: "custom-header",
       headerAlign: "center",
-      width: 100,
+      width: 110,
       align: "center",
+    },
+    {
+      field: "current_daily_limit",
+      headerName: "Current Daily Limit",
+      headerClassName: "custom-header",
+      headerAlign: "center",
+      width: 165,
+      align: "center",
+      renderCell: ((params)=>{
+        return(
+          <span style={{fontWeight: "bold"}}>
+            {params.row.current_daily_limit}
+          </span>
+        )
+      })
     },
     {
       field: "weightage",
       headerName: "Weightage",
       headerClassName: "custom-header",
       headerAlign: "center",
-      width: 100,
+      width: 110,
       align: "center",
     },
-    // {
-    //      field: "status",
-    //      headerName: "Status",
-    //      width: 120,
-    //      headerAlign: "center",
-    //      align: "center",
-    //      headerClassName: "custom-header",
-    //      renderCell: (params) => {
-    //        return (
-    //          <>
-    //            {params.row.status === true ? (
-    //              <>
-    //                <Tooltip title="Active" disableInteractive interactive>
-    //                  <div
-    //                    className="d-flex justify-content-between align-items-center"
-    //                    style={{
-    //                      color: "#ffff",
-    //                      padding: "5px 12.5px",
-    //                      borderRadius: "5px",
-    //                      background: "#254336",
-    //                      width: "65px",
-    //                      cursor: "pointer",
-    //                      //transition: "background 0.3s, transform 0.2s",
-    //                    }}
-    //                    onMouseEnter={(e) => {
-    //                      e.currentTarget.style.background = "#1a2f25"; // Darker shade on hover
-    //                      e.currentTarget.style.transform = "scale(1.05)"; // Slight scaling
-    //                    }}
-    //                    onMouseLeave={(e) => {
-    //                      e.currentTarget.style.background = "#254336"; // Revert to original background
-    //                      e.currentTarget.style.transform = "scale(1.05)"; // Reset scaling
-    //                    }}
-    //                    onClick={() => handleTrigger(params.row)}
-    //                  >
-    //                    Active
-    //                  </div>
-    //                </Tooltip>
-    //              </>
-    //            ) : (
-    //              <>
-    //                <Tooltip title="Deactive" disableInteractive interactive>
-    //                  <div
-    //                    className="d-flex justify-content-between align-items-center"
-    //                    style={{
-    //                      color: "#ffff",
-    //                      // border: "1px solid red",
-    //                      padding: "5px 4.5px",
-    //                      borderRadius: "5px",
-    //                      width: "65px",
-    //                      background: "rgb(255 0 0)",
-    //                      cursor: "pointer",
-    //                    }}
-    //                    onMouseEnter={(e) => {
-    //                      e.currentTarget.style.background = "rgb(255 0 0)"; // Darker shade on hover
-    //                      e.currentTarget.style.transform = "scale(1.05)"; // Slight scaling
-    //                    }}
-    //                    onMouseLeave={(e) => {
-    //                      e.currentTarget.style.background = "rgb(228 20 2)"; // Revert to original background
-    //                      e.currentTarget.style.transform = "scale(1.05)"; // Reset scaling
-    //                    }}
-    //                    onClick={() => handleTrigger(params.row)}
-    //                  >
-    //                    Deactive
-    //                  </div>
-    //                </Tooltip>
-    //              </>
-    //            )}
-    //          </>
-    //        );
-    //      },
-    //    },
     {
-          field: "status",
-          headerName: "Status",
-          width: 120,
-          headerAlign: "center",
-          align: "center",
-          headerClassName: "custom-header",
-          renderCell: (params) => {
-            return (
-              <>
-                {params.row.status === true ? (
-                  <>
-                    <Tooltip title="Active" disableInteractive interactive>
-                      <div
-                        className="d-flex justify-content-between align-items-center"
-                        style={{
-                          color: "#254336",
-                          padding: "5px 12.5px",
-                          // borderRadius: "5px",
-                          // background: "#254336",
-                          // width: "65px",
-                          // cursor: "pointer",
-                          //transition: "background 0.3s, transform 0.2s",
-                        }}
-                        
-                      >
-                        Active
-                      </div>
-                    </Tooltip>
-                  </>
-                ) : (
-                  <>
-                    <Tooltip title="Deactivated" disableInteractive interactive>
-                      <div
-                        className="d-flex justify-content-between align-items-center"
-                        style={{
-                          color: "#ff7d00",
-                          // border: "1px solid red",
-                          padding: "5px 4.5px",
-                          // borderRadius: "5px",
-                          // width: "65px",
-                          // background: "rgb(255 0 0)",
-                          // cursor: "pointer",
-                        }}
-                      >
-                        Deactivated
-                      </div>
-                    </Tooltip>
-                  </>
-                )}
-              </>
-            );
-          },
-        },
-    {
-      field: "current_daily_limit",
-      headerName: "Current Daily Limit",
+      field: "ring_timeout",
+      headerName: "Ring Timeout",
       headerClassName: "custom-header",
       headerAlign: "center",
-      width: 150,
+      width: 120,
       align: "center",
     },
-
+    {
+      field: "status",
+      headerName: "Status",
+      width: 120,
+      headerAlign: "center",
+      align: "center",
+      headerClassName: "custom-header",
+      renderCell: (params) => (
+        <Tooltip
+          title={params.row.status === true ? "Active" : "Deactivated"}
+          disableInteractive
+          interactive
+        >
+          <div
+            className="d-flex justify-content-between align-items-center"
+            style={{
+              color: params.row.status === true ? "#254336" : "#ff7d00",
+              padding: "5px 4.5px",
+              fontWeight: "bold"
+            }}
+          >
+            {params.row.status === true ? "Active" : "Deactivated"}
+          </div>
+        </Tooltip>
+      ),
+    },
     {
       field: "follow_working_time",
       headerName: "Follow Working Time",
-      width: 150,
+      width: 170,
       headerAlign: "center",
       align: "center",
       headerClassName: "custom-header",
-      renderCell: (params) => {
-        return (
-          <>
-            {params.row.follow_working_time === true ? (
-              <>
-                <div
-                  className="d-flex justify-content-between align-items-center"
-                  style={{
-                    color: "green",
-                    padding: "5px 4.5px",
-                  }}
-                >
-                  Yes
-                </div>
-              </>
-            ) : (
-              <>
-                <div
-                  className="d-flex justify-content-between align-items-center"
-                  style={{
-                    color: "red",
-                    padding: "5px 4.5px",
-                  }}
-                >
-                  No
-                </div>
-              </>
-            )}
-          </>
-        );
-      },
+      renderCell: (params) => (
+        <div
+          className="d-flex justify-content-between align-items-center"
+          style={{
+            color: params.row.follow_working_time === true ? "green" : "red",
+            padding: "5px 4.5px",
+          }}
+        >
+          {params.row.follow_working_time === true ? "Yes" : "No"}
+        </div>
+      ),
     },
-
     {
       field: "working_start_time",
       headerName: "Start Time",
       headerClassName: "custom-header",
       headerAlign: "center",
-      width: 90,
+      width: 110,
       align: "center",
     },
     {
       field: "working_end_time",
       headerName: "End Time",
-      width: 90,
+      width: 110,
       headerClassName: "custom-header",
       headerAlign: "center",
       align: "center",
@@ -776,455 +651,474 @@ function BuyerView({userThem}) {
   state?.getRedirectBuyer?.RedirectBuyer?.data &&
     state?.getRedirectBuyer?.RedirectBuyer?.data?.forEach((item, index) => {
       if (isSwitchChecked ? item.status === true : true) {
-      mockDataTeam.push({
-        id: index + 1,
-        cc: item.cc,
-        group_name: item.group_name,
-        created_at: item.created_at,
-        current_cc: item.current_cc,
-        current_daily_limit: item.current_daily_limit,
-        daily_limit: item.daily_limit,
-        follow_working_time: item.follow_working_time,
-        forward_number: item.forward_number,
-        buyer_name: item.buyer_name,
-        buyer_id: item.id,
-        redirect_group_id: item.redirect_group_id,
-        status: item.status,
-        username: item.username,
-        weightage: item.weightage,
-        working_end_time: item.working_end_time,
-        working_start_time: item.working_start_time,
-      });
-    }
+        mockDataTeam.push({
+          id: index + 1,
+          cc: item.cc,
+          group_name: item.group_name,
+          created_at: item.created_at,
+          current_cc: item.current_cc,
+          current_daily_limit: item.current_daily_limit,
+          daily_limit: item.daily_limit,
+          follow_working_time: item.follow_working_time,
+          forward_number: item.forward_number,
+          buyer_name: item.buyer_name,
+          buyer_id: item.id,
+          redirect_group_id: item.redirect_group_id,
+          status: item.status,
+          username: item.username,
+          weightage: item.weightage,
+          working_end_time: item.working_end_time,
+          working_start_time: item.working_start_time,
+          ring_timeout: item.ring_timeout,
+        });
+      }
     });
+
+  const selectedCallerDataSet = new Set(); // Using Set to avoid duplicates
+
+  selectedRows.forEach((id) => {
+    const selectedRow = mockDataTeam.find((row) => row.id === id);
+    if (selectedRow) {
+      selectedCallerDataSet.add(selectedRow.buyer_id); // Add only buyer_id
+    }
+  });
+
+  const selectedCallerData = Array.from(selectedCallerDataSet); // Convert to comma-separated string
+
+  const handleDelete = useCallback(() => {
+    dispatch(
+      deleteRedirectBuyer(
+        JSON.stringify({ id: selectedCallerData }),
+        setResponse
+      )
+    );
+    setAlertMessage(false);
+    setSelectedRows([]);
+  }, [dispatch, setResponse, setSelectedRows, selectedCallerData]);
   return (
     <>
-     <div className={`App ${userThem} `}>
-     <div className="contant_box">
-      <div className="main">
-        <section className="sidebar-sec">
-          <div className="container-fluid">
-            <div className="row">
-              <div className="col-lg-12">
-                <div className="">
-                  {/* <!----> */}
-                  <div className="tab-content" id="pills-tabContent">
-                    <div
-                      className="tab-pane fade show active"
-                      id="pills-home"
-                      role="tabpanel"
-                      aria-labelledby="pills-home-tab"
-                    >
-                      {/* <!--role-contet--> */}
-                      <div className="tab_cntnt_box">
-                        {/* <div className="cntnt_title"> */}
+      <div className={`App ${userThem} `}>
+        <div className="contant_box">
+          <div className="main">
+            <section className="sidebar-sec">
+              <div className="container-fluid">
+                <div className="row">
+                  <div className="col-lg-12">
+                    <div className="">
+                      <div className="tab-content" id="pills-tabContent">
                         <div
-                          className="cntnt_title"
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                          }}
+                          className="tab-pane fade show active"
+                          id="pills-home"
+                          role="tabpanel"
+                          aria-labelledby="pills-home-tab"
                         >
-                          <h3 style={{ margin: "0px" }}>Buyer View</h3>
-
-                          <FormGroup
-                            style={{
-                              display: "flex",
-                              justifyContent: "center",
-                              alignItems: "center",
-                              marginRight: "30px",
-                            }}
-                          >
-                            <Stack
-                              direction="row"
-                              spacing={1}
+                          <div className="tab_cntnt_box">
+                            <div
+                              className="cntnt_title"
                               style={{
                                 display: "flex",
-                                justifyContent: "center",
+                                justifyContent: "space-between",
                                 alignItems: "center",
                               }}
                             >
-                              <Typography style={{ fontSize: "15px" }}>
-                                All
-                              </Typography>
-                              <FormControlLabel
-                                control={<IOSSwitch defaultChecked checked={isSwitchChecked}
-                                onChange={handleSwitchChange}/>}
-                              />
-                              <Typography style={{ fontSize: "15px" }}>
-                                Active
-                              </Typography>
-                            </Stack>
-                          </FormGroup>
-                        </div>
+                              <h3 style={{ margin: "0px" }}>Buyer View</h3>
 
-                        {/* mobile-view-start */}
-                        <div className="d-xxl-none d-xl-none d-lg-none d-md-none d-sm-block d-block">
-                          <div className="d-flex justify-content-between">
-                            <IconButton
-                              style={{
-                                padding: "10px",
-                                fontSize: "15px",
-                                borderRadius: "5px",
-                                border: "none",
-                                //backgroundColor: "rgb(9, 56, 134)",
-                                color: "#fff",
-                                // marginLeft: "auto",
-                                marginRight: "30px",
-                              }}
-                              className="redirect_all_button_clr"
-                              onClick={() => {
-                                dispatch({
-                                  type: GET_REDIRECT_BUYER_SUCCESS,
-                                  payload: [],
-                                });
-                                navigate("/redirect_portal/campaigns");
-                              }}
-                            >
-                              <ArrowBackIcon style={{ fontSize: "24px" }} />
-                              {/* Back */}
-                            </IconButton>
-
-                            <IconButton
-                              style={{
-                                padding: "10px",
-                                fontSize: "15px",
-                                borderRadius: "5px",
-                                border: "none",
-                                //backgroundColor: "rgb(9, 56, 134)",
-                                color: "#fff",
-
-                                marginRight: "0px",
-                              }}
-                              className="redirect_all_button_clr "
-                              onClick={handleAddBuyerOpen}
-                            >
-                              Add Buyer
-                              <AddOutlinedIcon />
-                            </IconButton>
-                          </div>
-                        </div>
-                        {/* mobile-view-end */}
-
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "end",
-                            marginBottom: "10px",
-                          }}
-                        >
-                          <p style={{ fontSize: "17px", color: "#000" }}>
-                            <b className="fnt_bld"> Campaign Name:</b>{" "}
-                            {location.state.data.group_name}
-                           
-                            {campaignNumbers[0] ? (
-                              <>
-                                <PopupState
-                                  variant="popover"
-                                  popupId="demo-popup-menu"
-                                  className="d-xxl-block d-xl-block d-lg-block d-md-block d-sm-none d-none"
+                              <FormGroup
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                  marginRight: "30px",
+                                }}
+                              >
+                                <Stack
+                                  direction="row"
+                                  spacing={1}
+                                  style={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                  }}
                                 >
-                                  {(popupState) => (
-                                    <React.Fragment>
-                                      <Button
-                                        variant="contained"
-                                        {...bindTrigger(popupState)}
-                                        className="mt-lg-0 mt-md-0 mt-sm-2 mt-2 ms-3"
-                                        endIcon={<KeyboardArrowDownIcon />}
-                                        style={{
-                                          marginLeft: "0px",
-                                          background: "transparent",
-                                          color: "black",
-                                        }}
-                                      >
-                                        Campaign Number
-                                      </Button>
-                                      <Menu {...bindMenu(popupState)}>
-                                        {campaignNumbers?.map((item, index) => (
-                                          <MenuItem
-                                            key={index}
-                                            style={{ cursor: "context-menu" }}
+                                  <Typography style={{ fontSize: "15px" }}>
+                                    All
+                                  </Typography>
+                                  <FormControlLabel
+                                    control={
+                                      <IOSSwitch
+                                        defaultChecked
+                                        checked={isSwitchChecked}
+                                        onChange={handleSwitchChange}
+                                      />
+                                    }
+                                  />
+                                  <Typography style={{ fontSize: "15px" }}>
+                                    Active
+                                  </Typography>
+                                </Stack>
+                              </FormGroup>
+                            </div>
+
+                            <div className="d-xxl-block d-xl-block d-lg-block d-md-block d-sm-block d-block">
+                              <div className="d-flex justify-content-between">
+                                {/* <IconButton
+                                  style={{
+                                    padding: "10px",
+                                    fontSize: "15px",
+                                    borderRadius: "5px",
+                                    border: "none",
+                                    color: "#fff",
+                                    marginRight: "30px",
+                                  }}
+                                  className="redirect_all_button_clr"
+                                  onClick={() => {
+                                    dispatch({
+                                      type: GET_REDIRECT_BUYER_SUCCESS,
+                                      payload: [],
+                                    });
+                                    navigate("/redirect_portal/campaigns");
+                                  }}
+                                >
+                                  <ArrowBackIcon style={{ fontSize: "24px" }} />
+                                </IconButton> */}
+
+<div
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "end",
+                                marginBottom: "10px",
+                              }}
+                            >
+                              <p style={{ fontSize: "17px", color: "#000" }}>
+                                <b className="fnt_bld"> Campaign Name:</b>{" "}
+                                {location.state.data.group_name}
+                                {campaignNumbers[0] ? (
+                                  <>
+                                    <PopupState
+                                      variant="popover"
+                                      popupId="demo-popup-menu"
+                                      className="d-xxl-block d-xl-block d-lg-block d-md-block d-sm-none d-none"
+                                    >
+                                      {(popupState) => (
+                                        <React.Fragment>
+                                          <Button
+                                            variant="contained"
+                                            {...bindTrigger(popupState)}
+                                            className="mt-lg-0 mt-md-0 mt-sm-2 mt-2 ms-xxl-3 ms-xl-3 ms-lg-3 ms-md-3 ms-sm-0 ms-0"
+                                            endIcon={<KeyboardArrowDownIcon />}
+                                            style={{
+                                              marginLeft: "0px",
+                                              background: "transparent",
+                                              color: "black",
+                                            }}
                                           >
-                                            {item}
-                                          </MenuItem>
-                                        ))}
-                                      </Menu>
-                                    </React.Fragment>
-                                  )}
-                                </PopupState>
-                              </>
-                            ) : (
-                              <></>
-                            )}
-                          </p>
+                                            Campaign Number
+                                          </Button>
+                                          <Menu {...bindMenu(popupState)}>
+                                            {campaignNumbers?.map(
+                                              (item, index) => (
+                                                <MenuItem
+                                                  key={index}
+                                                  style={{
+                                                    cursor: "context-menu",
+                                                  }}
+                                                >
+                                                  {item}
+                                                </MenuItem>
+                                              )
+                                            )}
+                                          </Menu>
+                                        </React.Fragment>
+                                      )}
+                                    </PopupState>
+                                  </>
+                                ) : (
+                                  <></>
+                                )}
+                              </p>
 
-                          <div
-                            className="d-flex justify-content-between
-                          d-xxl-block d-xl-block d-lg-block d-md-block d-sm-none d-none
-                          "
-                          >
-                            <IconButton
-                              style={{
-                                padding: "10px",
-                                fontSize: "15px",
-                                borderRadius: "5px",
-                                border: "none",
-                                //backgroundColor: "rgb(9, 56, 134)",
-                                color: "#fff",
-                                // marginLeft: "auto",
-                                marginRight: "30px",
-                              }}
-                              className="redirect_all_button_clr"
-                              onClick={() => {
-                                dispatch({
-                                  type: GET_REDIRECT_BUYER_SUCCESS,
-                                  payload: [],
-                                });
-                                navigate("/redirect_portal/campaigns");
-                              }}
-                            >
-                              <ArrowBackIcon style={{ fontSize: "24px" }} />
-                              {/* Back */}
-                            </IconButton>
-
-                            <IconButton
-                              style={{
-                                padding: "10px",
-                                fontSize: "15px",
-                                borderRadius: "5px",
-                                border: "none",
-                                //backgroundColor: "rgb(9, 56, 134)",
-                                color: "#fff",
-
-                                marginRight: "0px",
-                              }}
-                              className="redirect_all_button_clr "
-                              onClick={handleAddBuyerOpen}
-                            >
-                              Add Buyer
-                              <AddOutlinedIcon />
-                            </IconButton>
-                          </div>
-                        </div>
-
-                        {/* -----   Add Buyer Modal Start   ----- */}
-
-                      
-
-                        <Dialog
-                            open={open}
-                            onClose={handleAddBuyerClose}
-                            sx={{ textAlign: "center" }}
-                          > 
-                           <Box>
-                <IconButton
-                  onClick={handleAddBuyerClose}
-                  sx={{
-                    float: "inline-end",
-                    display: "flex",
-                    justifyContent: "end",
-                    margin: "10px 10px 0px 0px",
-                  }}
-                >
-                  <Close />
-                </IconButton>
-              </Box>
-              <DialogTitle
-               className="modal_heading"
-                sx={{ color: "#133325", fontWeight: "600", width: "500px" }}
-              >
-                
-                Add Buyer
-              </DialogTitle>
-
-
-                            <DialogContent>
-                              <form>
                             
-                              <form
-                                     style={{
+                            </div>
+
+
+                                <div>
+                                <IconButton
+                                  style={{
+                                    padding: "10px",
+                                    fontSize: "15px",
+                                    borderRadius: "5px",
+                                    border: "none",
+                                    color: "#fff",
+                                    marginRight: "0px",
+                                  }}
+                                  className="redirect_all_button_clr "
+                                  onClick={handleAddBuyerOpen}
+                                >
+                                  Add
+                                  <AddOutlinedIcon />
+                                </IconButton>
+                                </div>
+
+                               
+                              </div>
+                            </div>
+
+                           
+                            <Dialog
+                              open={open}
+                              onClose={handleAddBuyerClose}
+                              sx={{ textAlign: "center" }}
+                            >
+                              <Box>
+                                <IconButton
+                                  onClick={handleAddBuyerClose}
+                                  sx={{
+                                    float: "inline-end",
+                                    display: "flex",
+                                    justifyContent: "end",
+                                    margin: "10px 10px 0px 0px",
+                                  }}
+                                >
+                                  <Close />
+                                </IconButton>
+                              </Box>
+                              <DialogTitle
+                                className="modal_heading"
+                                sx={{
+                                  color: "#133325",
+                                  fontWeight: "600",
+                                  width: "500px",
+                                }}
+                              >
+                                Add Buyer
+                              </DialogTitle>
+
+                              <DialogContent>
+                                <form>
+                                  <form
+                                    style={{
                                       textAlign: "center",
                                       height: "348px",
-                                      // overflow: "auto",
                                       paddingTop: "10px",
                                       padding: "5px",
                                       width: "auto",
                                     }}
                                   >
-                                     <TextField
-                                  style={{
-                                    width: "100%",
-                                    margin: " 5px 0 5px 0",
-                                  }}
-                                  type="text"
-                                  label="Buyer Name"
-                                  variant="outlined"
-                                  name="buyerName"
-                                  value={buyerName}
-                                  onChange={(e) => {
-                                    setBuyerName(e.target.value);
-                                  }}
-                                />
-                                <br />
-                                <TextField
-                                  style={{
-                                    width: "100%",
-                                    margin: " 5px 0 5px 0",
-                                  }}
-                                  type="text"
-                                  label="Forword Number"
-                                  variant="outlined"
-                                  name="forwardNumber"
-                                  value={forwardNumber}
-                                  onChange={(e) => {
-                                    const numericValue = e.target.value.replace(
-                                      /[^0-9]/g,
-                                      ""
-                                    );
-                                    setForwardNumber(numericValue);
-                                  }}
-                                  inputProps={{
-                                    inputMode: "numeric",
-                                    // pattern: '[0-9]*',
-                                  }}
-                                />
-                                <TextField
-                                  style={{
-                                    width: "100%",
-                                    margin: " 5px 0 5px 0",
-                                  }}
-                                  type="text"
-                                  label="CC (Concurrent Call)"
-                                  variant="outlined"
-                                  name="cc"
-                                  value={cc}
-                                  onChange={(e) => {
-                                    setCc(e.target.value);
-                                  }}
-                                />
+                                    <TextField
+                                      style={{
+                                        width: "100%",
+                                        margin: " 5px 0 5px 0",
+                                      }}
+                                      type="text"
+                                      label="Buyer Name"
+                                      variant="outlined"
+                                      name="buyerName"
+                                      value={buyerData.buyerName}
+                                      onChange={(e) => {
+                                        setBuyerData((prevData) => ({
+                                          ...prevData,
+                                          buyerName: e.target.value,
+                                        }));
+                                      }}
+                                    />
+                                    <br />
+                                    <TextField
+                                      style={{
+                                        width: "100%",
+                                        margin: " 5px 0 5px 0",
+                                      }}
+                                      type="text"
+                                      label="Forward Number"
+                                      variant="outlined"
+                                      name="forwardNumber"
+                                      value={buyerData.forwardNumber}
+                                      onChange={(e) => {
+                                        const numericValue =
+                                          e.target.value.replace(/[^0-9]/g, "");
+                                        setBuyerData((prevData) => ({
+                                          ...prevData,
+                                          forwardNumber: numericValue,
+                                        }));
+                                      }}
+                                      inputProps={{
+                                        inputMode: "numeric",
+                                      }}
+                                    />
+                                    <TextField
+                                      style={{
+                                        width: "100%",
+                                        margin: " 5px 0 5px 0",
+                                      }}
+                                      type="text"
+                                      label="CC (Concurrent Call)"
+                                      variant="outlined"
+                                      name="cc"
+                                      value={buyerData.cc}
+                                      onChange={(e) => {
+                                        setBuyerData((prevData) => ({
+                                          ...prevData,
+                                          cc: e.target.value,
+                                        }));
+                                      }}
+                                    />
 
-                                <br />
-                                <TextField
-                                  style={{
-                                    width: "100%",
-                                    margin: " 5px 0 5px 0",
-                                  }}
-                                  type="text"
-                                  label="Weightage"
-                                  variant="outlined"
-                                  name="weightage"
-                                  value={weightage}
-                                  onChange={(e) => {
-                                    setWeightage(e.target.value);
-                                  }}
-                                />
-                                <br />
-                                <TextField
-                                  style={{
-                                    width: "100%",
-                                    margin: " 5px 0 5px 0",
-                                  }}
-                                  type="text"
-                                  label="Daily Limit"
-                                  variant="outlined"
-                                  value={dailyLimit}
-                                  onChange={(e) => {
-                                    setDailyLimit(e.target.value);
-                                  }}
-                                />
-                                <FormControl
-                                  fullWidth
-                                  style={{ margin: " 5px 0 5px 0" }}
-                                >
-                                  <InputLabel id="demo-simple-select-label">
-                                    Follow Work Time
-                                  </InputLabel>
-                                  <Select
-                                    style={{ textAlign: "left" }}
-                                    labelId="demo-simple-select-label"
-                                    id="demo-simple-select"
-                                    label="Follow Work Time"
-                                    value={followWorkTime}
-                                    onChange={(e) =>
-                                      setFollowWorkTime(e.target.value)
-                                    }
-                                  >
-                                    <MenuItem value={true}>True</MenuItem>
-                                    <MenuItem value={false}>False</MenuItem>
-                                  </Select>
-                                </FormControl>
-                                <LocalizationProvider
-                                  dateAdapter={AdapterDayjs}
-                                  className={classes.formControl}
-                                >
-                                  <DemoContainer
-                                    components={["TimePicker"]}
-                                    sx={{ width: "100%" }}
-                                  >
-                                    <MobileTimePicker
-                                      className="frm_date"
-                                      label="Working Start Time"
-                                      value={
-                                        fromDate
-                                          ? dayjs(fromDate, "HH:mm")
-                                          : null
-                                      }
-                                      onChange={handleFromDateChange}
-                                      renderInput={(props) => (
-                                        <TextField
-                                          {...props}
-                                          style={{ width: "100%" }}
-                                          InputProps={{
-                                            startAdornment: (
-                                              <InputAdornment position="start">
-                                                <AccessTimeIcon />
-                                              </InputAdornment>
-                                            ),
-                                          }}
+                                    <br />
+                                    <TextField
+                                      style={{
+                                        width: "100%",
+                                        margin: " 5px 0 5px 0",
+                                      }}
+                                      type="text"
+                                      label="Weightage"
+                                      variant="outlined"
+                                      name="weightage"
+                                      value={buyerData.weightage}
+                                      onChange={(e) => {
+                                        setBuyerData((prevData) => ({
+                                          ...prevData,
+                                          weightage: e.target.value,
+                                        }));
+                                      }}
+                                    />
+                                    <br />
+                                    <TextField
+                                      style={{
+                                        width: "100%",
+                                        margin: " 5px 0 5px 0",
+                                      }}
+                                      type="text"
+                                      label="Daily Limit"
+                                      variant="outlined"
+                                      value={buyerData.dailyLimit}
+                                      onChange={(e) => {
+                                        setBuyerData((prevData) => ({
+                                          ...prevData,
+                                          dailyLimit: e.target.value,
+                                        }));
+                                      }}
+                                    />
+                                    <TextField
+                                      style={{
+                                        width: "100%",
+                                        margin: "7px 0",
+                                      }}
+                                      type="text"
+                                      label="Ring Timeout"
+                                      variant="outlined"
+                                      name="tfnNumber"
+                                      value={buyerData.ringTimeout}
+                                      onChange={(e) => {
+                                        const numericValue =
+                                          e.target.value.replace(/[^0-9]/g, "");
+                                        setBuyerData((prevData) => ({
+                                          ...prevData,
+                                          ringTimeout: numericValue,
+                                        }));
+                                      }}
+                                      inputProps={{
+                                        inputMode: "numeric",
+                                        // pattern: '[0-9]*',
+                                      }}
+                                    />
+                                    <FormControl
+                                      fullWidth
+                                      style={{ margin: " 5px 0 5px 0" }}
+                                    >
+                                      <InputLabel id="demo-simple-select-label">
+                                        Follow Work Time
+                                      </InputLabel>
+                                      <Select
+                                        style={{ textAlign: "left" }}
+                                        labelId="demo-simple-select-label"
+                                        id="demo-simple-select"
+                                        label="Follow Work Time"
+                                        value={buyerData.followWorkTime}
+                                        onChange={(e) =>
+                                          setBuyerData((prevData) => ({
+                                            ...prevData,
+                                            followWorkTime: e.target.value,
+                                          }))
+                                        }
+                                      >
+                                        <MenuItem value={true}>Yes</MenuItem>
+                                        <MenuItem value={false}>No</MenuItem>
+                                      </Select>
+                                    </FormControl>
+                                    <LocalizationProvider
+                                      dateAdapter={AdapterDayjs}
+                                      className={classes.formControl}
+                                    >
+                                      <DemoContainer
+                                        components={["TimePicker"]}
+                                        sx={{ width: "100%" }}
+                                      >
+                                        <MobileTimePicker
+                                          className="frm_date"
+                                          label="Working Start Time"
+                                          value={
+                                            buyerData.fromDate
+                                              ? dayjs(
+                                                  buyerData.fromDate,
+                                                  "HH:mm"
+                                                )
+                                              : null
+                                          }
+                                          onChange={handleFromDateChange}
+                                          renderInput={(props) => (
+                                            <TextField
+                                              {...props}
+                                              style={{ width: "100%" }}
+                                              InputProps={{
+                                                startAdornment: (
+                                                  <InputAdornment position="start">
+                                                    <AccessTimeIcon />
+                                                  </InputAdornment>
+                                                ),
+                                              }}
+                                            />
+                                          )}
                                         />
-                                      )}
-                                    />
-                                  </DemoContainer>
-                                </LocalizationProvider>
+                                      </DemoContainer>
+                                    </LocalizationProvider>
 
-                                <LocalizationProvider
-                                  dateAdapter={AdapterDayjs}
-                                  className={classes.formControl}
-                                >
-                                  <DemoContainer
-                                    components={["TimePicker"]}
-                                    sx={{ width: "100%" }}
-                                  >
-                                    <MobileTimePicker
-                                      className="frm_date"
-                                      label="Working End Time"
-                                      value={
-                                        toDate ? dayjs(toDate, "HH:mm") : null
-                                      } // Convert selectedDate to a dayjs object
-                                      onChange={handleToDateChange}
-                                      renderInput={(props) => (
-                                        <TextField
-                                          {...props}
-                                          style={{ width: "100%" }}
-                                        /> // Ensures TextField takes full width
-                                      )}
-                                    />
-                                  </DemoContainer>
-                                </LocalizationProvider>
+                                    <LocalizationProvider
+                                      dateAdapter={AdapterDayjs}
+                                      className={classes.formControl}
+                                    >
+                                      <DemoContainer
+                                        components={["TimePicker"]}
+                                        sx={{ width: "100%" }}
+                                      >
+                                        <MobileTimePicker
+                                          className="frm_date"
+                                          label="Working End Time"
+                                          value={
+                                            buyerData.toDate
+                                              ? dayjs(buyerData.toDate, "HH:mm")
+                                              : null
+                                          }
+                                          onChange={handleToDateChange}
+                                          renderInput={(props) => (
+                                            <TextField
+                                              {...props}
+                                              style={{ width: "100%" }}
+                                            />
+                                          )}
+                                        />
+                                      </DemoContainer>
+                                    </LocalizationProvider>
                                   </form>
-                             
-                              </form>
-                            </DialogContent>
-                            <DialogActions
-                                  sx={{
-                                    display: "flex",
-                                    justifyContent: "center",
-                                   paddingBottom: "20px",
-                                  }}
-                                >
-                                  <Button
+                                </form>
+                              </DialogContent>
+                              <DialogActions
+                                sx={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  paddingBottom: "20px",
+                                }}
+                              >
+                                <Button
                                   variant="contained"
                                   className="all_button_clr"
                                   color="primary"
@@ -1240,332 +1134,364 @@ function BuyerView({userThem}) {
                                 >
                                   Save
                                 </Button>
-                                </DialogActions>
-                          </Dialog>
+                              </DialogActions>
+                            </Dialog>
 
-                        {/* -----   Add Buyer Modal End   ----- */}
-
-                        {/* Delete Confirmation Modal Start  */}
-                        <Dialog
-                          open={alertMessage}
-                          onClose={handleAlertClose}
-                          aria-labelledby="alert-dialog-title"
-                          aria-describedby="alert-dialog-description"
-                          sx={{ textAlign: "center" }}
-                          //className="bg_imagess"
-                        >
-                          <DialogTitle
-                            id="alert-dialog-title"
-                            sx={{ color: "#133325", fontWeight: "600" }}
-                          >
-                            {"Delete Confirmation"}
-                          </DialogTitle>
-                          <DialogContent>
-                            <DialogContentText
-                              id="alert-dialog-description"
-                              sx={{ paddingBottom: "0px !important" }}
+                            <Dialog
+                              open={alertMessage}
+                              onClose={handleAlertClose}
+                              aria-labelledby="alert-dialog-title"
+                              aria-describedby="alert-dialog-description"
+                              sx={{ textAlign: "center" }}
                             >
-                              Are you sure you want to delete {name} ?
-                            </DialogContentText>
-                          </DialogContent>
-                          <DialogActions
-                            sx={{
-                              display: "flex",
-                              justifyContent: "center",
-                              paddingBottom: "20px",
-                            }}
-                          >
-                            <Button
-                              variant="contained"
-                              sx={{
-                                fontSize: "16px !impotant",
-                                background:
-                                  "linear-gradient(180deg, #0E397F 0%, #001E50 100%) !important",
-                                marginTop: "20px",
-                                marginLeft: "0px !important",
-                                padding: "10px 20px !important",
-                                textTransform: "capitalize !important",
-                              }}
-                              className="all_button_clr"
-                              color="info"
-                              onClick={handleAlertClose}
-                              autoFocus
+                              <DialogTitle
+                                id="alert-dialog-title"
+                                sx={{ color: "#133325", fontWeight: "600" }}
+                              >
+                                {"Delete Confirmation"}
+                              </DialogTitle>
+                              <DialogContent>
+                                <DialogContentText
+                                  id="alert-dialog-description"
+                                  sx={{ paddingBottom: "0px !important" }}
+                                >
+                                  Are you sure you want to delete{" "}
+                                  {buyerData.buyerName} ?
+                                </DialogContentText>
+                              </DialogContent>
+                              <DialogActions
+                                sx={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  paddingBottom: "20px",
+                                }}
+                              >
+                                <Button
+                                  variant="contained"
+                                  sx={{
+                                    fontSize: "16px !impotant",
+                                    background:
+                                      "linear-gradient(180deg, #0E397F 0%, #001E50 100%) !important",
+                                    marginTop: "20px",
+                                    marginLeft: "0px !important",
+                                    padding: "10px 20px !important",
+                                    textTransform: "capitalize !important",
+                                  }}
+                                  className="all_button_clr"
+                                  color="info"
+                                  onClick={handleAlertClose}
+                                  autoFocus
+                                >
+                                  Cancel
+                                </Button>
+                                <Button
+                                  variant="contained"
+                                  sx={{
+                                    fontSize: "16px !impotant",
+                                    marginTop: "20px",
+                                    padding: "10px 20px !important",
+                                    textTransform: "capitalize !important",
+                                    marginLeft: "0px !important",
+                                    marginRight: "0px !important",
+                                  }}
+                                  className="all_button_clr"
+                                  color="error"
+                                  onClick={handleDelete}
+                                  startIcon={<DeleteIcon />}
+                                >
+                                  Delete
+                                </Button>
+                              </DialogActions>
+                            </Dialog>
+
+                            <Dialog
+                              open={edit}
+                              onClose={handleEditClose}
+                              sx={{ textAlign: "center" }}
                             >
-                              Cancel
-                            </Button>
-                            <Button
-                              variant="contained"
-                              sx={{
-                                fontSize: "16px !impotant",
-                                marginTop: "20px",
-                                padding: "10px 20px !important",
-                                textTransform: "capitalize !important",
-                                marginLeft: "0px !important",
-                                marginRight: "0px !important",
-                              }}
-                              className="all_button_clr"
-                              color="error"
-                              onClick={handleDelete}
-                              startIcon={<DeleteIcon />}
-                            >
-                              Delete
-                            </Button>
-                          </DialogActions>
-                        </Dialog>
-                        {/* Delete Confirmation Modal End  */}
+                              <Box>
+                                <IconButton
+                                  onClick={handleEditClose}
+                                  sx={{
+                                    float: "inline-end",
+                                    display: "flex",
+                                    justifyContent: "end",
+                                    margin: "10px 10px 0px 0px",
+                                  }}
+                                >
+                                  <Close />
+                                </IconButton>
+                              </Box>
+                              <DialogTitle
+                                className="modal_heading"
+                                sx={{
+                                  color: "#133325",
+                                  fontWeight: "600",
+                                  width: "500px",
+                                }}
+                              >
+                                Update Buyer
+                              </DialogTitle>
 
-                        {/* -----   Edit Modal Start   ----- */}
-
-                        <Dialog
-                            open={edit}
-                            onClose={handleEditClose}
-                            sx={{ textAlign: "center" }}
-                          > 
-                           <Box>
-                <IconButton
-                  onClick={handleEditClose}
-                  sx={{
-                    float: "inline-end",
-                    display: "flex",
-                    justifyContent: "end",
-                    margin: "10px 10px 0px 0px",
-                  }}
-                >
-                  <Close />
-                </IconButton>
-              </Box>
-              <DialogTitle
-               className="modal_heading"
-                sx={{ color: "#133325", fontWeight: "600", width: "500px" }}
-              >
-                
-                Update Buyer
-              </DialogTitle>
-
-
-                            <DialogContent>
-                              <form>
-                            
-                              <form
-                                     style={{
+                              <DialogContent>
+                                <form>
+                                  <form
+                                    style={{
                                       textAlign: "center",
                                       height: "348px",
-                                      // overflow: "auto",
                                       paddingTop: "10px",
                                       padding: "5px",
                                       width: "auto",
                                     }}
                                   >
-                                    
-                                <TextField
-                                  style={{
-                                    width: "100%",
-                                    margin: " 5px 0 5px 0",
-                                  }}
-                                  type="text"
-                                  label="Buyer Name"
-                                  variant="outlined"
-                                  name="buyerName"
-                                  value={buyerName}
-                                  onChange={handleChange}
-                                />
-                                <br />
-                                <TextField
-                                  style={{
-                                    width: "100%",
-                                    margin: " 5px 0 5px 0",
-                                  }}
-                                  type="text"
-                                  label="Forword Number"
-                                  variant="outlined"
-                                  name="forwardNumber"
-                                  value={forwardNumber}
-                                  onChange={(e) => {
-                                    const numericValue = e.target.value.replace(
-                                      /[^0-9]/g,
-                                      ""
-                                    );
-                                    setForwardNumber(numericValue);
-                                  }}
-                                  inputProps={{
-                                    inputMode: "numeric",
-                                    // pattern: '[0-9]*',
-                                  }}
-                                />
-                                <TextField
-                                  style={{
-                                    width: "100%",
-                                    margin: " 5px 0 5px 0",
-                                  }}
-                                  type="text"
-                                  label="CC (Concurrent Call)"
-                                  variant="outlined"
-                                  name="cc"
-                                  value={cc}
-                                  onChange={handleChange}
-                                />
-
-                                <br />
-                                <TextField
-                                  style={{
-                                    width: "100%",
-                                    margin: " 5px 0 5px 0",
-                                  }}
-                                  type="text"
-                                  label="Weightage"
-                                  variant="outlined"
-                                  name="weightage"
-                                  value={weightage}
-                                  onChange={handleChange}
-                                />
-                                <br />
-                                <TextField
-                                  style={{
-                                    width: "100%",
-                                    margin: " 5px 0 5px 0",
-                                  }}
-                                  type="text"
-                                  label="Daily Limit"
-                                  variant="outlined"
-                                  name="dailyLimit"
-                                  value={dailyLimit}
-                                  onChange={handleChange}
-                                />
-
-                                <FormControl
-                                  fullWidth
-                                  style={{ margin: " 5px 0 5px 0" }}
-                                >
-                                  <InputLabel id="demo-simple-select-label">
-                                    Status
-                                  </InputLabel>
-                                  <Select
-                                    style={{ textAlign: "left" }}
-                                    labelId="demo-simple-select-label"
-                                    id="demo-simple-select"
-                                    value={status}
-                                    label="Status"
-                                    onChange={(e) => setStatus(e.target.value)}
-                                  >
-                                    <MenuItem value={true}>Active</MenuItem>
-                                    <MenuItem value={false}>Deactive</MenuItem>
-                                  </Select>
-                                </FormControl>
-
-                                <FormControl
-                                  fullWidth
-                                  style={{ margin: " 5px 0 5px 0" }}
-                                >
-                                  <InputLabel id="demo-simple-select-label">
-                                    Follow Work Time
-                                  </InputLabel>
-                                  <Select
-                                    style={{ textAlign: "left" }}
-                                    labelId="demo-simple-select-label"
-                                    id="demo-simple-select"
-                                    label="Follow Work Time"
-                                    value={followWorkTime}
-                                    onChange={(e) =>
-                                      setFollowWorkTime(e.target.value)
-                                    }
-                                  >
-                                    <MenuItem value={"t"}>True</MenuItem>
-                                    <MenuItem value={"f"}>False</MenuItem>
-                                  </Select>
-                                </FormControl>
-
-                                <LocalizationProvider
-                                  dateAdapter={AdapterDayjs}
-                                  className={classes.formControl}
-                                >
-                                  <DemoContainer
-                                    components={["TimePicker"]}
-                                    sx={{ width: "100%" }}
-                                  >
-                                    <MobileTimePicker
-                                      className="frm_date"
-                                      label="Working Start Time"
-                                      value={
-                                        fromDate
-                                          ? dayjs()
-                                              .hour(
-                                                parseInt(
-                                                  fromDate.split(":")[0],
-                                                  10
-                                                )
-                                              )
-                                              .minute(
-                                                parseInt(
-                                                  fromDate.split(":")[1],
-                                                  10
-                                                )
-                                              )
-                                              .second(0) // Set the time using the stored string (11:00:00)
-                                          : null
-                                      } // Convert selectedDate to a dayjs object
-                                      onChange={handleFromDateChange}
-                                      renderInput={(props) => (
-                                        <TextField
-                                          {...props}
-                                          style={{ width: "100%" }}
-                                        /> // Ensures TextField takes full width
-                                      )}
+                                    <TextField
+                                      style={{
+                                        width: "100%",
+                                        margin: " 5px 0 5px 0",
+                                      }}
+                                      type="text"
+                                      label="Buyer Name"
+                                      variant="outlined"
+                                      name="buyerName"
+                                      value={buyerData.buyerName}
+                                      onChange={handleChange}
                                     />
-                                  </DemoContainer>
-                                </LocalizationProvider>
-
-                                <LocalizationProvider
-                                  dateAdapter={AdapterDayjs}
-                                  className={classes.formControl}
-                                >
-                                  <DemoContainer
-                                    components={["TimePicker"]}
-                                    sx={{ width: "100%" }}
-                                  >
-                                    <MobileTimePicker
-                                      className="frm_date"
-                                      label="Working End Time"
-                                      value={
-                                        toDate
-                                          ? dayjs()
-                                              .hour(
-                                                parseInt(
-                                                  toDate.split(":")[0],
-                                                  10
-                                                )
-                                              )
-                                              .minute(
-                                                parseInt(
-                                                  toDate.split(":")[1],
-                                                  10
-                                                )
-                                              )
-                                              .second(0) // Set the time using the stored string (11:00:00)
-                                          : null
-                                      } // Convert selectedDate to a dayjs object
-                                      onChange={handleToDateChange}
-                                      renderInput={(props) => (
-                                        <TextField
-                                          {...props}
-                                          style={{ width: "100%" }}
-                                        /> // Ensures TextField takes full width
-                                      )}
+                                    <br />
+                                    <TextField
+                                      style={{
+                                        width: "100%",
+                                        margin: " 5px 0 5px 0",
+                                      }}
+                                      type="text"
+                                      label="Forward Number"
+                                      variant="outlined"
+                                      name="forwardNumber"
+                                      value={buyerData.forwardNumber}
+                                      onChange={(e) => {
+                                        const numericValue =
+                                          e.target.value.replace(/[^0-9]/g, "");
+                                        setBuyerData((prevData) => ({
+                                          ...prevData,
+                                          forwardNumber: numericValue,
+                                        }));
+                                      }}
+                                      inputProps={{
+                                        inputMode: "numeric",
+                                      }}
                                     />
-                                  </DemoContainer>
-                                </LocalizationProvider>
-                             
+                                    <TextField
+                                      style={{
+                                        width: "100%",
+                                        margin: " 5px 0 5px 0",
+                                      }}
+                                      type="text"
+                                      label="CC (Concurrent Call)"
+                                      variant="outlined"
+                                      name="cc"
+                                      value={buyerData.cc}
+                                      onChange={handleChange}
+                                    />
+
+                                    <br />
+                                    <TextField
+                                      style={{
+                                        width: "100%",
+                                        margin: " 5px 0 5px 0",
+                                      }}
+                                      type="text"
+                                      label="Weightage"
+                                      variant="outlined"
+                                      name="weightage"
+                                      value={buyerData.weightage}
+                                      onChange={handleChange}
+                                    />
+                                    <br />
+                                    <TextField
+                                      style={{
+                                        width: "100%",
+                                        margin: " 5px 0 5px 0",
+                                      }}
+                                      type="text"
+                                      label="Daily Limit"
+                                      variant="outlined"
+                                      name="dailyLimit"
+                                      value={buyerData.dailyLimit}
+                                      onChange={handleChange}
+                                    />
+                                    <TextField
+                                      style={{
+                                        width: "100%",
+                                        margin: "7px 0",
+                                      }}
+                                      type="text"
+                                      label="Ring Timeout"
+                                      variant="outlined"
+                                      name="tfnNumber"
+                                      value={buyerData.ringTimeout}
+                                      onChange={(e) => {
+                                        const numericValue =
+                                          e.target.value.replace(/[^0-9]/g, "");
+                                        setBuyerData((prevData) => ({
+                                          ...prevData,
+                                          ringTimeout: numericValue,
+                                        }));
+                                      }}
+                                      inputProps={{
+                                        inputMode: "numeric",
+                                        // pattern: '[0-9]*',
+                                      }}
+                                    />
+
+                                    <FormControl
+                                      fullWidth
+                                      style={{ margin: " 5px 0 5px 0" }}
+                                    >
+                                      <InputLabel id="demo-simple-select-label">
+                                        Status
+                                      </InputLabel>
+                                      <Select
+                                        style={{ textAlign: "left" }}
+                                        labelId="demo-simple-select-label"
+                                        id="demo-simple-select"
+                                        value={buyerData.status}
+                                        label="Status"
+                                        onChange={(e) =>
+                                          setBuyerData((prevData) => ({
+                                            ...prevData,
+                                            status: e.target.value,
+                                          }))
+                                        }
+                                      >
+                                        <MenuItem value={true}>Active</MenuItem>
+                                        <MenuItem value={false}>
+                                          Deactive
+                                        </MenuItem>
+                                      </Select>
+                                    </FormControl>
+
+                                    <FormControl
+                                      fullWidth
+                                      style={{ margin: " 5px 0 5px 0" }}
+                                    >
+                                      <InputLabel id="demo-simple-select-label">
+                                        Follow Work Time
+                                      </InputLabel>
+                                      <Select
+                                        style={{ textAlign: "left" }}
+                                        labelId="demo-simple-select-label"
+                                        id="demo-simple-select"
+                                        label="Follow Work Time"
+                                        value={buyerData.followWorkTime}
+                                        onChange={(e) =>
+                                          setBuyerData((prevData) => ({
+                                            ...prevData,
+                                            followWorkTime: e.target.value,
+                                          }))
+                                        }
+                                      >
+                                        <MenuItem value={"t"}>Yes</MenuItem>
+                                        <MenuItem value={"f"}>No</MenuItem>
+                                      </Select>
+                                    </FormControl>
+
+                                    <LocalizationProvider
+                                      dateAdapter={AdapterDayjs}
+                                      className={classes.formControl}
+                                    >
+                                      <DemoContainer
+                                        components={["TimePicker"]}
+                                        sx={{ width: "100%" }}
+                                      >
+                                        <MobileTimePicker
+                                          className="frm_date"
+                                          label="Working Start Time"
+                                          value={
+                                            buyerData.fromDate
+                                              ? dayjs()
+                                                  .hour(
+                                                    parseInt(
+                                                      buyerData.fromDate.split(
+                                                        ":"
+                                                      )[0],
+                                                      10
+                                                    )
+                                                  )
+                                                  .minute(
+                                                    parseInt(
+                                                      buyerData.fromDate.split(
+                                                        ":"
+                                                      )[1],
+                                                      10
+                                                    )
+                                                  )
+                                                  .second(0)
+                                              : null
+                                          }
+                                          onChange={handleFromDateChange}
+                                          renderInput={(props) => (
+                                            <TextField
+                                              {...props}
+                                              style={{ width: "100%" }}
+                                            />
+                                          )}
+                                        />
+                                      </DemoContainer>
+                                    </LocalizationProvider>
+
+                                    <LocalizationProvider
+                                      dateAdapter={AdapterDayjs}
+                                      className={classes.formControl}
+                                    >
+                                      <DemoContainer
+                                        components={["TimePicker"]}
+                                        sx={{ width: "100%" }}
+                                      >
+                                        <MobileTimePicker
+                                          className="frm_date"
+                                          label="Working End Time"
+                                          value={
+                                            buyerData.toDate
+                                              ? dayjs()
+                                                  .hour(
+                                                    parseInt(
+                                                      buyerData.toDate.split(
+                                                        ":"
+                                                      )[0],
+                                                      10
+                                                    )
+                                                  )
+                                                  .minute(
+                                                    parseInt(
+                                                      buyerData.toDate.split(
+                                                        ":"
+                                                      )[1],
+                                                      10
+                                                    )
+                                                  )
+                                                  .second(0)
+                                              : null
+                                          }
+                                          onChange={handleToDateChange}
+                                          renderInput={(props) => (
+                                            <TextField
+                                              {...props}
+                                              style={{ width: "100%" }}
+                                            />
+                                          )}
+                                        />
+                                      </DemoContainer>
+                                    </LocalizationProvider>
                                   </form>
-                             
-                              </form>
-                            </DialogContent>
-                            <DialogActions
-                                  sx={{
-                                    display: "flex",
-                                    justifyContent: "center",
-                                   paddingBottom: "20px",
-                                  }}
-                                >
-                                  <Button
+                                </form>
+                              </DialogContent>
+                              <DialogActions
+                                sx={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  paddingBottom: "20px",
+                                }}
+                              >
+                                <Button
                                   variant="contained"
                                   className="all_button_clr"
                                   color="primary"
@@ -1581,67 +1507,66 @@ function BuyerView({userThem}) {
                                 >
                                   Update
                                 </Button>
-                                </DialogActions>
-                          </Dialog>
+                              </DialogActions>
+                            </Dialog>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                        {/* -----   Edit Modal End   ----- */}
-
-                        <ThemeProvider theme={theme}>
-                          <div style={{ height: "100%", width: "100%" }}>
-                            <DataGrid
-                              className="custom_header_redirect"
-                              rows={mockDataTeam}
-                              columns={columns}
-                              density="standard"
-                              // getRowClassName={(params) =>
-                              //   isRowBordered(params)
-                              //     ? "borderedGreen"
-                              //     : "borderedRed"
-                              // }
-                              components={{ Toolbar: GridToolbar }}
-                              slots={{
-                                toolbar: CustomToolbar,
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                width: "100%",
                               }}
-                              autoHeight // Automatically adjust the height to fit all rows
-                            />
+                            >
+                              <IconButton
+                                className="filter_block_btn"
+                                style={{
+                                  marginLeft: "0 !important",
+                                  background: selectedCallerData.length
+                                    ? "red"
+                                    : "grey",
+                                  padding: "6px 10px !important",
+                                  fontSize: "15px !important",
+                                  marginBottom: "0.8rem",
+                                }}
+                                disabled={selectedCallerData.length === 0}
+                                onClick={handleMessage}
+                              >
+                                Delete &nbsp;
+                                <DeleteIcon />
+                              </IconButton>
+                            </div>
+
+                            <ThemeProvider theme={theme}>
+                              <div style={{ height: "100%", width: "100%" }}>
+                                <StyledDataGrid
+                                  className="custom_header_redirect"
+                                  rows={mockDataTeam}
+                                  columns={columns}
+                                  density="standard"
+                                  checkboxSelection
+                                  disableRowSelectionOnClick
+                                  rowSelectionModel={selectedRows}
+                                  onRowSelectionModelChange={
+                                    handleSelectionChange
+                                  }
+                                  components={{ Toolbar: GridToolbar }}
+                                  slots={{
+                                    toolbar: CustomToolbar,
+                                  }}
+                                  autoHeight
+                                />
+                              </div>
+                            </ThemeProvider>
                           </div>
-                        </ThemeProvider>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </section>
           </div>
-        </section>
-      </div>
-      </div>
+        </div>
       </div>
     </>
   );

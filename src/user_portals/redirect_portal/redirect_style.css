@@ -98,6 +98,7 @@ button.MuiButtonBase-root.MuiTab-root.MuiTab-textColorPrimary.css-1q2h7u5 {
     /* color: #0c367a !important; */
     color: #fff !important;
     font-weight: 600;
+    padding: 12px 8px !important;
   }
 
   .manage_call {
@@ -179,7 +180,7 @@ button.MuiButtonBase-root.MuiTab-root.MuiTab-textColorPrimary.css-1q2h7u5 {
     background-color: rgb(37, 67, 54) !important;
     color: rgb(255, 255, 255) !important;
     margin-left: auto;
-    margin-right: 15px !important;
+    margin-right: 15px;
   }
   .redirect_all_button_clr:hover {
     background: linear-gradient(180deg, #ffa841 0%, #fa783f 100%) !important;
@@ -317,4 +318,21 @@ button.MuiButtonBase-root.MuiTab-root.MuiTab-textColorPrimary.css-1q2h7u5 {
     min-height: 100vh !important;
     max-height: 100% !important;
   }
+}
+
+@media (max-width: 1024px) {
+  .MuiTabs-flexContainer.css-heg063-MuiTabs-flexContainer button {
+    /* color: #0c367a !important; */
+    color: #fff !important;
+    font-weight: 600;
+    padding: 12px 8px !important;
+    font-size: 12px !important;
+}
+.tabbs{
+  font-size: 12px !important;
+  padding: 12px 8px !important;
+}
+.nav_icn {
+  font-size: 20px;
+}
 }

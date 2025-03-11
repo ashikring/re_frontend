@@ -34,6 +34,8 @@ const Router = {
   ADMIN_INVOICE: "/admin_portal/invoice",
   ADMIN_PRODUCT: "/admin_portal/product",
   ADMIN_MANAGE_CAMPAIGN: "/admin_portal/manage_campaign",
+  ADMIN_BUYER: "/admin_portal/viewbuyer",
+  ADMIN_PROMOTION: "/admin_portal/promotion",
 
    //---------------- Reseller ROUTES ---------------------
    RESELLER_DASHBOARD: "/reseller_portal",

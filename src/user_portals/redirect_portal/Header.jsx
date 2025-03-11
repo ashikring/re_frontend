@@ -12,22 +12,19 @@ import LiveCall from "../../pages/LiveCall";
 import { AppBar, Box, IconButton, Toolbar, Tooltip, Typography } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
 import NightlightIcon from '@mui/icons-material/Nightlight';
+import MenuIcon from "@mui/icons-material/Menu";
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import CallIcon from "@mui/icons-material/Call";
 import { api } from "../../mockData";
+import Sidebar from "./Sidebar";
 
-function Header({userThem, handleClickUser}) {
-  const [selectedValue, setSelectedValue] = useState(""); // State to hold the selected value
+
+function Header({userThem, handleClickUser,toggleDrawer, open, setOpen}) {
   const [number, setNumber] = useState(0);
   const [minutest, setMinutest] = useState([]);
   const current_user = localStorage.getItem("current_user");
   const user = JSON.parse(localStorage.getItem(`user_${current_user}`));
   const navigate = useNavigate();
-
-  const handleSelect = (eventKey) => {
-    // When a Dropdown.Item is clicked, update the selected value
-    setSelectedValue(eventKey);
-  };
 
   useEffect(() => {
     const socket = socketIOClient(`${api.dev}`);
@@ -41,12 +38,21 @@ function Header({userThem, handleClickUser}) {
       // Handle the received data (e.g., update state, trigger a re-fetch)
       if (data?.data !== undefined) {
         // Filter the data based on UserId matching user.uid
-        const filteredData = Object.keys(data.data)
-          .map((key) => ({
-            id: key,
-            ...data.data[key],
-          }))
-          .filter((item) => item.UserId === user.uid); // Filter by UserId
+        const filteredData = Object.keys(data?.data)
+                .map((key) => {
+                  try {
+                    const parsedValue = JSON.parse(data?.data[key]); // Parse JSON string
+                    return {
+                      id: key, // Add the key as 'id'
+                      ...parsedValue, // Spread the parsed object
+                    };
+                  } catch (error) {
+                    console.error(`Failed to parse JSON for key: ${key}`, error);
+                    return null; // Return null or handle error as needed
+                  }
+                })
+                .filter(Boolean) // Filter out any null entries
+                .filter((row) => row.UserId === user.uid); // Filter rows where UserId matches userId.uid
 
         // Get the count of filtered objects
         const newDataCount = filteredData.length;
@@ -139,10 +145,7 @@ function Header({userThem, handleClickUser}) {
 
   useEffect(() => {
     minutes();
-    if (selectedValue === "Manage") {
-      navigate("/manage");
-    }
-  }, [selectedValue]); // This effect runs whenever selectedValue changes
+  }, []); 
 
   const refershLogo = () =>{
     window.location.href = "/redirect_portal";
@@ -169,8 +172,18 @@ function Header({userThem, handleClickUser}) {
                   style={{ cursor: "pointer",margin:"auto",width:'100%' }}
                   onClick={refershLogo}
                 />
+                  <IconButton
+                                      style={{ position: "relative", zIndex: 999, top: "-40px" }}
+                                      className="menu_icon_button"
+                                      onClick={toggleDrawer(true)}
+                                    >
+                                      <MenuIcon />
+                                    </IconButton>
                   </Typography>
+
+                 
       </Box>
+
         <AppBar position="static" className="manage_top_header">
           <Toolbar>
             <Typography
@@ -209,7 +222,7 @@ function Header({userThem, handleClickUser}) {
             <div className="manage_rgiht_bdr d-flex align-items-center">
             <p style={{color: "#000",
                       textTransform: "capitalize",
-                      fontSize: "14px",margin:'0'}}>Balance Min: <span style={{fontSize:'17px',fontWeight:'600',color:'#00f500'}}>{minutest[0]?.remaining_minutes}</span></p>
+                      fontSize: "14px",margin:'0'}}>Balance <span style={{fontSize:'17px',fontWeight:'600',color:'#00f500'}}>{minutest[0]?.remaining_minutes}</span></p>
               <IconButton
                 size="large"
                 aria-label="account of current user"
@@ -255,12 +268,12 @@ className={`${userThem === 'user_theme_white' ? 'active' : ''} fa-solid fa-moon`
                     <ul className="hdr_profile">
                       <li>
                         {/* Add a class to the image element */}
-                        <img
+                        {/* <img
                           src="/img/nav_author.jpg"
                           className="img-fluid d-block rounded-circle" // Apply rounded-circle class for circular display
                           alt="profile"
-                        />
-                        <div className="profile_name">
+                        /> */}
+                        <div className="profile_name" style={{paddingLeft:'0px',marginLeft:"0px"}}>
                           <b style={{color:'#000'}}>{user?.user_name}</b>
                         </div>
                       </li>
@@ -280,10 +293,18 @@ className={`${userThem === 'user_theme_white' ? 'active' : ''} fa-solid fa-moon`
                 <LogoutIcon className="call_icon " />
               </IconButton>
             </div>
-          </Toolbar>
+          </Toolbar> 
         </AppBar>
         {/* <!--navbar-sec--> */}
-        <Navbar selectedValue={selectedValue} />
+        <div className="d-xxl-block d-xl-block d-lg-block d-md-block d-sm-none d-xs-none d-none">
+          <Navbar />
+        </div>
+
+        {/* ====mobile sidebar===== */}
+        <div className="d-xxl-none d-xl-none d-lg-none d-md-none d-sm-block d-xs-block d-block">
+          <Sidebar open={open} setOpen={setOpen}/>
+        </div>
+
       </Box>
       </div>
       </div>

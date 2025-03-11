@@ -43,6 +43,7 @@ import {
   updateAdminManageCampaign,
 } from "../../redux/actions/adminPortal/adminPortal_manageCampaignAction";
 import { getAdminUsersList } from "../../redux/actions/adminPortal_listAction";
+import { StyledDataGrid } from "../../pages/CustomDataGrid";
 const drawerWidth = 240;
 
 // =======modal-popup---->
@@ -295,7 +296,7 @@ function Manage_Campaign({ colorThem }) {
       width: 140,
       renderCell: (params) => (
         <span style={{ textTransform: 'capitalize' }}>
-          {params.row.call_threading === true ? 'True' : 'False'}
+          {params.row.call_threading === true ? 'Yes' : 'No'}
         </span>
       )
     },
@@ -488,8 +489,8 @@ function Manage_Campaign({ colorThem }) {
                                       setCallThreading(e.target.value);
                                     }}
                                   >
-                                    <MenuItem value={true}>True</MenuItem>
-                                    <MenuItem value={false}>False</MenuItem>
+                                    <MenuItem value={true}>Yes</MenuItem>
+                                    <MenuItem value={false}>No</MenuItem>
                                   </Select>
                                 </FormControl>
 
@@ -802,8 +803,8 @@ function Manage_Campaign({ colorThem }) {
                                 setCallThreading(e.target.value);
                               }}
                             >
-                              <MenuItem value={true}>True</MenuItem>
-                              <MenuItem value={false}>False</MenuItem>
+                              <MenuItem value={true}>Yes</MenuItem>
+                              <MenuItem value={false}>No</MenuItem>
                             </Select>
                           </FormControl>
                           <TextField
@@ -844,7 +845,7 @@ function Manage_Campaign({ colorThem }) {
 
             <ThemeProvider theme={theme}>
               <div style={{ height: "100%", width: "100%" }}>
-                <DataGrid
+                <StyledDataGrid
                   rows={mockDataTeam}
                   columns={columns}
                   density="compact"

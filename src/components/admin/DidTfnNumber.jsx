@@ -55,6 +55,7 @@ import {
   getAdminUsersList,
 } from "../../redux/actions/adminPortal_listAction";
 import dayjs from "dayjs";
+import { StyledDataGrid } from "../../pages/CustomDataGrid";
 const drawerWidth = 240;
 const style = {
   position: "absolute",
@@ -311,11 +312,12 @@ function DID_TFN_number({ colorThem }) {
     setCarrierName(data?.carrier_name);
     setDestinationDescription(data?.description);
     setDidId(data?.did_id);
-    setRecording(data?.recording.toString());
+    setRecording(data?.recording.toString() === "true" ? true : false);
     setUserId(data.user_id);
     setResellerId(data?.reseller_id === null ? "" : data?.reseller_id);
-   setRedirectGroup(data.redirect_group_id);
-   setIvrAuthentication(data.ivr_authendication);
+    setRedirectGroup(data.redirect_group_id);
+    setIvrAuthentication(data.ivr_authendication);
+    setSuspendValue(data?.is_suspended);
   };
 
   const handleUpdate = (e) => {
@@ -332,7 +334,8 @@ function DID_TFN_number({ colorThem }) {
         reseller_id: resellerId,
         didnumber: tfnNumber,
         redirect_group_id: redirectGroup,
-        ivr_authendication: ivrAuthentication
+        ivr_authendication: ivrAuthentication === "true" ? true : false,
+        is_suspended: suspendValue,
       });
 
       dispatch(
@@ -524,7 +527,7 @@ function DID_TFN_number({ colorThem }) {
       headerAlign: "center",
       align: "center",
       sortable: false,
-      width: 70,
+      width: 85,
       renderCell: (params) => {
         return (
           <div className="d-flex justify-content-between align-items-center">
@@ -558,7 +561,7 @@ function DID_TFN_number({ colorThem }) {
       field: "username",
       headerName: "User",
       headerClassName: "custom-header",
-      width: 100,
+      width: 150,
       headerAlign: "center",
       align: "center",
       renderCell: (params)=>{
@@ -583,7 +586,7 @@ function DID_TFN_number({ colorThem }) {
       field: "redirect_group_name",
       headerName: "Campaign Name",
       headerClassName: "custom-header",
-      width: 120,
+      width: 145,
       headerAlign: "center",
       align: "center",
       renderCell: (params)=>{
@@ -605,12 +608,12 @@ function DID_TFN_number({ colorThem }) {
       field: "ivr_authendication",
       headerName: "IVR Authentication",
       headerClassName: "custom-header",
-      width: 130,
+      width: 155,
       headerAlign: "center",
       align: "center",
       renderCell: (params)=>{
         return(
-          <span style={{textTransform:'capitalize'}}>{params.row.ivr_authendication === true ? 'True' : 'False'}</span>
+          <span style={{textTransform:'capitalize'}}>{params.row.ivr_authendication === true ? 'Yes' : 'No'}</span>
         )
       }
     },
@@ -619,7 +622,7 @@ function DID_TFN_number({ colorThem }) {
       field: "recording",
       headerName: "Recording",
       headerClassName: "custom-header",
-      width: 80,
+      width: 115,
       headerAlign: "center",
       align: "center",
       renderCell: (params) => {
@@ -637,7 +640,8 @@ function DID_TFN_number({ colorThem }) {
                     textTransform: "capitalize",
                   }}
                 >
-                  {params.row.recording.toString().toLowerCase()}
+                  {/* {params.row.recording.toString().toLowerCase()} */}
+                  No
                 </div>
               </>
             ) : (
@@ -652,7 +656,8 @@ function DID_TFN_number({ colorThem }) {
                     textTransform: "capitalize",
                   }}
                 >
-                  {params.row.recording.toString().toLowerCase()}
+                  {/* {params.row.recording.toString().toLowerCase()} */}
+                  Yes
                 </div>
               </>
             )}
@@ -663,7 +668,7 @@ function DID_TFN_number({ colorThem }) {
     {
       field: "status",
       headerName: "Status",
-      width: 80,
+      width: 95,
       headerClassName: "custom-header",
       headerAlign: "center",
       align: "center",
@@ -724,7 +729,7 @@ function DID_TFN_number({ colorThem }) {
       field: "carrier_name",
       headerName: "Carrier Name",
       headerClassName: "custom-header",
-      width: 100,
+      width: 125,
       headerAlign: "left",
       align: "left",
       renderCell: (params)=>{
@@ -811,7 +816,8 @@ function DID_TFN_number({ colorThem }) {
           resellername: item.resellername,
           group_name: item.group_name,
           ivr_authendication: item.ivr_authendication,
-          redirect_group_name: item.redirect_group_name
+          redirect_group_name: item.redirect_group_name,
+          is_suspended: item.is_suspended
         });
       });
     return calculatedRows;
@@ -1351,10 +1357,10 @@ function DID_TFN_number({ colorThem }) {
                                           required
                                         >
                                           <MenuItem value={true}>
-                                            true
+                                            Yes
                                           </MenuItem>
                                           <MenuItem value={false}>
-                                            false
+                                            No
                                           </MenuItem>
                                         </Select>
                                       </FormControl>
@@ -1575,7 +1581,7 @@ function DID_TFN_number({ colorThem }) {
                 </div>
                           <ThemeProvider theme={theme}>
                             <div style={{ height: "100%", width: "100%" }}>
-                              <DataGrid
+                              <StyledDataGrid
                                 rows={rows}
                                 columns={columns}
                                 getRowClassName={(params) =>
@@ -1618,7 +1624,7 @@ function DID_TFN_number({ colorThem }) {
                           </Box>
                           <DialogTitle
                           className="modal_heading"
-                            sx={{ color: "#133325", fontWeight: "600", width: "500px", margin:'auto',
+                            sx={{ color: "#133325", fontWeight: "600", width: "300px", margin:'auto',
                             float: "inline-end",
                             //position:'relative',right:'1rem',top:'1rem' 
                              }}
@@ -1840,8 +1846,8 @@ function DID_TFN_number({ colorThem }) {
                                       }}
                                       required
                                     >
-                                      <MenuItem value={"true"}>true</MenuItem>
-                                      <MenuItem value={"false"}>false</MenuItem>
+                                      <MenuItem value={"true"}>Yes</MenuItem>
+                                      <MenuItem value={"false"}>No</MenuItem>
                                     </Select>
                                   </FormControl>
 
@@ -1864,8 +1870,8 @@ function DID_TFN_number({ colorThem }) {
                                       }}
                                       required
                                     >
-                                      <MenuItem value={true}>true</MenuItem>
-                                      <MenuItem value={false}>false</MenuItem>
+                                      <MenuItem value={true}>Yes</MenuItem>
+                                      <MenuItem value={false}>No</MenuItem>
                                     </Select>
                                   </FormControl>
 
@@ -1893,6 +1899,37 @@ function DID_TFN_number({ colorThem }) {
                                       <MenuItem value={"f"}>Deactive</MenuItem>
                                     </Select>
                                   </FormControl>
+
+                                  <FormControl
+                                                                            fullWidth
+                                                                            style={{
+                                                                              width: "100%",
+                                                                              margin: "7px 0",
+                                                                            }}
+                                                                          >
+                                                                            <InputLabel id="demo-simple-select-label">
+                                                                              Suspend
+                                                                            </InputLabel>
+                                                                            <Select
+                                                                              labelId="demo-simple-select-label"
+                                                                              id="demo-simple-select"
+                                                                              label="Suspend"
+                                                                              helperText="Select the language."
+                                                                              style={{ textAlign: "left" }}
+                                                                              value={suspendValue}
+                                                                              onChange={(e) =>
+                                                                                setSuspendValue(e.target.value)
+                                                                              }
+                                                                              required
+                                                                            >
+                                                                              <MenuItem value={0}>
+                                                                                Not Suspended
+                                                                              </MenuItem>
+                                                                              <MenuItem value={1}>
+                                                                                Suspended
+                                                                              </MenuItem>
+                                                                            </Select>
+                                                                          </FormControl>
 
                                   <br />
 

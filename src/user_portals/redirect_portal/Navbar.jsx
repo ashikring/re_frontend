@@ -10,10 +10,13 @@ import PhoneDisabledIcon from "@mui/icons-material/PhoneDisabled";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import RingVolumeIcon from "@mui/icons-material/RingVolume";
 import AvTimerIcon from "@mui/icons-material/AvTimer";
+import { useDispatch } from "react-redux";
+import { GET_REDIRECT_BUYER_SUCCESS } from "../../redux/constants/redirectPortal/redirectPortal_buyerConstants";
 
 function Navbar({ selectedValue }) {
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
   const current_user = localStorage.getItem("current_user");
   const user = localStorage.getItem(`user_${current_user}`);
   const [value, setValue] = useState(() => {
@@ -39,6 +42,7 @@ function Navbar({ selectedValue }) {
 
   const handleTabChange = (event, newValue) => {
     setValue(newValue);
+    navigate(tabOptions[newValue].path);
     switch (newValue) {
       case 0:
         navigate(Router.REDIRECT_DASHBOARD);
@@ -72,14 +76,50 @@ function Navbar({ selectedValue }) {
     newTab.focus();
   };
 
+  const clearData = (data) => {
+    dispatch({
+      type: GET_REDIRECT_BUYER_SUCCESS,
+      payload: [],
+    });
+     navigate(data);
+  }
+
   const tabOptions = [
-    { label: "Dashboard", icon: <DashboardIcon className="me-1"/>, path: Router.REDIRECT_DASHBOARD },
-    { label: "Manage Campaign", icon: <CallIcon className="me-1"/>, path: Router.REDIRECT_CAMPAIGNS },
-    { label: "DID/TFN NUMBER", icon: <ReceiptIcon className="me-1"/>, path: Router.REDIRECT_DESTINATION },
-    { label: "Active Calls", icon: <RingVolumeIcon className="me-1"/>, path: Router.REDIRECT_CALL_ACTIVE },
-    { label: "Reports", icon: <HelpOutlineIcon className="me-1"/>, path: Router.REDIRECT_XML_CDR },
-    { label: "Call Block", icon: <PhoneDisabledIcon className="me-1"/>, path: Router.REDIRECT_CALL_BLOCK },
-    { label: "Minutes Log", icon: <AvTimerIcon className="me-1"/>, path: Router.REDIRECT_MINUTES_LOG },
+    {
+      label: "Dashboard",
+      icon: <DashboardIcon className="me-1 nav_icn" />,
+      path: Router.REDIRECT_DASHBOARD,
+    },
+    {
+      label: "Manage Campaign",
+      icon: <CallIcon className="me-1 nav_icn" />,
+      path: Router.REDIRECT_CAMPAIGNS,
+    },
+    {
+      label: "DID/TFN NUMBER",
+      icon: <ReceiptIcon className="me-1 nav_icn" />,
+      path: Router.REDIRECT_DESTINATION,
+    },
+    {
+      label: "Active Calls",
+      icon: <RingVolumeIcon className="me-1 nav_icn" />,
+      path: Router.REDIRECT_CALL_ACTIVE,
+    },
+    {
+      label: "Reports",
+      icon: <HelpOutlineIcon className="me-1 nav_icn" />,
+      path: Router.REDIRECT_XML_CDR,
+    },
+    {
+      label: "Call Block",
+      icon: <PhoneDisabledIcon className="me-1 nav_icn" />,
+      path: Router.REDIRECT_CALL_BLOCK,
+    },
+    {
+      label: "Minutes Log",
+      icon: <AvTimerIcon className="me-1 nav_icn" />,
+      path: Router.REDIRECT_MINUTES_LOG,
+    },
   ];
 
   return (
@@ -108,7 +148,7 @@ function Navbar({ selectedValue }) {
                   label={tab.label}
                   icon={tab.icon}
                   className="tabbs"
-                  onClick={() => navigate(tab.path)} // Navigate on left-click
+                  onClick={() => clearData(tab.path)} // Navigate on left-click
                   onContextMenu={(event) => handleRightClick(event, tab.path)} // Open new tab on right-click
                 />
               ))}

@@ -310,7 +310,7 @@ function ResellerSidebar({ colorThem }) {
                         </MenuItem>
                         {user?.permissions?.map((item, index) => {
                           return (
-                            <>
+                            <div key={index}>
                               {item === "list_user" ? (
                                 <>
                                   <MenuItem
@@ -325,7 +325,7 @@ function ResellerSidebar({ colorThem }) {
                               ) : (
                                 <></>
                               )}
-                            </>
+                            </div>
                           );
                         })}
 

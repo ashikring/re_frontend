@@ -22,7 +22,7 @@ import { FormControl, InputLabel, Select } from '@mui/material';
       style={{flexWrap:"wrap",textAlign:"center"}}
     >
       <TextField className='form_flied_box' id="outlined-basic" label="Caller Number" variant="outlined" style={{ width: "48%",}} />
-      <TextField className='form_flied_box' id="outlined-basic" label="Forwording Number" variant="outlined" style={{ width: "48%", }} />
+      <TextField className='form_flied_box' id="outlined-basic" label="Forwarding Number" variant="outlined" style={{ width: "48%", }} />
       <TextField className='form_flied_box' id="outlined-basic" label="DID Number" variant="outlined" style={{ width: "48%", }} />
 
       <TextField className='form_flied_box' id="outlined-basic" label="Start Range" variant="outlined" style={{ width: "23.5%", }} />

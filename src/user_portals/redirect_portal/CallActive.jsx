@@ -1,14 +1,23 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from "react";
 import "../../../src/style.css";
-import { Box, Button, createTheme, ThemeProvider } from '@mui/material';
-import { DataGrid, GridToolbar, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarFilterButton } from '@mui/x-data-grid';
-import { getAdminCallActive } from '../../redux/actions/adminPortal_callActiveAction';
-import { useDispatch, useSelector } from 'react-redux';
-import PhoneDisabledIcon from '@mui/icons-material/PhoneDisabled';
-import { IconBase } from 'react-icons/lib';
-import { api } from '../../mockData';
-import axios from 'axios';
-import { toast } from 'react-toastify';
+import { Box, Button, createTheme, ThemeProvider } from "@mui/material";
+import {
+  DataGrid,
+  GridToolbar,
+  GridToolbarColumnsButton,
+  GridToolbarContainer,
+  GridToolbarDensitySelector,
+  GridToolbarFilterButton,
+} from "@mui/x-data-grid";
+import { getAdminCallActive } from "../../redux/actions/adminPortal_callActiveAction";
+import { useDispatch, useSelector } from "react-redux";
+import PhoneDisabledIcon from "@mui/icons-material/PhoneDisabled";
+import { IconBase } from "react-icons/lib";
+import { api } from "../../mockData";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { StyledDataGrid } from "../../pages/CustomDataGrid";
+import dayjs from "dayjs";
 const theme = createTheme({
   components: {
     MuiDataGrid: {
@@ -26,7 +35,8 @@ const theme = createTheme({
   },
 });
 export function CustomFooterStatusComponent(props) {
-  return (<></>
+  return (
+    <></>
     // <Box sx={{ p: 1, display: 'flex' }}>
     //   <FiberManualRecordIcon
     //     fontSize="small"
@@ -49,24 +59,24 @@ function CustomToolbar() {
   );
 }
 
-function CallActive({userThem}){
+function CallActive({ userThem }) {
   const dispatch = useDispatch();
   const state = useSelector((state) => state);
   const [timeStamp, setTimeStamp] = useState([]);
   const [timeDifference, setTimeDifference] = useState([]);
-  
+
   const current_user = localStorage.getItem("current_user");
   const user = JSON.parse(localStorage.getItem(`user_${current_user}`));
-  
+
   const parseTimestamp = () => {
     return timeStamp?.map((item) => {
       const date = new Date(item.TimeStamp);
       return date; // Keep Date objects for time difference calculation
     });
   };
-  
+
   const timestampDate = parseTimestamp();
-  
+
   // Function to calculate time differences for each timestamp
   const calculateTimeDifferences = () => {
     const currentTime = new Date();
@@ -78,38 +88,38 @@ function CallActive({userThem}){
       const diffInDays = Math.floor(diffInHours / 24);
 
       // Format with leading zeros
-    const formattedHours = String(diffInHours).padStart(2, '0');
-    const formattedMinutes = String(diffInMinutes % 60).padStart(2, '0');
-    const formattedSeconds = String(diffInSeconds % 60).padStart(2, '0');
-  
+      const formattedHours = String(diffInHours).padStart(2, "0");
+      const formattedMinutes = String(diffInMinutes % 60).padStart(2, "0");
+      const formattedSeconds = String(diffInSeconds % 60).padStart(2, "0");
+
       return {
         days: diffInDays,
-        hours: formattedHours ,
-        minutes: formattedMinutes ,
-        seconds: formattedSeconds 
+        hours: formattedHours,
+        minutes: formattedMinutes,
+        seconds: formattedSeconds,
       };
     });
-  
+
     setTimeDifference(differences);
   };
-  
+
   // Calculate time differences initially and update every 5 seconds
   useEffect(() => {
     calculateTimeDifferences(); // Initial calculation
-  
+
     const interval = setInterval(() => {
       calculateTimeDifferences(); // Recalculate every 5 seconds
     }, 5000);
-  
+
     return () => clearInterval(interval);
   }, [timeStamp]);
   useEffect(() => {
     dispatch(getAdminCallActive());
   }, [dispatch]); // Empty dependency array ensures this effect runs once on mount
 
- const handleHangup = async (data) => {
-  const current_user = localStorage.getItem("current_user");
-  const token = JSON.parse(localStorage.getItem(`user_${current_user}`));
+  const handleHangup = async (data) => {
+    const current_user = localStorage.getItem("current_user");
+    const token = JSON.parse(localStorage.getItem(`user_${current_user}`));
     let values = JSON.stringify({
       CallReference: data.CallReference,
     });
@@ -148,150 +158,194 @@ function CallActive({userThem}){
     {
       field: "DIDNumber",
       headerName: "Did Number",
-      width: 130,
       headerClassName: "custom-header",
-      headerAlign: "center",
-      align: "center",
+      flex: 1,
+      minWidth: 140,
+      maxWidth: "100%",
+      headerAlign: "left",
+      disableColumnMenu: true, // Prevents menu on hover
+      sortable: false, // Allows sorting on click but not on hover
+      align: "left",
     },
     {
       field: "CallerID",
       headerName: "Caller Id",
-      width: 130,
-      headerAlign: "center",
-      align: "center",
       headerClassName: "custom-header",
+      flex: 1,
+      minWidth: 140,
+      maxWidth: "100%",
+      headerAlign: "left",
+      disableColumnMenu: true, // Prevents menu on hover
+      sortable: false, // Allows sorting on click but not on hover
+      align: "left",
     },
 
     {
       field: "CompaignName",
-      headerName: "Compaign Name",
-      width: 150,
+      headerName: "Campaign Name",
       headerClassName: "custom-header",
-      headerAlign: "center",
-      align: "center",
+      flex: 1,
+      minWidth: 100,
+      maxWidth: "100%",
+      headerAlign: "left",
+      disableColumnMenu: true, // Prevents menu on hover
+      sortable: false, // Allows sorting on click but not on hover
+      align: "left",
     },
 
     {
       field: "BuyerName",
       headerName: "Buyer Name",
-      width: 150,
       headerClassName: "custom-header",
-      headerAlign: "center",
-      align: "center",
+      flex: 1,
+      minWidth: 90,
+      maxWidth: "100%",
+      headerAlign: "left",
+      disableColumnMenu: true, // Prevents menu on hover
+      sortable: false, // Allows sorting on click but not on hover
+      align: "left",
     },
 
     {
       field: "ForwardedTo",
       headerName: "Forwarded To",
-      width: 150,
       headerClassName: "custom-header",
-      headerAlign: "center",
-      align: "center",
+      flex: 1,
+      minWidth: 120,
+      maxWidth: "100%",
+      headerAlign: "left",
+      disableColumnMenu: true, // Prevents menu on hover
+      sortable: false, // Allows sorting on click but not on hover
+      align: "left",
     },
     {
       field: "Status",
       headerName: "Status",
-      width: 150,
       headerClassName: "custom-header",
-      headerAlign: "center",
-      align: "center",
-      renderCell: (params) => {
-        return (
-          <div className="d-flex justify-content-between align-items-center">
-            <p
-              style={{
-                fontWeight: "500",
-                margin: "0",
-              }}
-            >
-              {params?.row?.Status === "ANSWER" ? (
-                <>
-                  {" "}
-                  <p
-                    style={{
-                      fontWeight: "500",
-                      margin: "0",
-                      color: "green",
-                    }}
-                  >
-                    {params?.row?.Status}
-                  </p>
-                </>
-              ) : (
-                <></>
-              )}
-              {params?.row?.Status === "DIALING" ? (
-                <>
-                  {" "}
-                  <p
-                    style={{
-                      fontWeight: "500",
-                      margin: "0",
-                      color: "violet",
-                    }}
-                  >
-                    {params?.row?.Status}
-                  </p>
-                </>
-              ) : (
-                <></>
-              )}
-              {params?.row?.Status === "RINGING" ? (
-                <>
-                  {" "}
-                  <p
-                    style={{
-                      fontWeight: "500",
-                      margin: "0",
-                      color: "skyblue",
-                    }}
-                  >
-                    {params?.row?.Status}
-                  </p>
-                </>
-              ) : (
-                <></>
-              )}
-            </p>
-          </div>
-        );
-      },
+      flex: 1,
+      minWidth: 200,
+      maxWidth: "100%",
+      headerAlign: "left",
+      disableColumnMenu: true, // Prevents menu on hover
+      sortable: false, // Allows sorting on click but not on hover
+      align: "left",
+      // renderCell: (params) => {
+      //   return (
+      //     <div className="d-flex justify-content-between align-items-center">
+      //       <p
+      //         style={{
+      //           fontWeight: "500",
+      //           margin: "0",
+      //         }}
+      //       >
+      //         {params?.row?.Status === "ANSWER" ? (
+      //           <>
+      //             {" "}
+      //             <p
+      //               style={{
+      //                 fontWeight: "500",
+      //                 margin: "0",
+      //                 color: "green",
+      //               }}
+      //             >
+      //               {params?.row?.Status}
+      //             </p>
+      //           </>
+      //         ) : (
+      //           <></>
+      //         )}
+      //         {params?.row?.Status === "DIALING" ? (
+      //           <>
+      //             {" "}
+      //             <p
+      //               style={{
+      //                 fontWeight: "500",
+      //                 margin: "0",
+      //                 color: "violet",
+      //               }}
+      //             >
+      //               {params?.row?.Status}
+      //             </p>
+      //           </>
+      //         ) : (
+      //           <></>
+      //         )}
+      //         {params?.row?.Status === "RINGING" ? (
+      //           <>
+      //             {" "}
+      //             <p
+      //               style={{
+      //                 fontWeight: "500",
+      //                 margin: "0",
+      //                 color: "skyblue",
+      //               }}
+      //             >
+      //               {params?.row?.Status}
+      //             </p>
+      //           </>
+      //         ) : (
+      //           <></>
+      //         )}
+      //       </p>
+      //     </div>
+      //   );
+      // },
     },
 
     {
       field: "CallDuration",
       headerName: "Call Duration",
-      width: 150,
       headerClassName: "custom-header",
-      headerAlign: "center",
-      align: "center",
+      flex: 1,
+      minWidth: 100,
+      maxWidth: "100%",
+      headerAlign: "left",
+      disableColumnMenu: true, // Prevents menu on hover
+      sortable: false, // Allows sorting on click but not on hover
+      align: "left",
       renderCell: (params) => {
         if (params.value !== null) {
-          const index = mockDataTeam.findIndex(item => item.id === params.row.id);
+          const index = mockDataTeam.findIndex(
+            (item) => item.id === params.row.id
+          );
           const duration = timeDifference && timeDifference[index];
-          
-          return (<>
-            {params?.row?.Status === "DIALING" ? (<><span style={{ color: "grey" }}>
-              {duration ? `00:00:00` : ''}
-            </span></>) : (<> <span style={{ color: "green" }}>
-              {duration ? `${duration.hours}:${duration.minutes}:${duration.seconds}` : ''}
-            </span></>)
-           
-          }</>
+
+          return (
+            <>
+              {params?.row?.Status === "DIALING" ? (
+                <>
+                  <span style={{ color: "grey" }}>
+                    {duration ? `00:00:00` : ""}
+                  </span>
+                </>
+              ) : (
+                <>
+                  {" "}
+                  <span style={{ color: "green" }}>
+                    {duration
+                      ? `${duration.hours}:${duration.minutes}:${duration.seconds}`
+                      : ""}
+                  </span>
+                </>
+              )}
+            </>
           );
         }
         return null;
       },
     },
 
-        
     {
       field: "TimeStamp",
       headerName: "Date Time",
-      width: 200,
       headerClassName: "custom-header",
-      headerAlign: "center",
-      align: "center",
+      flex: 1,
+      minWidth: 170,
+      maxWidth: "100%",
+      headerAlign: "left",
+      disableColumnMenu: true, // Prevents menu on hover
+      sortable: false, // Allows sorting on click but not on hover
+      align: "left",
       renderCell: (params) => {
         if (params.value !== null) {
           const date = new Date(params.value);
@@ -310,19 +364,7 @@ function CallActive({userThem}){
           hours = (hours < 10 ? "0" : "") + hours;
           minutes = (minutes < 10 ? "0" : "") + minutes;
           seconds = (seconds < 10 ? "0" : "") + seconds;
-          var formattedDate =
-            day +
-            "/" +
-            month +
-            "/" +
-            year +
-            " " +
-            hours +
-            ":" +
-            minutes +
-            ":" +
-            seconds;
-            
+
           return (
             <>
               <span style={{ color: "blue" }}>
@@ -346,7 +388,7 @@ function CallActive({userThem}){
     //   headerAlign: "center",
     //   align: "center",
     // },
-   
+
     // {
     //   field: "Extensions",
     //   headerName: "Extensions",
@@ -376,14 +418,18 @@ function CallActive({userThem}){
     {
       field: "hangup",
       headerName: "Hangup",
-      width: 120,
       headerClassName: "custom-header",
-      headerAlign: "center",
-      align: "center",
+      flex: 1,
+      minWidth: 70,
+      maxWidth: "100%",
+      headerAlign: "left",
+      disableColumnMenu: true, // Prevents menu on hover
+      sortable: false, // Allows sorting on click but not on hover
+      align: "left",
       renderCell: (params) => {
         return (
           <div className="d-flex justify-content-between align-items-center">
-            {params.row.Status === "ANSWER" && (
+            {params.row.Status === "BUYER_ANSWERED" && (
               <Button
                 // variant="outlined"
                 sx={{
@@ -399,11 +445,11 @@ function CallActive({userThem}){
                   border: "1px solid #d32f2f",
                 }}
                 onClick={(e) => {
-                 handleHangup(params.row);
+                  handleHangup(params.row);
                 }}
               >
                 <IconBase>
-                  <PhoneDisabledIcon/>
+                  <PhoneDisabledIcon />
                 </IconBase>
               </Button>
             )}
@@ -443,19 +489,49 @@ function CallActive({userThem}){
     // },
   ];
 
+  // const mockDataTeam = useMemo(() => {
+
+  //   if (state?.getAdminCallActive?.callactive !== undefined) {
+  //     return Object.keys(state?.getAdminCallActive?.callactive)
+  //       .map((key) => ({
+  //         id: key,
+  //         ...state?.getAdminCallActive?.callactive[key],
+  //       }))
+  //       .filter((item) => item.UserId === user.uid);
+  //   }else {
+  //     return [];
+  //   }
+  // }, [state?.getAdminCallActive?.callactive]);
+
   const mockDataTeam = useMemo(() => {
-    
     if (state?.getAdminCallActive?.callactive !== undefined) {
-      return Object.keys(state?.getAdminCallActive?.callactive)
-        .map((key) => ({
-          id: key,
-          ...state?.getAdminCallActive?.callactive[key],
-        }))
-        .filter((item) => item.UserId === user.uid);
-    }else {
-      return [];
+      // Parse the object and map keys to desired structure
+      const parsedData = Object.keys(state?.getAdminCallActive?.callactive)
+        .map((key) => {
+          try {
+            const parsedValue = JSON.parse(
+              state?.getAdminCallActive?.callactive[key]
+            ); // Parse JSON string
+            return {
+              id: key, // Add the key as 'id'
+              ...parsedValue, // Spread the parsed object
+            };
+          } catch (error) {
+            console.error(`Failed to parse JSON for key: ${key}`, error);
+            return null; // Return null or handle error as needed
+          }
+        })
+        .filter(Boolean) // Filter out any null entries
+        .filter((row) => row.UserId === user.uid); // Filter rows where UserId matches userId.uid
+      // Sort data by TimeStamp in descending order
+      return parsedData.sort((a, b) => {
+        const dateA = dayjs(a.TimeStamp);
+        const dateB = dayjs(b.TimeStamp);
+        return dateB - dateA; // Descending order
+      });
     }
-  }, [state?.getAdminCallActive?.callactive]);
+    return [];
+  }, [state?.getAdminCallActive?.callactive, user.uid]);
 
   useEffect(() => {
     // Prepare timeStamp array from mockDataTeam
@@ -463,83 +539,99 @@ function CallActive({userThem}){
       id: item.id,
       TimeStamp: item.TimeStamp, // Assuming TimeStamp is a property of each item
     }));
-  
+
     setTimeStamp(formattedTimeStamps);
   }, [mockDataTeam]);
 
-  
-
-  
-return (<>
- <div className={`App ${userThem} `}>
- <div className="contant_box">
-<div className="main">
-<section className="sidebar-sec">
-  <div className="container-fluid">
-    <div className="row">
-      <div className="col-lg-12">
-        <div className="">
-          {/* <!----> */}
-          <div className="tab-content" id="pills-tabContent">
-            <div className="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-              {/* <!--role-contet--> */}
-              <div className="tab_cntnt_box">
-                <div className="cntnt_title"
-                   style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <div>
-                  <h3>Active Calls</h3>
-                  {/* <p>Use this to monitor and interact with the active calls.</p> */}
-                  </div>
-                  
-                </div>
+  return (
+    <>
+      <div className={`App ${userThem} `}>
+        <div className="contant_box">
+          <div className="main">
+            <section className="sidebar-sec">
+              <div className="container-fluid">
                 <div className="row">
-                <ThemeProvider theme={theme}>
-                      <div style={{ height: "100%", width: "100%" }}>
-                              <DataGrid
-                                // checkboxSelection
-                                rows={mockDataTeam}
-                                columns={columns}
-                                headerClassName="custom-header"
-                                // getRowClassName={(params) =>
-                                //   isRowBordered(params)
-                                //     ? classes.borderedGreen
-                                //     : classes.borderedRed
-                                // }
-                                components={{ Toolbar: GridToolbar }}
-                                slots={{
-                                  toolbar: CustomToolbar,
-                                  footer: CustomFooterStatusComponent,
-                                }}
-                                autoHeight
-                              />
+                  <div className="col-lg-12">
+                    <div className="">
+                      {/* <!----> */}
+                      <div className="tab-content" id="pills-tabContent">
+                        <div
+                          className="tab-pane fade show active"
+                          id="pills-home"
+                          role="tabpanel"
+                          aria-labelledby="pills-home-tab"
+                        >
+                          {/* <!--role-contet--> */}
+                          <div className="tab_cntnt_box">
+                            <div
+                              className="cntnt_title"
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                              }}
+                            >
+                              <div>
+                                <h3>Active Calls</h3>
+                                {/* <p>Use this to monitor and interact with the active calls.</p> */}
+                              </div>
                             </div>
-                      </ThemeProvider>
+                            <div className="row">
+                              <ThemeProvider theme={theme}>
+                                <div style={{ height: "100%", width: "100%" }}>
+                                  <StyledDataGrid
+                                    // checkboxSelection
+                                    rows={mockDataTeam}
+                                    columns={columns}
+                                    headerClassName="custom-header"
+                                    // getRowClassName={(params) =>
+                                    //   isRowBordered(params)
+                                    //     ? classes.borderedGreen
+                                    //     : classes.borderedRed
+                                    // }
+                                    components={{ Toolbar: GridToolbar }}
+                                    slots={{
+                                      toolbar: CustomToolbar,
+                                      footer: CustomFooterStatusComponent,
+                                    }}
+                                    autoHeight // Automatically adjust the height to fit all rows
+                                    disableColumnResize={false} // Allow column resizing
+                                    hideFooterPagination={
+                                      window.innerWidth < 600
+                                    } // Hide pagination for small screens
+                                    sx={{
+                                      "& .MuiDataGrid-cell": {
+                                        fontSize: {
+                                          xs: "12px",
+                                          sm: "14px",
+                                          md: "14px",
+                                        }, // Responsive font sizes
+                                        wordBreak: "break-word !important", // Break long words
+                                        whiteSpace: "break-spaces !important", // Allow multi-line text
+                                      },
+                                    }}
+                                  />
+                                </div>
+                              </ThemeProvider>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* <!----> */}
+                        {/* 
+            <!----> */}
+                      </div>
+                      {/* <!----> */}
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-
-
-            {/* <!----> */}
-{/* 
-            <!----> */}
+            </section>
           </div>
-          {/* <!----> */}
-
-
         </div>
       </div>
-    </div>
-  </div>
-</section>
-</div>
-  </div>
-  </div>
-</>)
+    </>
+  );
 }
 
 export default CallActive;

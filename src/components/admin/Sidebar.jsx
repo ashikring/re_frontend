@@ -32,7 +32,7 @@ import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import PhoneDisabledIcon from "@mui/icons-material/PhoneDisabled";
 import RingVolumeIcon from "@mui/icons-material/RingVolume";
 import AddIcCallIcon from "@mui/icons-material/AddIcCall";
-
+import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import "../admin/adminstyle.css";
 
 // ========Mobile-sidebar===============>
@@ -438,7 +438,7 @@ function Sidebar({ colorThem }) {
                         </MenuItem>
                         {user?.permissions?.map((item, index) => {
                           return (
-                            <>
+                            <div key={index}>
                               {item === "list_redirect_group" ? (
                                 <>
                                   <MenuItem
@@ -453,7 +453,7 @@ function Sidebar({ colorThem }) {
                               ) : (
                                 <></>
                               )}
-                            </>
+                            </div>
                           );
                         })}
                         <MenuItem
@@ -742,6 +742,14 @@ function Sidebar({ colorThem }) {
                             </MenuItem>
                           </>
                         )}
+                        {/* <MenuItem
+                          icon={<LocalOfferIcon />}
+                          onClick={() =>
+                            navigateTo(Router.ADMIN_PROMOTION)
+                          }
+                        >
+                          Promotions
+                        </MenuItem> */}
                         <SubMenu
                           title="Settings"
                           icon={<SettingsIcon />}

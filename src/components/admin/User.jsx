@@ -3,8 +3,6 @@ import { Close, Delete, Edit, PlayArrow } from "@mui/icons-material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MailIcon from "@mui/icons-material/Mail";
-import SearchIcon from "@mui/icons-material/Search";
-import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import {
   Backdrop,
   Box,
@@ -31,7 +29,6 @@ import {
 } from "@mui/material";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import {
-  DataGrid,
   GridToolbar,
   GridToolbarColumnsButton,
   GridToolbarContainer,
@@ -68,6 +65,7 @@ import { IconBase } from "react-icons/lib";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { ALL_USERS_RESET } from "../../redux/constants/userConstants";
 import { getAdminUsersList } from "../../redux/actions/adminPortal_listAction";
+import { StyledDataGrid } from "../../pages/CustomDataGrid";
 
 const drawerWidth = 240;
 
@@ -632,8 +630,8 @@ function User({ colorThem }) {
             localStorage.setItem("admin", JSON.stringify(values));
             window.open("/admin_portal");
           } else if (values.user_role === "Reseller") {
-            localStorage.setItem("admin", JSON.stringify(values));
-            window.open("/admin_portal");
+            localStorage.setItem("reseller", JSON.stringify(values));
+            window.open("/reseller_portal");
           } else if (values.user_role === "User") {
             localStorage.setItem(
               `user_${values.user_name}`,
@@ -660,16 +658,17 @@ function User({ colorThem }) {
   const columns = [
     {
       field: "login",
-      headerName: "User Signin",
-      width: 90,
+      headerName: "User Login",
+      minWidth: 110, // Minimum width to prevent it from being too small
+      maxWidth: 300, // Maximum width to avoid excessive expansion
       headerClassName: "custom-header",
-      headerAlign: "center",
-      align: "center",
+      headerAlign: "left",
+      align: "left",
+      valueGetter: (params) => params.row.login || "", // Ensures value is fetched
       renderCell: (params) => {
         return (
-          <div className="d-flex justify-content-between align-items-center">
+          <div>
             <Button
-              // variant="outlined"
               sx={{
                 ":hover": {
                   bgcolor: "warning.main",
@@ -682,9 +681,7 @@ function User({ colorThem }) {
                 borderColor: "info.main",
                 border: "1px solid #ed6c02",
               }}
-              onClick={(e) => {
-                handleLogin(params.row);
-              }}
+              onClick={() => handleLogin(params.row)}
             >
               Login
             </Button>
@@ -696,10 +693,11 @@ function User({ colorThem }) {
       field: "action",
       headerName: "Action",
       headerClassName: "custom-header",
-      headerAlign: "center",
-      align: "center",
+      headerAlign: "left",
+      align: "left",
       sortable: false,
-      width: 60,
+      disableColumnMenu: true,
+      width: 75,
       renderCell: (params) => {
         return (
           <div className="d-flex justify-content-between align-items-center">
@@ -710,24 +708,24 @@ function User({ colorThem }) {
               <>
                 {" "}
                 <Tooltip title="Edit" disableInteractive interactive>
-            <IconButton onClick={() => handleButtonClick(params.row)}>
-              <Edit
-                index={params.row.id}
-                style={{ cursor: "pointer", color: "#42765f" }}
-              />
-            </IconButton>
-            </Tooltip>
+                  <IconButton onClick={() => handleButtonClick(params.row)}>
+                    <Edit
+                      index={params.row.id}
+                      style={{ cursor: "pointer", color: "#42765f" }}
+                    />
+                  </IconButton>
+                </Tooltip>
               </>
             ) : (
               <>
                 <Tooltip title="Edit" disableInteractive interactive>
-            <IconButton onClick={() => handleButtonClick(params.row)}>
-              <Edit
-                index={params.row.id}
-                style={{ cursor: "pointer", color: "#42765f" }}
-              />
-            </IconButton>
-            </Tooltip>
+                  <IconButton onClick={() => handleButtonClick(params.row)}>
+                    <Edit
+                      index={params.row.id}
+                      style={{ cursor: "pointer", color: "#42765f" }}
+                    />
+                  </IconButton>
+                </Tooltip>
               </>
             )}
 
@@ -743,7 +741,7 @@ function User({ colorThem }) {
       headerName: "User Name",
       width: 150,
       headerClassName: "custom-header",
-      headerAlign: "center",
+      headerAlign: "left",
       align: "left",
       renderCell: (params) => {
         return (
@@ -775,10 +773,10 @@ function User({ colorThem }) {
       field: "did_count",
       // headerName: "No. of TFN",
       headerName: "No. of DID",
-      width: 80,
+      width: 115,
       headerClassName: "custom-header",
-      headerAlign: "center",
-      align: "center",
+      headerAlign: "left",
+      align: "left",
     },
     // {
     //   field: "subscriber_count",
@@ -791,17 +789,20 @@ function User({ colorThem }) {
     {
       field: "reseller_id",
       headerName: "Reseller",
-      width: 80,
+      width: 100,
       headerClassName: "custom-header",
-      headerAlign: "center",
-      align: "center",
+      headerAlign: "left",
+      align: "left",
       renderCell: (params) => {
         return (
           <div className=" user_bdr d-flex justify-content-between align-items-center">
             {state?.allUsers?.users?.map((name, index) => {
               if (name?.role === "Reseller") {
                 return (
-                  <span key={index} style={{textTransform: "capitalize", fontSize:"12px"}}>
+                  <span
+                    key={index}
+                    style={{ textTransform: "capitalize", fontSize: "12px" }}
+                  >
                     {name.id === params.row.reseller_id ? (
                       <>{name.username}</>
                     ) : (
@@ -819,9 +820,9 @@ function User({ colorThem }) {
     {
       field: "email",
       headerName: "Email",
-      width: 180,
+      width: 200,
       headerClassName: "custom-header",
-      headerAlign: "center",
+      headerAlign: "left",
       align: "left",
     },
 
@@ -830,15 +831,15 @@ function User({ colorThem }) {
       headerName: "Role",
       width: 100,
       headerClassName: "custom-header",
-      headerAlign: "center",
-      align: "center",
+      headerAlign: "left",
+      align: "left",
       renderCell: (params) => {
         return (
           <div className="d-flex justify-content-between align-items-center">
             {params.row.role === "Superadmin" ? (
               <>
                 <div
-                className="role_box"
+                  className="role_box"
                   style={{
                     color: "black",
                     background: "#F5C6CB",
@@ -857,7 +858,7 @@ function User({ colorThem }) {
             {params.row.role === "Admin" ? (
               <>
                 <div
-                className="role_box"
+                  className="role_box"
                   style={{
                     color: "black",
                     background: "#D6D8DB",
@@ -876,7 +877,7 @@ function User({ colorThem }) {
             {params.row.role === "Reseller" ? (
               <>
                 <div
-                className="role_box"
+                  className="role_box"
                   style={{
                     color: "black",
                     background: "#C3E6CB",
@@ -895,7 +896,7 @@ function User({ colorThem }) {
             {params.row.role === "User" ? (
               <>
                 <div
-                className="role_box"
+                  className="role_box"
                   style={{
                     color: "black",
                     background: "#B8DAFF",
@@ -936,8 +937,8 @@ function User({ colorThem }) {
       headerName: "Date",
       headerClassName: "custom-header",
       width: 80,
-      headerAlign: "center",
-      align: "center",
+      headerAlign: "left",
+      align: "left",
       renderCell: (params) => {
         if (params.value !== null) {
           const date = new Date(params.value);
@@ -1008,8 +1009,8 @@ function User({ colorThem }) {
       headerName: "Account",
       width: 100,
       headerClassName: "custom-header",
-      headerAlign: "center",
-      align: "center",
+      headerAlign: "left",
+      align: "left",
       renderCell: (params) => {
         return (
           <div className="d-flex justify-content-between align-items-center">
@@ -1017,7 +1018,7 @@ function User({ colorThem }) {
               <>
                 <div
                   style={{
-                   // color: "white",
+                    // color: "white",
                     color: "red",
                     padding: "7px",
                     borderRadius: "5px",
@@ -1032,7 +1033,7 @@ function User({ colorThem }) {
               <>
                 <div
                   style={{
-                   // color: "white",
+                    // color: "white",
                     color: "green",
                     padding: "7px",
                     borderRadius: "5px",
@@ -1051,15 +1052,14 @@ function User({ colorThem }) {
     {
       field: "status",
       headerName: "Status",
-      width: 80,
+      width: 95,
       headerClassName: "custom-header",
-      headerAlign: "center",
-      align: "center",
+      headerAlign: "left",
+      align: "left",
       renderCell: (params) => {
         return (
           <div className="d-flex justify-content-between align-items-center">
             {params.row.status === "t" ? (
-              
               <>
                 <div
                   style={{
@@ -1071,7 +1071,7 @@ function User({ colorThem }) {
                     textTransform: "capitalize",
                     height: "30px",
                     width: "62px",
-                    textAlign:"center"
+                    textAlign: "center",
                   }}
                 >
                   Active
@@ -1092,8 +1092,9 @@ function User({ colorThem }) {
                   Suspend
                 </div>
               </>
-            ) : (<>
-            <div
+            ) : (
+              <>
+                <div
                   style={{
                     color: "white",
                     background: "red",
@@ -1105,7 +1106,8 @@ function User({ colorThem }) {
                 >
                   Deactive
                 </div>
-            </>)}
+              </>
+            )}
           </div>
         );
       },
@@ -1115,8 +1117,8 @@ function User({ colorThem }) {
       headerName: "Changed By",
       width: 180,
       headerClassName: "custom-header",
-      headerAlign: "center",
-      align: "center",
+      headerAlign: "left",
+      align: "left",
       renderCell: (params) => {
         return (
           <div className="d-flex justify-content-between align-items-center">
@@ -1139,7 +1141,6 @@ function User({ colorThem }) {
         );
       },
     },
-  
   ];
 
   useEffect(() => {
@@ -1249,10 +1250,10 @@ function User({ colorThem }) {
                 </IconButton>
               </Box>
               <DialogTitle
-                  className="modal_heading" 
+                className="modal_heading"
                 sx={{ color: "#133325", fontWeight: "600", width: "500px" }}
               >
-                <Box >
+                <Box>
                   {" "}
                   <img src="/img/mdl_icon.png" alt="user icon" />
                 </Box>
@@ -1626,7 +1627,7 @@ function User({ colorThem }) {
               //className="bg_imagess"
             >
               <DialogTitle
-              className="modal_heading"
+                className="modal_heading"
                 id="alert-dialog-title"
                 sx={{ color: "#07285d", fontWeight: "600" }}
               >
@@ -1730,283 +1731,239 @@ function User({ colorThem }) {
                         )}
 
                         {/* -----   Add User Modal Start   ----- */}
-                         
 
                         <Dialog
-                            open={open}
-                            onClose={handleClose}
-                            sx={{ textAlign: "center" }}
-                          > 
-                           <Box>
-                <IconButton
-                  onClick={handleClose}
-                  sx={{
-                    float: "inline-end",
-                    display: "flex",
-                    justifyContent: "end",
-                    margin: "10px 10px 0px 0px",
-                  }}
-                >
-                  <Close />
-                </IconButton>
-              </Box>
-              <DialogTitle
-              className="modal_heading"
-                sx={{ color: "#133325", fontWeight: "600", width: "500px" }}
-              >
-                <Box>
-                  {" "}
-                  <img src="/img/mdl_icon.png" alt="user icon" />
-                </Box>
-                Add User
-              </DialogTitle>
+                          open={open}
+                          onClose={handleClose}
+                          sx={{ textAlign: "center" }}
+                        >
+                          <Box>
+                            <IconButton
+                              onClick={handleClose}
+                              sx={{
+                                float: "inline-end",
+                                display: "flex",
+                                justifyContent: "end",
+                                margin: "10px 10px 0px 0px",
+                              }}
+                            >
+                              <Close />
+                            </IconButton>
+                          </Box>
+                          <DialogTitle
+                            className="modal_heading"
+                            sx={{
+                              color: "#133325",
+                              fontWeight: "600",
+                              width: "500px",
+                            }}
+                          >
+                            <Box>
+                              {" "}
+                              <img src="/img/mdl_icon.png" alt="user icon" />
+                            </Box>
+                            Add User
+                          </DialogTitle>
 
-
-                            <DialogContent>
-                              <form>
-                            
+                          <DialogContent>
+                            <form>
                               <form
-                                     style={{
-                                      textAlign: "center",
-                                      height: "348px",
-                                      // overflow: "auto",
-                                      paddingTop: "10px",
-                                      padding: "5px",
-                                      width: "auto",
+                                style={{
+                                  textAlign: "center",
+                                  height: "348px",
+                                  // overflow: "auto",
+                                  paddingTop: "10px",
+                                  padding: "5px",
+                                  width: "auto",
+                                }}
+                              >
+                                <TextField
+                                  style={{
+                                    width: "100%",
+                                    margin: " 5px 0 5px 0",
+                                  }}
+                                  type="text"
+                                  label="User Name"
+                                  variant="outlined"
+                                  name="userName"
+                                  value={inputValues?.userName}
+                                  onChange={handleChange}
+                                  InputProps={{
+                                    startAdornment: (
+                                      <InputAdornment position="start">
+                                        <AccountCircle />
+                                      </InputAdornment>
+                                    ),
+                                  }}
+                                />
+                                {validation.userName && (
+                                  <p
+                                    className="mb-0"
+                                    style={{
+                                      color: "red",
+                                      textAlign: "left",
                                     }}
                                   >
-                                    <TextField
-                                      style={{
-                                        width: "100%",
-                                        margin: " 5px 0 5px 0",
-                                      }}
-                                      type="text"
-                                      label="User Name"
-                                      variant="outlined"
-                                      name="userName"
-                                      value={inputValues?.userName}
-                                      onChange={handleChange}
-                                      InputProps={{
-                                        startAdornment: (
-                                          <InputAdornment position="start">
-                                            <AccountCircle />
-                                          </InputAdornment>
-                                        ),
-                                      }}
-                                    />
-                                    {validation.userName && (
-                                      <p
-                                        className="mb-0"
-                                        style={{
-                                          color: "red",
-                                          textAlign: "left",
-                                        }}
-                                      >
-                                        {validation.userName}
-                                      </p>
-                                    )}
-                                    <br />
-                                    <TextField
-                                      style={{
-                                        width: "100%",
-                                        margin: " 5px 0 5px 0",
-                                      }}
-                                      type="text"
-                                      label="Email Id"
-                                      variant="outlined"
-                                      name="email"
-                                      value={inputValues?.email}
-                                      onChange={handleChange}
-                                      InputProps={{
-                                        startAdornment: (
-                                          <InputAdornment position="start">
-                                            <MailIcon />
-                                          </InputAdornment>
-                                        ),
-                                      }}
-                                    />
-                                    {validation.email && (
-                                      <p
-                                        className="mb-0"
-                                        style={{
-                                          color: "red",
-                                          textAlign: "left",
-                                        }}
-                                      >
-                                        {validation.email}
-                                      </p>
-                                    )}
-                                    <br />
-                                    <TextField
-                                      style={{
-                                        width: "100%",
-                                        margin: " 5px 0 5px 0",
-                                      }}
-                                      type="password"
-                                      label="Password"
-                                      variant="outlined"
-                                      name="password"
-                                      value={inputValues?.password}
-                                      onChange={handleChange}
-                                    />
-                                    {validation.password && (
-                                      <p
-                                        className="mb-0"
-                                        style={{
-                                          color: "red",
-                                          textAlign: "left",
-                                        }}
-                                      >
-                                        {validation.password}
-                                      </p>
-                                    )}
-                                    <br />
+                                    {validation.userName}
+                                  </p>
+                                )}
+                                <br />
+                                <TextField
+                                  style={{
+                                    width: "100%",
+                                    margin: " 5px 0 5px 0",
+                                  }}
+                                  type="text"
+                                  label="Email Id"
+                                  variant="outlined"
+                                  name="email"
+                                  value={inputValues?.email}
+                                  onChange={handleChange}
+                                  InputProps={{
+                                    startAdornment: (
+                                      <InputAdornment position="start">
+                                        <MailIcon />
+                                      </InputAdornment>
+                                    ),
+                                  }}
+                                />
+                                {validation.email && (
+                                  <p
+                                    className="mb-0"
+                                    style={{
+                                      color: "red",
+                                      textAlign: "left",
+                                    }}
+                                  >
+                                    {validation.email}
+                                  </p>
+                                )}
+                                <br />
+                                <TextField
+                                  style={{
+                                    width: "100%",
+                                    margin: " 5px 0 5px 0",
+                                  }}
+                                  type="password"
+                                  label="Password"
+                                  variant="outlined"
+                                  name="password"
+                                  value={inputValues?.password}
+                                  onChange={handleChange}
+                                />
+                                {validation.password && (
+                                  <p
+                                    className="mb-0"
+                                    style={{
+                                      color: "red",
+                                      textAlign: "left",
+                                    }}
+                                  >
+                                    {validation.password}
+                                  </p>
+                                )}
+                                <br />
 
-                                    <TextField
-                                      style={{
-                                        width: "100%",
-                                        margin: " 5px 0 5px 0",
-                                      }}
-                                      type="password"
-                                      label="Confirm Password"
-                                      variant="outlined"
-                                      name="confirmPassword"
-                                      value={inputValues?.confirmPassword}
-                                      onChange={handleChange}
-                                    />
-                                    {validation.confirmPassword && (
-                                      <p
-                                        className="mb-0"
-                                        style={{
-                                          color: "red",
-                                          textAlign: "left",
-                                        }}
-                                      >
-                                        {validation.confirmPassword}
-                                      </p>
-                                    )}
-                                    <br />
-                                    {user.user_role === "Reseller" ? (
-                                      <></>
-                                    ) : (
-                                      <>
-                                        <FormControl
-                                          fullWidth
-                                          style={{
-                                            width: "100%",
-                                            margin: "7px 0",
-                                          }}
-                                        >
-                                          <InputLabel id="demo-simple-select-label">
-                                            Role
-                                          </InputLabel>
-
-                                          <Select
-                                            labelId="demo-simple-select-label"
-                                            id="demo-simple-select"
-                                            label="Role"
-                                            helperText="Select the language."
-                                            style={{ textAlign: "left" }}
-                                            value={roleId}
-                                            onChange={(e) => {
-                                              setRoleId(e.target.value);
-                                            }}
-                                            required
-                                          >
-                                            {state?.roles?.users?.map(
-                                              (item, index) => {
-                                                // Filter out "Superadmin" role if the logged-in user is also a "Superadmin"
-                                                if (
-                                                  user.user_role ===
-                                                    "Superadmin" &&
-                                                  item.name === "Superadmin"
-                                                ) {
-                                                  return null; // Skip rendering this MenuItem
-                                                } else if (
-                                                  user.user_role === "Admin" &&
-                                                  (item.name === "Superadmin" ||
-                                                    item.name === "Admin")
-                                                ) {
-                                                  return null;
-                                                } else if (
-                                                  user.user_role ===
-                                                    "Reseller" &&
-                                                  (item.name === "Reseller" ||
-                                                    item.name ===
-                                                      "Superadmin" ||
-                                                    item.name === "Admin")
-                                                ) {
-                                                  return null;
-                                                } else {
-                                                  // Render other roles
-                                                  return (
-                                                    <MenuItem
-                                                      key={index}
-                                                      value={item?.id}
-                                                    >
-                                                      <label
-                                                        style={{
-                                                          margin: "0px",
-                                                          padding: "0px",
-                                                          textTransform:
-                                                            "capitalize",
-                                                        }}
-                                                      >
-                                                        {item?.name
-                                                          .toString()
-                                                          .toLowerCase()}
-                                                      </label>
-                                                    </MenuItem>
-                                                  );
-                                                }
-                                              }
-                                            )}
-                                          </Select>
-                                        </FormControl>
-
-                                        {validation.role && (
-                                          <p
-                                            className="mb-0"
-                                            style={{
-                                              color: "red",
-                                              textAlign: "left",
-                                            }}
-                                          >
-                                            {validation.role}
-                                          </p>
-                                        )}
-
-                                        <br />
-                                      </>
-                                    )}
-
+                                <TextField
+                                  style={{
+                                    width: "100%",
+                                    margin: " 5px 0 5px 0",
+                                  }}
+                                  type="password"
+                                  label="Confirm Password"
+                                  variant="outlined"
+                                  name="confirmPassword"
+                                  value={inputValues?.confirmPassword}
+                                  onChange={handleChange}
+                                />
+                                {validation.confirmPassword && (
+                                  <p
+                                    className="mb-0"
+                                    style={{
+                                      color: "red",
+                                      textAlign: "left",
+                                    }}
+                                  >
+                                    {validation.confirmPassword}
+                                  </p>
+                                )}
+                                <br />
+                                {user.user_role === "Reseller" ? (
+                                  <></>
+                                ) : (
+                                  <>
                                     <FormControl
                                       fullWidth
-                                      style={{ width: "100%", margin: "7px 0" }}
+                                      style={{
+                                        width: "100%",
+                                        margin: "7px 0",
+                                      }}
                                     >
                                       <InputLabel id="demo-simple-select-label">
-                                        Status
+                                        Role
                                       </InputLabel>
 
                                       <Select
                                         labelId="demo-simple-select-label"
                                         id="demo-simple-select"
-                                        label="Status"
+                                        label="Role"
                                         helperText="Select the language."
                                         style={{ textAlign: "left" }}
-                                        value={userActive}
+                                        value={roleId}
                                         onChange={(e) => {
-                                          setUserActive(e.target.value);
+                                          setRoleId(e.target.value);
                                         }}
+                                        required
                                       >
-                                        <MenuItem value={"t"}>Active</MenuItem>
-                                        <MenuItem value={"f"}>
-                                          Deactive
-                                        </MenuItem>
-                                        <MenuItem value={"s"}>Suspend</MenuItem>
+                                        {state?.roles?.users?.map(
+                                          (item, index) => {
+                                            // Filter out "Superadmin" role if the logged-in user is also a "Superadmin"
+                                            if (
+                                              user.user_role === "Superadmin" &&
+                                              item.name === "Superadmin"
+                                            ) {
+                                              return null; // Skip rendering this MenuItem
+                                            } else if (
+                                              user.user_role === "Admin" &&
+                                              (item.name === "Superadmin" ||
+                                                item.name === "Admin")
+                                            ) {
+                                              return null;
+                                            } else if (
+                                              user.user_role === "Reseller" &&
+                                              (item.name === "Reseller" ||
+                                                item.name === "Superadmin" ||
+                                                item.name === "Admin")
+                                            ) {
+                                              return null;
+                                            } else {
+                                              // Render other roles
+                                              return (
+                                                <MenuItem
+                                                  key={index}
+                                                  value={item?.id}
+                                                >
+                                                  <label
+                                                    style={{
+                                                      margin: "0px",
+                                                      padding: "0px",
+                                                      textTransform:
+                                                        "capitalize",
+                                                    }}
+                                                  >
+                                                    {item?.name
+                                                      .toString()
+                                                      .toLowerCase()}
+                                                  </label>
+                                                </MenuItem>
+                                              );
+                                            }
+                                          }
+                                        )}
                                       </Select>
                                     </FormControl>
-                                    {validation.status && (
+
+                                    {validation.role && (
                                       <p
                                         className="mb-0"
                                         style={{
@@ -2014,66 +1971,106 @@ function User({ colorThem }) {
                                           textAlign: "left",
                                         }}
                                       >
-                                        {validation.status}
+                                        {validation.role}
                                       </p>
                                     )}
-                                    <br />
-                                    {roleId === 4 ? (
-                                      <>
-                                        <FormControl
-                                          style={{
-                                            width: "100%",
-                                            margin: " 5px 0 5px 0",
-                                          }}
-                                        >
-                                          <InputLabel id="demo-multiple-checkbox-label">
-                                            Reseller
-                                          </InputLabel>
-                                          <Select
-                                            style={{ textAlign: "left" }}
-                                            labelId="demo-multiple-checkbox-label"
-                                            label="Reseller"
-                                            id="demo-multiple-checkbox"
-                                            fullWidth
-                                            value={reseller}
-                                            onChange={(e) => {
-                                              setReseller(e.target.value);
-                                            }}
-                                            // input={
-                                            //   <OutlinedInput label="Reseller" />
-                                            // }
-                                            // renderValue={(selected) =>
-                                            //   selected.join(", ")
-                                            // }
-                                            // MenuProps={MenuProps}
-                                          >
-                                            {state?.allUsers?.users?.map(
-                                              (name, index) => {
-                                                if (name?.role === "Reseller") {
-                                                  return (
-                                                    <MenuItem
-                                                      key={index}
-                                                      value={name?.id}
-                                                    >
-                                                      {name.username}
-                                                    </MenuItem>
-                                                  );
-                                                }
-                                                // {name?.role === "Reseller" ? (
-                                                //   <MenuItem key={index} value={name.username}>
-                                                //   {name.username}
-                                                //  </MenuItem>
-                                                // ) : (<></>)}
-                                              }
-                                            )}
-                                          </Select>
-                                        </FormControl>
-                                      </>
-                                    ) : (
-                                      <></>
-                                    )}
 
-                                    {/* <FormControl
+                                    <br />
+                                  </>
+                                )}
+
+                                <FormControl
+                                  fullWidth
+                                  style={{ width: "100%", margin: "7px 0" }}
+                                >
+                                  <InputLabel id="demo-simple-select-label">
+                                    Status
+                                  </InputLabel>
+
+                                  <Select
+                                    labelId="demo-simple-select-label"
+                                    id="demo-simple-select"
+                                    label="Status"
+                                    helperText="Select the language."
+                                    style={{ textAlign: "left" }}
+                                    value={userActive}
+                                    onChange={(e) => {
+                                      setUserActive(e.target.value);
+                                    }}
+                                  >
+                                    <MenuItem value={"t"}>Active</MenuItem>
+                                    <MenuItem value={"f"}>Deactive</MenuItem>
+                                    <MenuItem value={"s"}>Suspend</MenuItem>
+                                  </Select>
+                                </FormControl>
+                                {validation.status && (
+                                  <p
+                                    className="mb-0"
+                                    style={{
+                                      color: "red",
+                                      textAlign: "left",
+                                    }}
+                                  >
+                                    {validation.status}
+                                  </p>
+                                )}
+                                <br />
+                                {roleId === 4 ? (
+                                  <>
+                                    <FormControl
+                                      style={{
+                                        width: "100%",
+                                        margin: " 5px 0 5px 0",
+                                      }}
+                                    >
+                                      <InputLabel id="demo-multiple-checkbox-label">
+                                        Reseller
+                                      </InputLabel>
+                                      <Select
+                                        style={{ textAlign: "left" }}
+                                        labelId="demo-multiple-checkbox-label"
+                                        label="Reseller"
+                                        id="demo-multiple-checkbox"
+                                        fullWidth
+                                        value={reseller}
+                                        onChange={(e) => {
+                                          setReseller(e.target.value);
+                                        }}
+                                        // input={
+                                        //   <OutlinedInput label="Reseller" />
+                                        // }
+                                        // renderValue={(selected) =>
+                                        //   selected.join(", ")
+                                        // }
+                                        // MenuProps={MenuProps}
+                                      >
+                                        {state?.allUsers?.users?.map(
+                                          (name, index) => {
+                                            if (name?.role === "Reseller") {
+                                              return (
+                                                <MenuItem
+                                                  key={index}
+                                                  value={name?.id}
+                                                >
+                                                  {name.username}
+                                                </MenuItem>
+                                              );
+                                            }
+                                            // {name?.role === "Reseller" ? (
+                                            //   <MenuItem key={index} value={name.username}>
+                                            //   {name.username}
+                                            //  </MenuItem>
+                                            // ) : (<></>)}
+                                          }
+                                        )}
+                                      </Select>
+                                    </FormControl>
+                                  </>
+                                ) : (
+                                  <></>
+                                )}
+
+                                {/* <FormControl
                                       style={{
                                         width: "100%",
                                         margin: "5px 0 5px 0",
@@ -2116,52 +2113,50 @@ function User({ colorThem }) {
                                         )}
                                       </Select>
                                     </FormControl> */}
-                                  </form>
-                             
                               </form>
-                            </DialogContent>
-                            <DialogActions
-                                  sx={{
-                                    display: "flex",
-                                    justifyContent: "center",
-                                   paddingBottom: "20px",
-                                  }}
-                                >
-                                  <Button
-                                    variant="contained"
-                                    //className="all_button_clr"
-                                    color="primary"
-                                    sx={{
-                                      fontSize: "16px !impotant",
-                                      background:
-                                        "linear-gradient(180deg, #0E397F 0%, #001E50 100%) !important",
-                                      // marginTop: "20px",
-                                      padding: "10px 20px !important",
-                                      textTransform: "capitalize !important",
-                                    }}
-                                    onClick={handleClose}
-                                  >
-                                    Cancel
-                                  </Button>
-                                  <Button
-                                    variant="contained"
-                                    className="all_button_clr"
-                                    color="primary"
-                                    sx={{
-                                      fontSize: "16px !impotant",
-                                      background: "#092b5f",
+                            </form>
+                          </DialogContent>
+                          <DialogActions
+                            sx={{
+                              display: "flex",
+                              justifyContent: "center",
+                              paddingBottom: "20px",
+                            }}
+                          >
+                            <Button
+                              variant="contained"
+                              //className="all_button_clr"
+                              color="primary"
+                              sx={{
+                                fontSize: "16px !impotant",
+                                background:
+                                  "linear-gradient(180deg, #0E397F 0%, #001E50 100%) !important",
+                                // marginTop: "20px",
+                                padding: "10px 20px !important",
+                                textTransform: "capitalize !important",
+                              }}
+                              onClick={handleClose}
+                            >
+                              Cancel
+                            </Button>
+                            <Button
+                              variant="contained"
+                              className="all_button_clr"
+                              color="primary"
+                              sx={{
+                                fontSize: "16px !impotant",
+                                background: "#092b5f",
 
-                                      marginLeft: "10px !important",
-                                      padding: "10px 20px !important",
-                                      textTransform: "capitalize !important",
-                                    }}
-                                    onClick={handleSubmit}
-                                  >
-                                    save
-                                  </Button>
-                                </DialogActions>
-                          </Dialog>
-
+                                marginLeft: "10px !important",
+                                padding: "10px 20px !important",
+                                textTransform: "capitalize !important",
+                              }}
+                              onClick={handleSubmit}
+                            >
+                              save
+                            </Button>
+                          </DialogActions>
+                        </Dialog>
 
                         {/* -----   Add User Modal End   ----- */}
                       </div>
@@ -2224,7 +2219,7 @@ function User({ colorThem }) {
               <> */}
                 <ThemeProvider theme={theme}>
                   <div style={{ height: "100%", width: "100%" }}>
-                    <DataGrid
+                    <StyledDataGrid
                       rows={rows}
                       columns={columns}
                       // getRowClassName={(params) =>

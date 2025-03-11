@@ -50,8 +50,8 @@ export const getRedirectCampaign = (filterValues) => async (dispatch) => {
       autoClose: 2500,
     });
     dispatch({
-      type: ALL_REDIRECT_CAMPAIGN_FAIL,
-      payload: error?.response?.data?.message,
+      type: ALL_REDIRECT_CAMPAIGN_SUCCESS,
+      payload: [],
     });
   }
 };

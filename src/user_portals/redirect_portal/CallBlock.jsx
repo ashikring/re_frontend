@@ -8,6 +8,7 @@ import Button from "@mui/material/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Typography from "@mui/material/Typography";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
+import CloseIcon from "@mui/icons-material/Close";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import {
   Dialog,
@@ -161,6 +162,8 @@ function CallBlock({userThem}) {
   const [isActive, setIsActive] = useState("");
   const [alertMessage, setAlertMessage] = useState(false);
   const [openModal, setOpenModal] = useState(false);
+  const [openDscptn, setOpenDscptn] = useState(false);
+  const [selectedDescription, setSelectedDescription] = useState("");
   const [name, setName] = useState("");
   const handleOpen = () => setOpen(true);
 
@@ -185,6 +188,15 @@ function CallBlock({userThem}) {
   const handleAlertClose = () => {
     setCallBlockId("");
     setAlertMessage(false);
+  };
+
+  const handleDscptnOpen = (description) => {
+    setSelectedDescription(description);
+    setOpenDscptn(true);
+  };
+  
+  const handleDscptnClose = () => {
+    setOpenDscptn(false);
   };
 
   useEffect(() => {
@@ -253,10 +265,15 @@ function CallBlock({userThem}) {
     {
       field: "edit",
       headerName: "Action",
-      width: 150,
       headerClassName: "custom-header",
-      headerAlign: "center",
-      align: "center",
+      width: 90,
+      flex: 1,
+      minWidth: 60,
+      maxWidth: "100%",
+      headerAlign: "left",
+      disableColumnMenu: true, // Prevents menu on hover
+      sortable: false, // Allows sorting on click but not on hover
+      align: "left",
 
       renderCell: (params) => {
         return (
@@ -289,10 +306,14 @@ function CallBlock({userThem}) {
     {
       field: "username",
       headerName: "User Name",
-      width: 240,
       headerClassName: "custom-header",
-      headerAlign: "center",
-      align: "center",
+      flex: 1,
+      minWidth: 70,
+      maxWidth: "100%",
+      headerAlign: "left",
+      disableColumnMenu: true, // Prevents menu on hover
+      sortable: false, // Allows sorting on click but not on hover
+      align: "left",
       renderCell:((params)=>{
         return(<>
         <span style={{textTransform:"capitalize"}}>{params.row.username}</span>
@@ -301,27 +322,40 @@ function CallBlock({userThem}) {
     },
     {
       field: "details",
-      headerName: "Caller ID Number",
-      width: 250,
-      headerAlign: "center",
-      align: "center",
+      headerName: "Caller ID",
+      headerClassName: "custom-header",
+      flex: 1,
+      minWidth: 70,
+      maxWidth: "100%",
+      headerAlign: "left",
+      disableColumnMenu: true, // Prevents menu on hover
+      sortable: false, // Allows sorting on click but not on hover
+      align: "left",
       headerClassName: "custom-header",
     },
     {
       field: "type",
       headerName: "Type",
-      width: 250,
       headerClassName: "custom-header",
-      headerAlign: "center",
-      align: "center",
+      flex: 1,
+      minWidth: 60,
+      maxWidth: "100%",
+      headerAlign: "left",
+      disableColumnMenu: true, // Prevents menu on hover
+      sortable: false, // Allows sorting on click but not on hover
+      align: "left",
     },
     {
       field: "is_active",
       headerName: "Status",
-      width: 180,
       headerClassName: "custom-header",
-      headerAlign: "center",
-      align: "center",
+      flex: 1,
+      minWidth: 80,
+      maxWidth: "100%",
+      headerAlign: "left",
+      disableColumnMenu: true, // Prevents menu on hover
+      sortable: false, // Allows sorting on click but not on hover
+      align: "left",
       renderCell: (params) => {
         return (
           <div className="d-flex justify-content-between align-items-center">
@@ -363,15 +397,31 @@ function CallBlock({userThem}) {
     {
       field: "description",
       headerName: "Description",
-      width: 250,
       headerClassName: "custom-header",
-      headerAlign: "center",
-      align: "center",
-      renderCell:((params)=>{
-        return(<>
-        <span style={{textTransform:"capitalize"}}>{params.row.description}</span>
-        </>)
-              })
+      flex: 1,
+      minWidth: 90,
+      maxWidth: "100%",
+      headerAlign: "left",
+      disableColumnMenu: true, // Prevents menu on hover
+      sortable: false, // Allows sorting on click but not on hover
+      align: "left",
+       renderCell: (params) => (
+        <div
+          style={{
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            cursor: "pointer",
+            maxWidth: "100%",
+            //color: "white",
+          }}
+          onClick={() => handleDscptnOpen(params.value)}
+          title="Click to expand"
+        >
+          {params.value && params.value.length > 50 ? params.value.substring(0, 50) + "..." : params.value}
+
+        </div>
+      ),
     },
     
 
@@ -879,6 +929,26 @@ function CallBlock({userThem}) {
                         {/* Delete Confirmation Modal End  */}
 
                         {/* <!--table---> */}
+
+                        <Dialog open={openDscptn} onClose={handleDscptnClose} fullWidth maxWidth="sm">
+  <DialogTitle>
+    Full Description
+    <IconButton
+      aria-label="close"
+      onClick={handleDscptnClose}
+      sx={{ position: "absolute", right: 8, top: 8 }}
+    >
+      <CloseIcon />
+    </IconButton>
+  </DialogTitle>
+  <DialogContent>
+    <p style={{ wordBreak: "break-word", whiteSpace: "pre-wrap" }}>
+      {selectedDescription}
+    </p>
+  </DialogContent>
+</Dialog>
+
+
                         <ThemeProvider theme={theme}>
                           <div style={{ height: "100%", width: "100%" }}>
                             <DataGrid
@@ -892,7 +962,16 @@ function CallBlock({userThem}) {
                               slots={{
                                 toolbar: CustomToolbar,
                               }}
-                              autoHeight
+                              autoHeight // Automatically adjust the height to fit all rows
+                                                    disableColumnResize={false} // Allow column resizing
+                                                    hideFooterPagination={window.innerWidth < 600} // Hide pagination for small screens
+                                                    sx={{
+    "& .MuiDataGrid-cell": {
+      fontSize: { xs: "12px", sm: "14px", md: "14px" }, // Responsive font sizes
+      wordBreak: "break-word !important",  // Break long words
+      whiteSpace: "break-spaces !important", // Allow multi-line text
+    },
+  }}
                             />
                           </div>
                         </ThemeProvider>

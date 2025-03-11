@@ -26,6 +26,7 @@ import { toast } from "react-toastify";
 import { api } from "../../mockData";
 import axios from "axios";
 import { makeStyles } from "@mui/styles";
+import dayjs from "dayjs";
 const drawerWidth = 240;
 
 const useStyles = makeStyles({
@@ -619,15 +620,44 @@ function ResellerCallActive({ colorThem }) {
       align: "center",
     },
   ];
+  // const mockDataTeam = useMemo(() => {
+  //   if (state?.getAdminCallActive?.callactive !== undefined) {
+  //     return Object.keys(state?.getAdminCallActive?.callactive)
+  //       .map((key) => ({
+  //         id: key,
+  //         ...state?.getAdminCallActive?.callactive[key],
+  //       }))
+  //       .filter((item) => item.SubType !== "QUEUE");
+  //   }
+  // }, [state?.getAdminCallActive?.callactive]);
+
   const mockDataTeam = useMemo(() => {
     if (state?.getAdminCallActive?.callactive !== undefined) {
-      return Object.keys(state?.getAdminCallActive?.callactive)
-        .map((key) => ({
-          id: key,
-          ...state?.getAdminCallActive?.callactive[key],
-        }))
-        .filter((item) => item.SubType !== "QUEUE");
+      // Parse the object and map keys to desired structure
+      const parsedData = Object.keys(state?.getAdminCallActive?.callactive)
+        .map((key) => {
+          try {
+            const parsedValue = JSON.parse(state?.getAdminCallActive?.callactive[key]); // Parse JSON string
+            return {
+              id: key, // Add the key as 'id'
+              ...parsedValue, // Spread the parsed object
+            };
+          } catch (error) {
+            console.error(`Failed to parse JSON for key: ${key}`, error);
+            return null; // Return null or handle error as needed
+          }
+        })
+        .filter(Boolean); // Filter out any null entries
+  
+      // Sort data by TimeStamp in descending order
+      return parsedData.sort((a, b) => {
+        const dateA = dayjs(a.TimeStamp);
+        const dateB = dayjs(b.TimeStamp);
+        return dateB - dateA; // Descending order
+        
+      });
     }
+    return [];
   }, [state?.getAdminCallActive?.callactive]);
 
   const rows = useMemo(() => {

@@ -36,6 +36,7 @@ import {
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import dayjs from "dayjs";
+import { StyledDataGrid } from "../../pages/CustomDataGrid";
 const drawerWidth = 240;
 
 const useStyles = makeStyles({
@@ -221,12 +222,12 @@ function AdminBillingMinut({ colorThem }) {
       headerClassName: "custom-header",
       headerAlign: "center",
       align: "center",
-      width: 100,
+      width: 130,
     },
     {
       field: "monthly_minutes",
       headerName: "Monthly Usage Minutes",
-      width: 150,
+      width: 185,
       headerClassName: "custom-header",
       headerAlign: "center",
       align: "center",
@@ -388,7 +389,7 @@ function AdminBillingMinut({ colorThem }) {
                             }}
                           >
                             Total Used Minute:
-                            <span style={{ fontWeight: "400", padding:"4px" }}>
+                            <span style={{ fontWeight: "400", padding: "4px" }}>
                               {tMinutes}
                             </span>
                           </Typography>
@@ -435,7 +436,7 @@ function AdminBillingMinut({ colorThem }) {
                     <div className="row">
                       <ThemeProvider theme={theme}>
                         <div style={{ height: "100%", width: "100%" }}>
-                          <DataGrid
+                          <StyledDataGrid
                             // checkboxSelection
                             rows={rows}
                             columns={columns}

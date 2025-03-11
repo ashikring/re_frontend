@@ -55,6 +55,7 @@ import {
 } from "../../redux/actions/adminPortal_minutesAction";
 import axios from 'axios';
 import { api } from "../../mockData";
+import { StyledDataGrid } from "../../pages/CustomDataGrid";
 
 const drawerWidth = 240;
 
@@ -277,31 +278,30 @@ function AdminMinutes({ colorThem }) {
     let isValid = true;
     //first Name validation
     if (!userId) {
-      errors.userId = "User name is required";
+      errors.userId = "User Name is required";
       isValid = false;
     } else {
       errors.userId = "";
     }
 
     if (!billingType) {
-      errors.billingType = "BillingType is required";
+      errors.billingType = "Billing Type is required";
       isValid = false;
     } else {
       errors.billingType = "";
     }
     if (!totalMinutes) {
-      errors.totalMinutes = "TotalMinutes is required";
+      errors.totalMinutes = "Total Minutes is required";
       isValid = false;
     } else {
       errors.totalMinutes = "";
     }
-
-    // if (!billingRate) {
-    //   errors.billingRate = "BillingRate is required";
-    //   isValid = false;
-    // } else {
-    //   errors.billingRate = "";
-    // }
+    if (!billingRate) {
+      errors.billingRate = "Billing Rate is required";
+      isValid = false;
+    } else {
+      errors.billingRate = "";
+    }
     setValidation(errors);
     return isValid;
   }, [validation, userId, billingType, totalMinutes, billingRate]);
@@ -358,8 +358,6 @@ function AdminMinutes({ colorThem }) {
       setBillingType,
       setStatus,setAssignMinutes]
   );
-
-
 
   useEffect(()=>{
     let config = {
@@ -434,7 +432,7 @@ function AdminMinutes({ colorThem }) {
       headerName: "Total Used Minutes",
       headerClassName: "custom-header",
       headerAlign: "center",
-      width: 150,
+      width: 165,
       align: "center",
     },
     {
@@ -450,7 +448,7 @@ function AdminMinutes({ colorThem }) {
       headerName: "Remaining Minutes",
       headerClassName: "custom-header",
       headerAlign: "center",
-      width: 150,
+      width: 165,
       align: "center",
     },
     {
@@ -776,8 +774,8 @@ return(<>{user?.uid === item.user_id ? (<><div  style={{margin:'auto'}} classNam
                                       }}
                                       required
                                     >
-                                      {state?.allUsers?.users?.map(
-                                        (item, index) => {
+                                      {state?.allUsers?.users?.filter((item) => item.username !== "superadmin" && item.username !== "admin")
+      .map((item, index) => {
                                           return (
                                             <MenuItem
                                               key={index}
@@ -802,8 +800,6 @@ return(<>{user?.uid === item.user_id ? (<><div  style={{margin:'auto'}} classNam
                                         {validation.userId}
                                       </p>
                                     )}
-
-                                  <br />
 
                                   {/* <FormControl
                                     fullWidth
@@ -1315,7 +1311,7 @@ return(<>{user?.uid === item.user_id ? (<><div  style={{margin:'auto'}} classNam
 
                         <ThemeProvider theme={theme}>
                         <div style={{ height: "100%", width: '100%', overflowY: 'auto' }}> 
-                              <DataGrid
+                              <StyledDataGrid
                                 rows={rows}
                                 columns={columns}
                                 headerClassName="custom-header"

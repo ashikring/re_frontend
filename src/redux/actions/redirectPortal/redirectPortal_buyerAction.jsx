@@ -40,8 +40,8 @@ export const getRedirectBuyer = (filterValues) => async (dispatch) => {
             autoClose: 2500,
           });
           dispatch({
-            type: GET_REDIRECT_BUYER_FAIL,
-            payload: error?.response?.data?.message,
+            type: GET_REDIRECT_BUYER_SUCCESS,
+            payload: [],
           });
         }
       };

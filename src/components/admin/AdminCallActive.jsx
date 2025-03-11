@@ -22,6 +22,8 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { api } from "../../mockData";
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import { StyledDataGrid } from "../../pages/CustomDataGrid";
+import dayjs from "dayjs";
 const drawerWidth = 240;
 
 const useStyles = makeStyles({
@@ -244,12 +246,12 @@ function AdminCallActive({ colorThem }) {
       headerClassName: "custom-header",
       headerAlign: "center",
       align: "center",
-      width: 100,
+      width: 120,
     },
 
     {
       field: "CompaignName",
-      headerName: "Compaign Name",
+      headerName: "Campaign Name",
       width: 150,
       headerClassName: "custom-header",
       headerAlign: "center",
@@ -276,71 +278,10 @@ function AdminCallActive({ colorThem }) {
     {
       field: "Status",
       headerName: "Status",
-      width: 150,
+      width: 220,
       headerClassName: "custom-header",
       headerAlign: "center",
       align: "center",
-      renderCell: (params) => {
-        return (
-          <div className="d-flex justify-content-between align-items-center">
-            <p
-              style={{
-                fontWeight: "500",
-                margin: "0",
-              }}
-            >
-              {params?.row?.Status === "ANSWER" ? (
-                <>
-                  {" "}
-                  <p
-                    style={{
-                      fontWeight: "500",
-                      margin: "0",
-                      color: "green",
-                    }}
-                  >
-                    {params?.row?.Status}
-                  </p>
-                </>
-              ) : (
-                <></>
-              )}
-              {params?.row?.Status === "DIALING" ? (
-                <>
-                  {" "}
-                  <p
-                    style={{
-                      fontWeight: "500",
-                      margin: "0",
-                      color: "violet",
-                    }}
-                  >
-                    {params?.row?.Status}
-                  </p>
-                </>
-              ) : (
-                <></>
-              )}
-              {params?.row?.Status === "RINGING" ? (
-                <>
-                  {" "}
-                  <p
-                    style={{
-                      fontWeight: "500",
-                      margin: "0",
-                      color: "skyblue",
-                    }}
-                  >
-                    {params?.row?.Status}
-                  </p>
-                </>
-              ) : (
-                <></>
-              )}
-            </p>
-          </div>
-        );
-      },
     },
 
     {
@@ -395,19 +336,6 @@ function AdminCallActive({ colorThem }) {
           hours = (hours < 10 ? "0" : "") + hours;
           minutes = (minutes < 10 ? "0" : "") + minutes;
           seconds = (seconds < 10 ? "0" : "") + seconds;
-          var formattedDate =
-            day +
-            "/" +
-            month +
-            "/" +
-            year +
-            " " +
-            hours +
-            ":" +
-            minutes +
-            ":" +
-            seconds;
-            
           return (
             <>
               <span style={{ color: "blue" }}>
@@ -468,7 +396,7 @@ function AdminCallActive({ colorThem }) {
       renderCell: (params) => {
         return (
           <div className="d-flex justify-content-between align-items-center">
-            {params.row.Status === "ANSWER" && (
+            {params.row.Status === "BUYER_ANSWERED" && (
               <Button
                 // variant="outlined"
                 sx={{
@@ -499,18 +427,47 @@ function AdminCallActive({ colorThem }) {
   ];
 
  
-  const mockDataTeam = useMemo(() => {
+  // const mockDataTeam = useMemo(() => {
     
-    if (state?.getAdminCallActive?.callactive !== undefined) {
-      return Object.keys(state?.getAdminCallActive?.callactive)
-        .map((key) => ({
-          id: key,
-          ...state?.getAdminCallActive?.callactive[key],
-        }))
-    }else {
+  //   if (state?.getAdminCallActive?.callactive !== undefined) {
+  //     return Object.keys(state?.getAdminCallActive?.callactive)
+  //       .map((key) => ({
+  //         id: key,
+  //         ...state?.getAdminCallActive?.callactive[key],
+  //       }))
+  //   }else {
+  //     return [];
+  //   }
+  // }, [state?.getAdminCallActive?.callactive]);
+
+  const mockDataTeam = useMemo(() => {
+      if (state?.getAdminCallActive?.callactive !== undefined) {
+        // Parse the object and map keys to desired structure
+        const parsedData = Object.keys(state?.getAdminCallActive?.callactive)
+          .map((key) => {
+            try {
+              const parsedValue = JSON.parse(state?.getAdminCallActive?.callactive[key]); // Parse JSON string
+              return {
+                id: key, // Add the key as 'id'
+                ...parsedValue, // Spread the parsed object
+              };
+            } catch (error) {
+              console.error(`Failed to parse JSON for key: ${key}`, error);
+              return null; // Return null or handle error as needed
+            }
+          })
+          .filter(Boolean); // Filter out any null entries
+    
+        // Sort data by TimeStamp in descending order
+        return parsedData.sort((a, b) => {
+          const dateA = dayjs(a.TimeStamp);
+          const dateB = dayjs(b.TimeStamp);
+          return dateB - dateA; // Descending order
+          
+        });
+      }
       return [];
-    }
-  }, [state?.getAdminCallActive?.callactive]);
+    }, [state?.getAdminCallActive?.callactive]);
 
   useEffect(() => {
     // Prepare timeStamp array from mockDataTeam
@@ -558,7 +515,7 @@ function AdminCallActive({ colorThem }) {
                     <div className="row">
                       <ThemeProvider theme={theme}>
                       <div style={{ height: "100%", width: "100%" }}>
-                              <DataGrid
+                              <StyledDataGrid
                                 // checkboxSelection
                                 rows={mockDataTeam}
                                 columns={columns}

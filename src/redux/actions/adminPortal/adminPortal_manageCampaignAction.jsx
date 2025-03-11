@@ -37,11 +37,16 @@ export const getAdminManageCampaign = () => async (dispatch) => {
           payload: response?.data?.data,
         });
       })
-      .catch((error) => {});
+      .catch((error) => {
+        dispatch({
+          type: GET_ADMIN_MANAGE_CAMPAIGN_SUCCESS,
+          payload: [],
+        });
+      });
   } catch (error) {
     dispatch({
       type: GET_ADMIN_MANAGE_CAMPAIGN_FAIL,
-      payload: error.response.data.message,
+      payload: [],
     });
   }
 };

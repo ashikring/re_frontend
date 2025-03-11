@@ -24,6 +24,8 @@ import {
   FormControlLabel,
   RadioGroup,
   Radio,
+  useMediaQuery,
+  Popover,
 } from "@mui/material";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -47,6 +49,13 @@ import dayjs from "dayjs";
 import { getAllUsers } from "../../redux/actions/userAction";
 import { getAdminUsersList } from "../../redux/actions/adminPortal_listAction";
 import { DateTimePicker } from "@mui/x-date-pickers";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+import { StyledDataGrid } from "../../pages/CustomDataGrid";
+import { callStatusMessages } from "../../pages/Tooltips";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 const drawerWidth = 240;
 
 const useStyles = makeStyles({
@@ -163,10 +172,13 @@ function AdminReport({ colorThem }) {
   const dispatch = useDispatch();
   const [currentAudio, setCurrentAudio] = useState(null);
   const [userId, setUserId] = useState("");
+  const railwayZone = "Asia/Kolkata"; // Replace with your desired timezone
   const [fromDate, setFromDate] = useState(
-    dayjs().startOf("day").format("DD/MM/YYYY HH:mm")
+    dayjs().tz(railwayZone).startOf("day").format("DD/MM/YYYY HH:mm")
   );
-  const [toDate, setToDate] = useState(dayjs().format("DD/MM/YYYY HH:mm"));
+  const [toDate, setToDate] = useState(
+    dayjs().tz(railwayZone).endOf("day").format("DD/MM/YYYY HH:mm") // Default to 23:59
+  );
   const [callDirection, setCallDirection] = useState("");
   const [didNumber, setDidNumber] = useState("");
   const [destination, setDestination] = useState("");
@@ -186,8 +198,7 @@ function AdminReport({ colorThem }) {
   const classes = useStyles();
   const handleFromDateChange = (date) => {
     if (dayjs(date, "DD/MM/YYYY HH:mm", true).isValid()) {
-      // Convert the selected date to the desired format before updating state
-      setFromDate(dayjs(date).format("DD/MM/YYYY HH:mm"));
+      setFromDate(dayjs(date).tz(railwayZone).format("DD/MM/YYYY HH:mm"));
     } else {
       setFromDate(null);
     }
@@ -195,8 +206,7 @@ function AdminReport({ colorThem }) {
 
   const handleToDateChange = (date) => {
     if (dayjs(date, "DD/MM/YYYY HH:mm", true).isValid()) {
-      // Convert the selected date to the desired format before updating state
-      setToDate(dayjs(date).format("DD/MM/YYYY HH:mm"));
+      setToDate(dayjs(date).tz(railwayZone).format("DD/MM/YYYY HH:mm"));
     } else {
       setToDate(null);
     }
@@ -295,12 +305,93 @@ function AdminReport({ colorThem }) {
     document.body.removeChild(link);
   };
 
+  const getStatusMessage = (key) => {
+    const status = callStatusMessages.find((item) => item.key === key);
+    return status ? status.value : "Unknown Status";
+  };
+
+  const CallStatusTooltip = ({ statusKey }) => {
+    const isMobile = useMediaQuery("(max-width:600px)"); // Detect mobile
+    const [anchorEl, setAnchorEl] = useState(null);
+  
+    const handleClick = (event) => {
+      if (isMobile) {
+        setAnchorEl(event.currentTarget); // Open Popover on click
+      }
+    };
+  
+    const handleClose = () => {
+      setAnchorEl(null);
+    };
+  
+    return (
+      <>
+        {isMobile ? (
+          <>
+            {/* Clickable text for mobile */}
+            <span
+              onClick={handleClick}
+              style={{
+                fontSize: "14px",
+                color: "#1976d2",
+                display: "block",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                maxWidth: "120px",
+              }}
+            >
+              {statusKey}
+            </span>
+  
+            {/* Popover for Mobile */}
+            <Popover
+              open={Boolean(anchorEl)}
+              anchorEl={anchorEl}
+              onClose={handleClose}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "center",
+              }}
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "center",
+              }}
+            >
+              <Typography sx={{ p: 2, maxWidth: "200px", fontSize: "12px" }}>
+                {getStatusMessage(statusKey)}
+              </Typography>
+            </Popover>
+          </>
+        ) : (
+          // Tooltip for Desktop
+          <Tooltip title={getStatusMessage(statusKey)} arrow>
+            <span
+              style={{
+                fontSize: "14px",
+                color: "#1976d2",
+                display: "block",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                maxWidth: "200px",
+              }}
+            >
+              {statusKey}
+            </span>
+          </Tooltip>
+        )}
+      </>
+    );
+  };
+  
+
   const columns = [
     {
       field: "username",
       headerName: "Username",
       headerClassName: "custom-header",
-      width: 150,
+      width: 120,
       headerAlign: "center",
       align: "center",
       cellClassName: "super-app-theme--cell",
@@ -317,7 +408,7 @@ function AdminReport({ colorThem }) {
     {
       field: "did_tfn",
       headerName: "DID Number",
-      width: 140,
+      width: 130,
       //cellClassName: "name-column--cell",
       //headerClassName: 'super-app-theme--header'
       headerClassName: "custom-header",
@@ -326,21 +417,44 @@ function AdminReport({ colorThem }) {
       // editable: true
     },
     {
-      field: "call_direction",
-      headerName: "Call Direction",
-      width: 120,
+      field: "forwarded_number",
+      headerName: "Forwarded Number",
+      width: 130,
+      headerClassName: "custom-header",
       headerAlign: "center",
       align: "center",
-      headerClassName: "custom-header",
     },
-
     {
       field: "hangup_reason",
       headerName: "Status",
-      width: 220,
+      width: 250,
       headerAlign: "center",
       align: "center",
       headerClassName: "custom-header",
+      renderCell: (params) => <CallStatusTooltip statusKey={params.value} />,
+    },
+    {
+      field: "call_status",
+      headerName: "Call Status",
+      width: 150,
+      headerAlign: "center",
+      align: "center",
+      headerClassName: "custom-header",
+      renderCell: (params) => {
+        return (
+          <>
+            <span>
+              {params.row.call_status === "ANSWERED" ? (
+                <span style={{ color: "green" }}>
+                  {params.row.call_status}
+                </span>
+              ) : (
+                <span style={{ color: "red" }}>{params.row.call_status}</span>
+              )}
+            </span>
+          </>
+        );
+      },
     },
     {
       field: "buyer_name",
@@ -358,14 +472,7 @@ function AdminReport({ colorThem }) {
       headerAlign: "center",
       align: "center",
     },
-    {
-      field: "forwarded_number",
-      headerName: "Forwarded Number",
-      width: 150,
-      headerClassName: "custom-header",
-      headerAlign: "center",
-      align: "center",
-    },
+
     // {
     //   field: "destination",
     //   headerName: "Destination",
@@ -386,11 +493,20 @@ function AdminReport({ colorThem }) {
     {
       field: "billsec",
       headerName: "Bill Sec",
-      width: 100,
+      width: 85,
       headerAlign: "center",
       align: "center",
       headerClassName: "custom-header",
     },
+    {
+      field: "used_minutes",
+      headerName: "Used Minutes",
+      width: 135,
+      headerAlign: "center",
+      align: "center",
+      headerClassName: "custom-header",
+    },
+   
 
     {
       field: "recording_path",
@@ -432,22 +548,22 @@ function AdminReport({ colorThem }) {
         }
       },
     },
-    {
-      field: "answered_by",
-      headerName: "Answered By",
-      width: 130,
-      headerAlign: "center",
-      align: "center",
-      headerClassName: "custom-header",
-    },
-    {
-      field: "transfered_to",
-      headerName: "Transfered",
-      width: 130,
-      headerAlign: "center",
-      align: "center",
-      headerClassName: "custom-header",
-    },
+    // {
+    //   field: "answered_by",
+    //   headerName: "Answered By",
+    //   width: 130,
+    //   headerAlign: "center",
+    //   align: "center",
+    //   headerClassName: "custom-header",
+    // },
+    // {
+    //   field: "transfered_to",
+    //   headerName: "Transfered",
+    //   width: 130,
+    //   headerAlign: "center",
+    //   align: "center",
+    //   headerClassName: "custom-header",
+    // },
     // {
     //   field: "disposition",
     //   headerName: "Status",
@@ -521,18 +637,6 @@ function AdminReport({ colorThem }) {
           hours = (hours < 10 ? "0" : "") + hours;
           minutes = (minutes < 10 ? "0" : "") + minutes;
           seconds = (seconds < 10 ? "0" : "") + seconds;
-          var formattedDate =
-            day +
-            "/" +
-            month +
-            "/" +
-            year +
-            " " +
-            hours +
-            ":" +
-            minutes +
-            ":" +
-            seconds;
           return (
             <>
               <span style={{ color: "blue" }}>
@@ -573,18 +677,6 @@ function AdminReport({ colorThem }) {
           hours = (hours < 10 ? "0" : "") + hours;
           minutes = (minutes < 10 ? "0" : "") + minutes;
           seconds = (seconds < 10 ? "0" : "") + seconds;
-          var formattedDate =
-            day +
-            "/" +
-            month +
-            "/" +
-            year +
-            " " +
-            hours +
-            ":" +
-            minutes +
-            ":" +
-            seconds;
           return (
             <>
               <span style={{ color: "blue" }}>
@@ -626,23 +718,6 @@ function AdminReport({ colorThem }) {
           minutes = (minutes < 10 ? "0" : "") + minutes;
           seconds = (seconds < 10 ? "0" : "") + seconds;
 
-          var formattedDate =
-            "<span style='color: blue'>" +
-            day +
-            "/" +
-            month +
-            "/" +
-            year +
-            "</span>" +
-            " " +
-            "<span style='color: green'>" +
-            hours +
-            ":" +
-            minutes +
-            ":" +
-            seconds +
-            "</span>";
-
           return (
             <>
               <span style={{ color: "blue" }}>
@@ -656,6 +731,31 @@ function AdminReport({ colorThem }) {
           );
         }
       },
+    },
+
+    {
+      field: "incoming",
+      headerName: "Incoming",
+      width: 175,
+      headerAlign: "center",
+      align: "center",
+      headerClassName: "custom-header",
+    },
+    {
+      field: "outgoing",
+      headerName: "Outgoing",
+      width: 265,
+      headerAlign: "center",
+      align: "center",
+      headerClassName: "custom-header",
+    },
+    {
+      field: "hangupsource",
+      headerName: "Hangup Source",
+      width: 215,
+      headerAlign: "center",
+      align: "center",
+      headerClassName: "custom-header",
     },
 
     {
@@ -689,13 +789,18 @@ function AdminReport({ colorThem }) {
         start_time: item.start_at,
         end_at: item.end_at,
         recording_path: item.recording_path,
-        hangup_reason: item.hangup_reason,
+        hangup_reason: item.status,
+        call_status: item.call_status,
         campaign_name: item.campaign_name,
         destination: item.destination,
         username: item.username,
         answered_by: item.answered_by,
         transfered_to: item.transfered_to,
         forwarded_number: item.forwarded_number,
+        used_minutes: item.used_minutes,
+        incoming: item.incoming,
+        outgoing: item.outgoing,
+        hangupsource: item.hangupsource,
       });
     });
 
@@ -975,7 +1080,7 @@ function AdminReport({ colorThem }) {
                               </Select>
                             </FormControl>
                           </Grid> */}
-                          <Grid
+                          {/* <Grid
                             xl={3}
                             lg={3}
                             md={3}
@@ -987,16 +1092,6 @@ function AdminReport({ colorThem }) {
                               className={classes.formControl}
                               fullWidth
                               style={{ width: "98.5%", margin: "7px 0px" }}
-                              //                             sx={{
-                              //   width: "98%",
-                              //   margin: "5px 0",
-                              //   "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
-                              //     borderColor: "#c4c4c4", // Change this to your desired hover color
-                              //   },
-                              //   "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                              //       borderColor: "#fff", // Focus border color
-                              //     },
-                              // }}
                             >
                               <InputLabel id="demo-simple-select-label">
                                 Status
@@ -1019,7 +1114,7 @@ function AdminReport({ colorThem }) {
                                 ))}
                               </Select>
                             </FormControl>
-                          </Grid>
+                          </Grid> */}
                           <Grid
                             xl={3}
                             lg={3}
@@ -1027,6 +1122,7 @@ function AdminReport({ colorThem }) {
                             sm={12}
                             xs={12}
                             style={{ display: "flex", alignItems: "center" }}
+                           
                           >
                             <LocalizationProvider
                               dateAdapter={AdapterDayjs}
@@ -1039,20 +1135,18 @@ function AdminReport({ colorThem }) {
                               >
                                 <DateTimePicker
                                   label="From Date"
-                                  className="select_date_items"
                                   value={
                                     fromDate
                                       ? dayjs(fromDate, "DD/MM/YYYY HH:mm")
                                       : null
-                                  } // Convert selectedDate to a dayjs object
+                                  }
                                   onChange={handleFromDateChange}
                                   renderInput={(props) => (
-                                    <TextField
-                                      {...props}
-                                      className="select_date_box"
-                                    />
+                                    <TextField {...props} />
                                   )}
-                                  format="DD/MM/YYYY HH:mm"
+                                  format="DD/MM/YYYY HH:mm" // 24-hour format
+                                  ampm={false} // Disables AM/PM toggle
+                                  minutesStep={1}
                                 />
                               </DemoContainer>
                             </LocalizationProvider>
@@ -1064,6 +1158,7 @@ function AdminReport({ colorThem }) {
                             sm={12}
                             xs={12}
                             style={{ display: "flex", alignItems: "center" }}
+                            className="mt-xxl-0 mt-xl-0 mt-lg-0 mt-md-0 mt-sm-1 mt-xs-1 mt-1"
                           >
                             <LocalizationProvider
                               dateAdapter={AdapterDayjs}
@@ -1075,21 +1170,19 @@ function AdminReport({ colorThem }) {
                                 className="select_date"
                               >
                                 <DateTimePicker
-                                  className="select_date_items"
                                   label="To Date"
                                   value={
                                     toDate
                                       ? dayjs(toDate, "DD/MM/YYYY HH:mm")
                                       : null
-                                  } // Convert selectedDate to a dayjs object
+                                  }
                                   onChange={handleToDateChange}
                                   renderInput={(props) => (
-                                    <TextField
-                                      {...props}
-                                      className="select_date_box"
-                                    />
+                                    <TextField {...props} />
                                   )}
-                                  format="DD/MM/YYYY HH:mm"
+                                  format="DD/MM/YYYY HH:mm" // 24-hour format
+                                  ampm={false} // Disables AM/PM toggle
+                                  minutesStep={1} // Show all minutes (no step increment)
                                 />
                               </DemoContainer>
                             </LocalizationProvider>
@@ -1149,6 +1242,7 @@ function AdminReport({ colorThem }) {
                                   ? "red"
                                   : "grey",
                               }}
+                              disabled={selectedCallerData.length === 0}
                               onClick={handleBlockCallerIds}
                             >
                               Block &nbsp;
@@ -1183,15 +1277,15 @@ function AdminReport({ colorThem }) {
                         {radioValue === "n" ? (
                           <>
                             <ThemeProvider theme={theme}>
-                              <div style={{ height: 500, width: "100%" }}>
-                                <DataGrid
+                              <div style={{ height: 620, width: "100%" }}>
+                                <StyledDataGrid
                                   rows={rows}
                                   columns={columns}
-                                  checkboxSelection
                                   components={{ Toolbar: GridToolbar }}
-                                  onRowSelectionModelChange={
-                                    handleSelectionChange
-                                  }
+                                  checkboxSelection
+                                  disableRowSelectionOnClick
+                                  rowSelectionModel={selectedRows} // Bind selection model
+                                  onRowSelectionModelChange={handleSelectionChange} // Handle selection change
                                 />
                               </div>
                             </ThemeProvider>

@@ -608,10 +608,10 @@ function ResellerUser({ colorThem }) {
               JSON.stringify(values)
             );
             localStorage.setItem("current_user", values.user_name);
-            window.open("/manage_portal");
+            window.open("/redirect_portal");
           } else if (values.user_role === "Client") {
             localStorage.setItem("user", JSON.stringify(values));
-            navigate("/manage_portal");
+            navigate("/redirect_portal");
           }
 
           dispatch(login(values));

@@ -43,7 +43,11 @@ import {
   postAddMinuteHistory,
 } from "../../redux/actions/adminPortal_historyAction";
 import { getAllUsers } from "../../redux/actions/userAction";
-import { getAdminResellersList, getAdminUsersList } from "../../redux/actions/adminPortal_listAction";
+import {
+  getAdminResellersList,
+  getAdminUsersList,
+} from "../../redux/actions/adminPortal_listAction";
+import { StyledDataGrid } from "../../pages/CustomDataGrid";
 const drawerWidth = 240;
 
 const useStyles = makeStyles({
@@ -186,31 +190,32 @@ function AdminHistory({ colorThem }) {
     dispatch(getAddMinuteHistory());
     dispatch(postAddMinuteHistory({}));
     dispatch(getAdminUsersList());
-    dispatch(getAdminResellersList())
+    dispatch(getAdminResellersList());
   }, []); // Empty dependency array ensures this effect runs once on mount
 
-  useMemo(()=>{
-    if(state?.getAdminUsersList?.userList){
-    const usersArray = Object.keys(state?.getAdminUsersList?.userList)?.map(key => ({
-      
-      user_id: key,
-      username: state?.getAdminUsersList?.userList[key]
-      
-    }));
-    setUsers(usersArray);
-  } 
-  if(state?.getAdminResellersList?.resellerList){
-    const resellerArray = Object.keys(state?.getAdminResellersList?.resellerList)?.map(key => ({
-      
-      reseller_id: key,
-      username: state?.getAdminResellersList?.resellerList[key]
-      
-    }));
-    setResellers(resellerArray);
-  }
-   },[state?.getAdminUsersList?.userList, state?.getAdminResellersList?.resellerList])
-
- 
+  useMemo(() => {
+    if (state?.getAdminUsersList?.userList) {
+      const usersArray = Object.keys(state?.getAdminUsersList?.userList)?.map(
+        (key) => ({
+          user_id: key,
+          username: state?.getAdminUsersList?.userList[key],
+        })
+      );
+      setUsers(usersArray);
+    }
+    if (state?.getAdminResellersList?.resellerList) {
+      const resellerArray = Object.keys(
+        state?.getAdminResellersList?.resellerList
+      )?.map((key) => ({
+        reseller_id: key,
+        username: state?.getAdminResellersList?.resellerList[key],
+      }));
+      setResellers(resellerArray);
+    }
+  }, [
+    state?.getAdminUsersList?.userList,
+    state?.getAdminResellersList?.resellerList,
+  ]);
 
   const handleFromDateChange = (date) => {
     if (dayjs(date, "DD/MM/YYYY", true).isValid()) {
@@ -299,10 +304,10 @@ function AdminHistory({ colorThem }) {
       align: "center",
       cellClassName: "super-app-theme--cell",
       renderCell: (params) => (
-        <span style={{ textTransform: 'capitalize' }}>
+        <span style={{ textTransform: "capitalize" }}>
           {params.row.username}
         </span>
-      )
+      ),
     },
     {
       field: "added_by",
@@ -313,10 +318,10 @@ function AdminHistory({ colorThem }) {
       align: "center",
       cellClassName: "super-app-theme--cell",
       renderCell: (params) => (
-        <span style={{ textTransform: 'capitalize' }}>
+        <span style={{ textTransform: "capitalize" }}>
           {params.row.added_by}
         </span>
-      )
+      ),
     },
     {
       field: "topup",
@@ -396,10 +401,10 @@ function AdminHistory({ colorThem }) {
       headerAlign: "center",
       align: "center",
       renderCell: (params) => (
-        <span style={{ textTransform: 'capitalize' }}>
+        <span style={{ textTransform: "capitalize" }}>
           {params.row.reseller_name}
         </span>
-      )
+      ),
     },
   ];
 
@@ -488,8 +493,8 @@ function AdminHistory({ colorThem }) {
                       >
                         {/* <!--role-contet--> */}
                         <div className="d-xxl-none d-xl-none d-lg-none d-md-none d-sm-block d-block">
-                            <h3>Reseller Commision Report</h3>
-                          </div>
+                          <h3>Reseller Commision Report</h3>
+                        </div>
                         <div
                           className="cntnt_title mobile_justify_end"
                           style={{
@@ -508,10 +513,9 @@ function AdminHistory({ colorThem }) {
                             Check Add Minute
                             <AddOutlinedIcon />
                           </IconButton>
-                          
-                            
-                             {/* -----   Edit Modal Start   ----- */}
-                                 
+
+                          {/* -----   Edit Modal Start   ----- */}
+
                           {/* <Dialog
                           open={open}
                         onClose={handleClose}
@@ -786,15 +790,17 @@ function AdminHistory({ colorThem }) {
                           </DialogActions> 
                         </Dialog> */}
 
-                     
-
                           <Modal
                             open={open}
                             onClose={handleClose}
                             aria-labelledby="child-modal-title"
                             aria-describedby="child-modal-description"
                           >
-                            <Fade in={open} className="bg_imagess" style={{padding:'10px',borderRadius:'15px'}}>
+                            <Fade
+                              in={open}
+                              className="bg_imagess"
+                              style={{ padding: "10px", borderRadius: "15px" }}
+                            >
                               <Box sx={{ ...style, width: 700 }}>
                                 <IconButton
                                   onClick={handleClose}
@@ -804,7 +810,6 @@ function AdminHistory({ colorThem }) {
                                 </IconButton>
                                 <br />
                                 <Typography
-                              
                                   id="transition-modal-title"
                                   variant="h6"
                                   component="h2"
@@ -1067,7 +1072,7 @@ function AdminHistory({ colorThem }) {
                             </Fade>
                           </Modal>
 
-                               {/* -----   Edit Modal End   ----- */}
+                          {/* -----   Edit Modal End   ----- */}
                         </div>
 
                         <Grid
@@ -1285,11 +1290,11 @@ function AdminHistory({ colorThem }) {
                               fontSize: "17px",
                               fontWeight: "600",
                               color: "rgb(66, 118, 95)",
-                              paddingBottom: "20px" 
+                              paddingBottom: "20px",
                             }}
                           >
                             Total Add Minute:-{" "}
-                            <span style={{ fontWeight: "400"}}>
+                            <span style={{ fontWeight: "400" }}>
                               {
                                 state?.getAdminAddMinute?.addMinute
                                   ?.total_add_minutes
@@ -1299,7 +1304,7 @@ function AdminHistory({ colorThem }) {
                         </Box>
                         <ThemeProvider theme={theme}>
                           <div style={{ height: "100%", width: "100%" }}>
-                            <DataGrid
+                            <StyledDataGrid
                               rows={rows}
                               columns={columns}
                               headerClassName="custom-header"

@@ -50,6 +50,7 @@ import {
   getAdminCarrier,
   updateAdminCarrier,
 } from "../../redux/actions/adminPortal_carrierAction";
+import { StyledDataGrid } from "../../pages/CustomDataGrid";
 
 const drawerWidth = 240;
 
@@ -305,7 +306,7 @@ function AdminCarrier({ colorThem }) {
       headerName: "User Name",
       headerClassName: "custom-header",
       headerAlign: "center",
-      width: 100,
+      width: 115,
       align: "center",
       renderCell: (params)=>{
         return(
@@ -1181,7 +1182,7 @@ function AdminCarrier({ colorThem }) {
                           {/* Delete Confirmation Modal End  */}
                           <ThemeProvider theme={theme}>
                             <div style={{ height: "100%", width: "100%" }}>
-                              <DataGrid
+                              <StyledDataGrid
                                 rows={rows}
                                 columns={columns}
                                 headerClassName="custom-header"

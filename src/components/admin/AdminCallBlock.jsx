@@ -425,7 +425,7 @@ function AdminCallBlock({ colorThem }) {
   return (
     <>
       <div className={`App ${colorThem} `}>
-        <div className="contant_box" style={{height:"100vh"}}>
+        <div className="contant_box">
           <Box
             className="right_sidebox mobile_top_pddng"
             component="main"

@@ -1,5 +1,5 @@
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import SearchIcon from '@mui/icons-material/Search';
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import SearchIcon from "@mui/icons-material/Search";
 import {
   Backdrop,
   Box,
@@ -39,16 +39,22 @@ import GetAppIcon from "@mui/icons-material/GetApp";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
 import socketIOClient from "socket.io-client";
-import RestartAltIcon from '@mui/icons-material/RestartAlt';
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import "../../Switcher.scss";
 
+import { getAllUsers } from "../../redux/actions/userAction";
 import { makeStyles } from "@mui/styles";
-import dayjs from 'dayjs';
-import { getAllUsers } from '../../redux/actions/userAction';
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+import { DateTimePicker } from "@mui/x-date-pickers";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 const drawerWidth = 240;
 const style = {
   position: "absolute",
@@ -81,30 +87,30 @@ const useStyles = makeStyles({
       borderStyle: "solid",
       height: "45px",
       minWidth: "120px",
-      justifyContent: "center"
+      justifyContent: "center",
     },
     "& .MuiSelect-select.MuiSelect-select": {
-      paddingRight: "0px"
+      paddingRight: "0px",
     },
     "& .css-14s5rfu-MuiFormLabel-root-MuiInputLabel-root": {
-      top: "-4px"
-    }
+      top: "-4px",
+    },
   },
   select: {
     width: "auto",
     fontSize: "12px",
     "&:focus": {
-      backgroundColor: "transparent"
-    }
+      backgroundColor: "transparent",
+    },
   },
   selectIcon: {
     position: "relative",
     color: "#6EC177",
-    fontSize: "14px"
+    fontSize: "14px",
   },
   paper: {
     borderRadius: 12,
-    marginTop: 8
+    marginTop: 8,
   },
   list: {
     paddingTop: 0,
@@ -113,16 +119,16 @@ const useStyles = makeStyles({
       fontWeight: 200,
       paddingTop: 8,
       paddingBottom: 8,
-      fontSize: "12px"
+      fontSize: "12px",
     },
     "& li.Mui-selected": {
       color: "white",
-      background: "#6EC177"
+      background: "#6EC177",
     },
     "& li.Mui-selected:hover": {
-      background: "#6EC177"
-    }
-  }
+      background: "#6EC177",
+    },
+  },
 });
 
 const theme = createTheme({
@@ -158,14 +164,18 @@ function CustomToolbar() {
 
 // =====End Items====>
 
-
 function ResellerReport({ colorThem }) {
   const state = useSelector((state) => state);
   const dispatch = useDispatch();
   const [currentAudio, setCurrentAudio] = useState(null);
   const [userId, setUserId] = useState("");
-  const [fromDate, setFromDate] = useState(dayjs().format('DD/MM/YYYY'));
-  const [toDate, setToDate] = useState(dayjs().format('DD/MM/YYYY'));
+  const railwayZone = "Asia/Kolkata"; // Replace with your desired timezone
+  const [fromDate, setFromDate] = useState(
+    dayjs().tz(railwayZone).startOf("day").format("DD/MM/YYYY HH:mm")
+  );
+  const [toDate, setToDate] = useState(
+    dayjs().tz(railwayZone).endOf("day").format("DD/MM/YYYY HH:mm") // Default to 23:59
+  );
   const [callDirection, setCallDirection] = useState("");
   const [didNumber, setDidNumber] = useState("");
   const [destination, setDestination] = useState("");
@@ -191,67 +201,62 @@ function ResellerReport({ colorThem }) {
     },
     classes: {
       list: classes.list,
-      paper: classes.paper
+      paper: classes.paper,
     },
     anchorOrigin: {
       vertical: "bottom",
-      horizontal: "center"
+      horizontal: "center",
     },
     transformOrigin: {
       vertical: "top",
-      horizontal: "center"
+      horizontal: "center",
     },
-    getContentAnchorEl: null
+    getContentAnchorEl: null,
   };
 
   const handleFromDateChange = (date) => {
-    if (dayjs(date, 'DD/MM/YYYY', true).isValid()) {
-      // Convert the selected date to the desired format before updating state
-      setFromDate(dayjs(date).format('DD/MM/YYYY'));
+    if (dayjs(date, "DD/MM/YYYY HH:mm", true).isValid()) {
+      setFromDate(dayjs(date).tz(railwayZone).format("DD/MM/YYYY HH:mm"));
     } else {
       setFromDate(null);
     }
   };
 
   const handleToDateChange = (date) => {
-    if (dayjs(date, 'DD/MM/YYYY', true).isValid()) {
-      // Convert the selected date to the desired format before updating state
-      setToDate(dayjs(date).format('DD/MM/YYYY'));
+    if (dayjs(date, "DD/MM/YYYY HH:mm", true).isValid()) {
+      setToDate(dayjs(date).tz(railwayZone).format("DD/MM/YYYY HH:mm"));
     } else {
       setToDate(null);
     }
-   
   };
   useEffect(() => {
     let data = JSON.stringify({
-       
-      from_date: dayjs().format('YYYY-MM-DD'),
-      to_date: dayjs().format('YYYY-MM-DD'),
+      from_date: dayjs().format("YYYY-MM-DD"),
+      to_date: dayjs().format("YYYY-MM-DD"),
     });
     dispatch(getReport(data));
     dispatch(getAllUsers(""));
   }, [dispatch, response]);
- 
-   const handleSearch = (e) => {
-      // Convert fromDate and toDate to YYYY-MM-DD format
-  const formattedFromDate = fromDate ? dayjs(fromDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : null;
-  const formattedToDate = toDate ? dayjs(toDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : null;
-     let data = JSON.stringify({
-       
-       from_date: formattedFromDate,
-       to_date: formattedToDate,
-       call_direction: callDirection,
-       did_number: didNumber,
-       destination: destination
-     });
-     dispatch(
-       getReport(
-         data
-       )
-     );
-   }
 
-   const handleReset = (e) => {
+  const handleSearch = (e) => {
+    // Convert fromDate and toDate to YYYY-MM-DD format
+    const formattedFromDate = fromDate
+      ? dayjs(fromDate, "DD/MM/YYYY").format("YYYY-MM-DD")
+      : null;
+    const formattedToDate = toDate
+      ? dayjs(toDate, "DD/MM/YYYY").format("YYYY-MM-DD")
+      : null;
+    let data = JSON.stringify({
+      from_date: formattedFromDate,
+      to_date: formattedToDate,
+      call_direction: callDirection,
+      did_number: didNumber,
+      destination: destination,
+    });
+    dispatch(getReport(data));
+  };
+
+  const handleReset = (e) => {
     setFromDate(null);
     setToDate(null);
     setUserId("");
@@ -259,7 +264,7 @@ function ResellerReport({ colorThem }) {
     setDidNumber("");
     setDestination("");
     setResponse("data");
-  }
+  };
 
   // Function to handle audio clicks
   const handleAudioClick = (audioSrc) => {
@@ -287,8 +292,6 @@ function ResellerReport({ colorThem }) {
     //  setCurrentAudio(null);
   };
 
-
-
   const handleDownload = (recordingPath) => {
     // You can implement download logic here
     // For example, create a link with the recording path and click it programmatically
@@ -302,19 +305,10 @@ function ResellerReport({ colorThem }) {
 
   const columns = [
     {
-      field: "username",
-      headerName: "Username",
-      headerClassName: "custom-header",
-      width: 150,
-      headerAlign: "center",
-      align: "center",
-      cellClassName: "super-app-theme--cell",
-    },
-    {
       field: "caller_id_number",
       headerName: "Caller ID",
-      headerClassName: "custom-header",
-      width: 200,
+      headerClassName: "custom-header-redirect",
+      width: 120,
       headerAlign: "center",
       align: "center",
       cellClassName: "super-app-theme--cell",
@@ -323,90 +317,67 @@ function ResellerReport({ colorThem }) {
       field: "did_tfn",
       headerName: "DID Number",
       width: 140,
-      //cellClassName: "name-column--cell",
-      //headerClassName: 'super-app-theme--header'
-      headerClassName: "custom-header",
+      headerClassName: "custom-header-redirect",
       headerAlign: "center",
       align: "center",
-      // editable: true
     },
     {
-      field: "destination_number",
-      headerName: "Service",
-      //type: "number",
+      field: "forwarded_number",
+      headerName: "Forwarded Number",
+      width: 165,
+      headerClassName: "custom-header-redirect",
+      headerAlign: "center",
+      align: "center",
+    },
+
+    {
+      field: "hangup_reason",
+      headerName: "Status",
       width: 120,
       headerAlign: "center",
       align: "center",
-      // headerAlign: "center",
-      // align: "center",
       headerClassName: "custom-header",
-      renderCell: (params) => {
-        return (
-          <div className="d-flex justify-content-between align-items-center">
-            <p
-              style={{
-                fontWeight: "500",
-                color: "orange",
-                margin: "0",
-                textTransform: "capitalize",
-              }}
-            >
-              {params?.row?.destination_number}
-            </p>
-          </div>
-        );
-      },
     },
     {
-      field: "destination_type",
-      headerName: "Destination Type",
+      field: "call_status",
+      headerName: "Call Status",
       width: 150,
+      headerAlign: "center",
+      align: "center",
       headerClassName: "custom-header",
+    },
+    {
+      field: "buyer_name",
+      headerName: "Buyer Name",
+      width: 120,
+      headerAlign: "center",
+      align: "center",
+      headerClassName: "custom-header",
+    },
+    {
+      field: "campaign_name",
+      headerName: "Campaign Name",
+      width: 150,
+      headerClassName: "custom-header-redirect",
       headerAlign: "center",
       align: "center",
     },
-    {
-      field: "destination",
-      headerName: "Destination",
-      width: 150,
-      headerClassName: "custom-header",
-      headerAlign: "center",
-      align: "center",
-    },
+    
     {
       field: "duration",
       headerName: "Duration",
       width: 100,
       headerAlign: "center",
       align: "center",
-      headerClassName: "custom-header",
+      headerClassName: "custom-header-redirect",
     },
-
-    {
-      field: "call_direction",
-      headerName: "Call Direction",
-      width: 150,
-      headerAlign: "center",
-      align: "center",
-      headerClassName: "custom-header",
-    },
-
-    {
-      field: "billsec",
-      headerName: "Bill Sec",
-      width: 100,
-      headerAlign: "center",
-      align: "center",
-      headerClassName: "custom-header",
-    },
-
     {
       field: "recording_path",
       headerName: "Recording",
       width: 380,
       headerAlign: "center",
       align: "center",
-      headerClassName: "custom-header",
+      headerClassName: "custom-header-redirect",
       renderCell: (params) => {
         if (params.row.billsec >= 0) {
           return (
@@ -429,79 +400,12 @@ function ResellerReport({ colorThem }) {
                 onPause={handleAudioPause}
                 style={{ padding: "10px" }}
               />
-
-              {/* <IconButton onClick={() => handleDownload(params.row.recording_path)}>
-          <GetAppIcon />
-        </IconButton> */}
             </div>
           );
         } else {
-          return (<></>)
+          return <></>;
         }
       },
-    },
-    {
-      field: "answered_by",
-      headerName: "Answered By",
-      width: 130,
-      headerAlign: "center",
-      align: "center",
-      headerClassName: "custom-header",
-    },
-    {
-      field: "disposition",
-      headerName: "Status",
-      width: 120,
-      headerAlign: "center",
-      align: "center",
-      headerClassName: "custom-header",
-      renderCell: (params) => {
-        return (
-          <div className="d-flex justify-content-between align-items-center">
-            {params.row.disposition === "ANSWERED" ? (
-              <>
-                <div
-                  style={{
-                    color: "white",
-                    background: "green",
-                    padding: "7px",
-                    borderRadius: "5px",
-                    fontSize: "12px",
-                    textTransform: "capitalize",
-                  }}
-                >
-                  {params.row.disposition.toString().toLowerCase()}
-                </div>
-              </>
-            ) : (
-              <>
-                <div
-                  style={{
-                    color: "white",
-                    background: "red",
-                    padding: "7px",
-                    borderRadius: "5px",
-                    fontSize: "12px",
-                    textTransform: "capitalize",
-                  }}
-                >
-                  {params.row.disposition.toString().toLowerCase()}
-                </div>
-              </>
-            )}
-          </div>
-        );
-      },
-      //  cellClassName: 'super-app-theme--cell',
-    },
-
-    {
-      field: "hangup_reason",
-      headerName: "Hangup Reason",
-      width: 220,
-      headerAlign: "center",
-      align: "center",
-      headerClassName: "custom-header",
     },
     {
       field: "answer_at",
@@ -509,7 +413,7 @@ function ResellerReport({ colorThem }) {
       width: 160,
       headerAlign: "center",
       align: "center",
-      headerClassName: "custom-header",
+      headerClassName: "custom-header-redirect",
       //valueFormatter
       renderCell: (params) => {
         if (params.value !== null) {
@@ -529,20 +433,17 @@ function ResellerReport({ colorThem }) {
           hours = (hours < 10 ? "0" : "") + hours;
           minutes = (minutes < 10 ? "0" : "") + minutes;
           seconds = (seconds < 10 ? "0" : "") + seconds;
-          var formattedDate =
-            day +
-            "/" +
-            month +
-            "/" +
-            year +
-            " " +
-            hours +
-            ":" +
-            minutes +
-            ":" +
-            seconds;
-          return (<><span style={{ color: "blue" }}>{day}/{month}/{year}</span>&nbsp;
-            <span style={{ color: "green" }}>{hours}:{minutes}:{seconds}</span></>);
+          return (
+            <>
+              <span style={{ color: "blue" }}>
+                {day}/{month}/{year}
+              </span>
+              &nbsp;
+              <span style={{ color: "green" }}>
+                {hours}:{minutes}:{seconds}
+              </span>
+            </>
+          );
         }
       },
     },
@@ -553,7 +454,7 @@ function ResellerReport({ colorThem }) {
       width: 160,
       headerAlign: "center",
       align: "center",
-      headerClassName: "custom-header",
+      headerClassName: "custom-header-redirect",
       renderCell: (params) => {
         if (params.value !== null) {
           const date = new Date(params.value);
@@ -572,20 +473,17 @@ function ResellerReport({ colorThem }) {
           hours = (hours < 10 ? "0" : "") + hours;
           minutes = (minutes < 10 ? "0" : "") + minutes;
           seconds = (seconds < 10 ? "0" : "") + seconds;
-          var formattedDate =
-            day +
-            "/" +
-            month +
-            "/" +
-            year +
-            " " +
-            hours +
-            ":" +
-            minutes +
-            ":" +
-            seconds;
-          return (<><span style={{ color: "blue" }}>{day}/{month}/{year}</span>&nbsp;
-            <span style={{ color: "green" }}>{hours}:{minutes}:{seconds}</span></>);
+          return (
+            <>
+              <span style={{ color: "blue" }}>
+                {day}/{month}/{year}
+              </span>
+              &nbsp;
+              <span style={{ color: "green" }}>
+                {hours}:{minutes}:{seconds}
+              </span>
+            </>
+          );
         }
       },
     },
@@ -596,7 +494,7 @@ function ResellerReport({ colorThem }) {
       width: 160,
       headerAlign: "center",
       align: "center",
-      headerClassName: "custom-header",
+      headerClassName: "custom-header-redirect",
       renderCell: (params) => {
         if (params.value !== null) {
           const date = new Date(params.value);
@@ -616,25 +514,17 @@ function ResellerReport({ colorThem }) {
           minutes = (minutes < 10 ? "0" : "") + minutes;
           seconds = (seconds < 10 ? "0" : "") + seconds;
 
-          var formattedDate =
-            "<span style='color: blue'>" +
-            day +
-            "/" +
-            month +
-            "/" +
-            year +
-            "</span>" +
-            " " +
-            "<span style='color: green'>" +
-            hours +
-            ":" +
-            minutes +
-            ":" +
-            seconds +
-            "</span>";
-
-          return (<><span style={{ color: "blue" }}>{day}/{month}/{year}</span>&nbsp;
-            <span style={{ color: "green" }}>{hours}:{minutes}:{seconds}</span></>);
+          return (
+            <>
+              <span style={{ color: "blue" }}>
+                {day}/{month}/{year}
+              </span>
+              &nbsp;
+              <span style={{ color: "green" }}>
+                {hours}:{minutes}:{seconds}
+              </span>
+            </>
+          );
         }
       },
     },
@@ -645,10 +535,9 @@ function ResellerReport({ colorThem }) {
       width: 180,
       headerAlign: "center",
       align: "center",
-      headerClassName: "custom-header",
+      headerClassName: "custom-header-redirect",
     },
   ];
-
 
   // Function to determine whether a row should have the bordered style
   const isRowBordered = (params) => {
@@ -679,11 +568,12 @@ function ResellerReport({ colorThem }) {
         start_time: item.start_at,
         end_at: item.end_at,
         recording_path: item.recording_path,
-        hangup_reason: item.hangup_reason,
+        hangup_reason: item.status,
+        call_status: item.call_status,
         destination_type: item.destination_type,
         destination: item.destination,
         username: item.username,
-        answered_by: item.answered_by
+        answered_by: item.answered_by,
       });
     });
 
@@ -716,60 +606,69 @@ function ResellerReport({ colorThem }) {
 
                         <div
                           className="cntnt_title"
-                        // style={{
-                        //   display: "flex",
-                        //   justifyContent: "space-between",
-                        //   alignItems: "end",
-                        // }}
+                          // style={{
+                          //   display: "flex",
+                          //   justifyContent: "space-between",
+                          //   alignItems: "end",
+                          // }}
                         >
                           <div className="col-12">
                             <h3>call details records</h3>
-                           
                           </div>
-
                         </div>
 
+                        <Grid
+                          container
+                          className="cdr_filter_row"
+                          style={{ padding: "20px 0" }}
+                        >
+                          <Grid
+                            xl={3}
+                            lg={3}
+                            md={3}
+                            sm={12}
+                            xs={12}
+                            style={{ display: "flex", alignItems: "center" }}
+                          >
+                            <FormControl
+                              fullWidth
+                              style={{ width: "98%", margin: "7px 0" }}
+                              className={classes.formControl}
+                            >
+                              <InputLabel id="demo-simple-select-label">
+                                UserName
+                              </InputLabel>
 
-                        <Grid container className='cdr_filter_row' style={{padding:'20px 0'}}>
-                        <Grid xl={3} lg={3} md={3} sm={12} xs={12} style={{ display: 'flex', alignItems: 'center' }}>
-                        <FormControl
-                                      fullWidth
-                                      style={{ width: "98%", margin: "7px 0" }}
-                                      className={classes.formControl}
-                                    >
-                                      <InputLabel id="demo-simple-select-label">
-                                        UserName
-                                      </InputLabel>
-
-                                      <Select
-                                        labelId="demo-simple-select-label"
-                                        id="demo-simple-select"
-                                        label="UserName"
-                                        helperText="Select the language."
-                                        style={{ textAlign: "left" }}
-                                        value={userId}
-                                        onChange={(e) => {
-                                          setUserId(e.target.value);
-                                        }}
-                                        required
-                                      >
-                                        {state?.allUsers?.users?.map(
-                                          (item, index) => {
-                                            return (
-                                              <MenuItem
-                                                key={index}
-                                                value={item?.id}
-                                              >
-                                                {item.username}
-                                              </MenuItem>
-                                            );
-                                          }
-                                        )}
-                                      </Select>
-                                    </FormControl>
-
+                              <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                label="UserName"
+                                helperText="Select the language."
+                                style={{ textAlign: "left" }}
+                                value={userId}
+                                onChange={(e) => {
+                                  setUserId(e.target.value);
+                                }}
+                                required
+                              >
+                                {state?.allUsers?.users?.map((item, index) => {
+                                  return (
+                                    <MenuItem key={index} value={item?.id}>
+                                      {item.username}
+                                    </MenuItem>
+                                  );
+                                })}
+                              </Select>
+                            </FormControl>
                           </Grid>
-                          <Grid xl={3} lg={3} md={3} sm={12} xs={12} style={{ display: 'flex', alignItems: 'center' }}>
+                          <Grid
+                            xl={3}
+                            lg={3}
+                            md={3}
+                            sm={12}
+                            xs={12}
+                            style={{ display: "flex", alignItems: "center" }}
+                          >
                             <TextField
                               className={classes.formControl}
                               style={{
@@ -780,9 +679,15 @@ function ResellerReport({ colorThem }) {
                               label="Caller Number"
                               variant="outlined"
                             />
-
                           </Grid>
-                          <Grid xl={3} lg={3} md={3} sm={12} xs={12} style={{ display: 'flex', alignItems: 'center' }}>
+                          <Grid
+                            xl={3}
+                            lg={3}
+                            md={3}
+                            sm={12}
+                            xs={12}
+                            style={{ display: "flex", alignItems: "center" }}
+                          >
                             <TextField
                               className={classes.formControl}
                               style={{
@@ -794,8 +699,15 @@ function ResellerReport({ colorThem }) {
                               variant="outlined"
                             />
                           </Grid>
-                          <Grid xl={3} lg={3} md={3} sm={12} xs={12} style={{ display: 'flex', alignItems: 'center' }}>
-                          <TextField
+                          <Grid
+                            xl={3}
+                            lg={3}
+                            md={3}
+                            sm={12}
+                            xs={12}
+                            style={{ display: "flex", alignItems: "center" }}
+                          >
+                            <TextField
                               className={classes.formControl}
                               style={{
                                 width: "98%",
@@ -806,8 +718,15 @@ function ResellerReport({ colorThem }) {
                               variant="outlined"
                             />
                           </Grid>
-                          <Grid xl={3} lg={3} md={3} sm={12} xs={12} style={{ display: 'flex', alignItems: 'center' }}>
-                          <TextField
+                          <Grid
+                            xl={3}
+                            lg={3}
+                            md={3}
+                            sm={12}
+                            xs={12}
+                            style={{ display: "flex", alignItems: "center" }}
+                          >
+                            <TextField
                               className={classes.formControl}
                               style={{
                                 width: "98%",
@@ -817,13 +736,20 @@ function ResellerReport({ colorThem }) {
                               label="DID Number"
                               variant="outlined"
                               value={didNumber}
-                                        onChange={(e) => {
-                                          setDidNumber(e.target.value);
-                                        }}
+                              onChange={(e) => {
+                                setDidNumber(e.target.value);
+                              }}
                             />
                           </Grid>
-                          <Grid xl={3} lg={3} md={3} sm={12} xs={12} style={{ display: 'flex', alignItems: 'center' }}>
-                          <TextField
+                          <Grid
+                            xl={3}
+                            lg={3}
+                            md={3}
+                            sm={12}
+                            xs={12}
+                            style={{ display: "flex", alignItems: "center" }}
+                          >
+                            <TextField
                               className={classes.formControl}
                               style={{
                                 width: "98%",
@@ -833,16 +759,23 @@ function ResellerReport({ colorThem }) {
                               label="Destination Number"
                               variant="outlined"
                               value={destination}
-                                        onChange={(e) => {
-                                          setDestination(e.target.value);
-                                        }}
+                              onChange={(e) => {
+                                setDestination(e.target.value);
+                              }}
                             />
                           </Grid>
-                          <Grid xl={3} lg={3} md={3} sm={12} xs={12} style={{ display: 'flex', alignItems: 'center' }}>
+                          <Grid
+                            xl={3}
+                            lg={3}
+                            md={3}
+                            sm={12}
+                            xs={12}
+                            style={{ display: "flex", alignItems: "center" }}
+                          >
                             <FormControl
                               className={classes.formControl}
                               fullWidth
-                              style={{ width: "98%", margin: "7px 0", }}
+                              style={{ width: "98%", margin: "7px 0" }}
                             >
                               <InputLabel id="demo-simple-select-label">
                                 Call Direction
@@ -855,21 +788,17 @@ function ResellerReport({ colorThem }) {
                                 helperText="Select the language."
                                 style={{ textAlign: "left" }}
                                 value={callDirection}
-                                        onChange={(e) => {
-                                          setCallDirection(e.target.value);
-                                        }}
-
+                                onChange={(e) => {
+                                  setCallDirection(e.target.value);
+                                }}
                                 required
-
                               >
                                 <MenuItem value={"Inbound"}>Inbound</MenuItem>
-                                <MenuItem value={"Outbound"}>
-                                  Outbound
-                                </MenuItem>
+                                <MenuItem value={"Outbound"}>Outbound</MenuItem>
                               </Select>
                             </FormControl>
                           </Grid>
-                          <Grid xl={3} lg={3} md={3} sm={12} xs={12} style={{ display: 'flex', alignItems: 'center' }}>
+                          {/* <Grid xl={3} lg={3} md={3} sm={12} xs={12} style={{ display: 'flex', alignItems: 'center' }}>
                           <FormControl
                               className={classes.formControl}
                               fullWidth
@@ -897,55 +826,117 @@ function ResellerReport({ colorThem }) {
                                 <MenuItem value={"ANSWERED"}>ANSWERED</MenuItem>
                               </Select>
                             </FormControl>
+                          </Grid> */}
+                          <Grid
+                            xl={3}
+                            lg={3}
+                            md={3}
+                            sm={12}
+                            xs={12}
+                            style={{ display: "flex", alignItems: "center" }}
+                          >
+                            <LocalizationProvider
+                              dateAdapter={AdapterDayjs}
+                              className={classes.formControl}
+                            >
+                              <DemoContainer
+                                components={["DatePicker"]}
+                                sx={{ width: "98%" }}
+                              >
+                                <DateTimePicker
+                                  label="From Date"
+                                  value={
+                                    fromDate
+                                      ? dayjs(fromDate, "DD/MM/YYYY HH:mm")
+                                      : null
+                                  }
+                                  onChange={handleFromDateChange}
+                                  renderInput={(props) => (
+                                    <TextField {...props} />
+                                  )}
+                                  format="DD/MM/YYYY HH:mm" // 24-hour format
+                                  ampm={false} // Disables AM/PM toggle
+                                  minutesStep={1}
+                                />
+                              </DemoContainer>
+                            </LocalizationProvider>
                           </Grid>
-                          <Grid xl={3} lg={3} md={3} sm={12} xs={12} style={{ display: 'flex', alignItems: 'center' }}>
-                          <LocalizationProvider dateAdapter={AdapterDayjs}  className={classes.formControl} >
-      <DemoContainer components={['DatePicker']} sx={{width:"98%"}}>
-        <DatePicker 
-        label="From Date"
-        value={fromDate ? dayjs(fromDate, "DD/MM/YYYY") : null} // Convert selectedDate to a dayjs object
-        onChange={handleFromDateChange}
-        renderInput={(props) => <TextField {...props} />}
-        format="DD/MM/YYYY"
-         />
-      </DemoContainer>
-    </LocalizationProvider>
-                          </Grid>
-                          <Grid xl={3} lg={3} md={3} sm={12} xs={12} style={{ display: 'flex', alignItems: 'center' }}>
-                          <LocalizationProvider dateAdapter={AdapterDayjs}  className={classes.formControl}>
-      <DemoContainer components={['DatePicker']} sx={{width:"98%"}}>
-        <DatePicker 
-        label="To Date"
-        value={toDate ? dayjs(toDate, "DD/MM/YYYY") : null} // Convert selectedDate to a dayjs object
-        onChange={handleToDateChange}
-        renderInput={(props) => <TextField {...props} />}
-        format="DD/MM/YYYY"
-         />
-      </DemoContainer>
-    </LocalizationProvider>
+                          <Grid
+                            xl={3}
+                            lg={3}
+                            md={3}
+                            sm={12}
+                            xs={12}
+                            style={{ display: "flex", alignItems: "center" }}
+                            className="mt-xxl-0 mt-xl-0 mt-lg-0 mt-md-0 mt-sm-1 mt-xs-1 mt-1"
+                          >
+                            <LocalizationProvider
+                              dateAdapter={AdapterDayjs}
+                              className={classes.formControl}
+                            >
+                              <DemoContainer
+                                components={["DatePicker"]}
+                                sx={{ width: "98%" }}
+                              >
+                                <DateTimePicker
+                                  label="To Date"
+                                  value={
+                                    toDate
+                                      ? dayjs(toDate, "DD/MM/YYYY HH:mm")
+                                      : null
+                                  }
+                                  onChange={handleToDateChange}
+                                  renderInput={(props) => (
+                                    <TextField {...props} />
+                                  )}
+                                  format="DD/MM/YYYY HH:mm" // 24-hour format
+                                  ampm={false} // Disables AM/PM toggle
+                                  minutesStep={1} // Show all minutes (no step increment)
+                                />
+                              </DemoContainer>
+                            </LocalizationProvider>
                           </Grid>
 
-                          <Grid xl={12} lg={12} md={12} sm={12} xs={12} style={{ display: 'flex', alignItems: 'center', justifyContent: 'end',padding:'20px 0' }}>
-                              <IconButton
-                                className="filter_search_btn"
-                                style={{ marginLeft: '0 !important', background: 'green !important' }}
-                                onClick={handleSearch}
-                              >
-                                Search &nbsp;<SearchIcon />
-                              </IconButton>
-                              <IconButton
-                                className="filter_reset_btn"
-                                style={{ marginLeft: '0 !important', backgroundColor: 'grey !important' }}
-                               onClick={handleReset}
-                              >
-                                Reset &nbsp;<RestartAltIcon />
-                              </IconButton>
-                           
+                          <Grid
+                            xl={12}
+                            lg={12}
+                            md={12}
+                            sm={12}
+                            xs={12}
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "end",
+                              padding: "20px 0",
+                            }}
+                          >
+                            <IconButton
+                              className="filter_search_btn"
+                              style={{
+                                marginLeft: "0 !important",
+                                background: "green !important",
+                              }}
+                              onClick={handleSearch}
+                            >
+                              Search &nbsp;
+                              <SearchIcon />
+                            </IconButton>
+                            <IconButton
+                              className="filter_reset_btn"
+                              style={{
+                                marginLeft: "0 !important",
+                                backgroundColor: "grey !important",
+                              }}
+                              onClick={handleReset}
+                            >
+                              Reset &nbsp;
+                              <RestartAltIcon />
+                            </IconButton>
                           </Grid>
                         </Grid>
 
                         <ThemeProvider theme={theme}>
-                        <div style={{ height: '500px', width: '100%' }}>
+                          <div style={{ height: 620, width: "100%" }}>
                             <DataGrid
                               // className="tbl_innr_box"
                               rows={rows}
@@ -962,7 +953,6 @@ function ResellerReport({ colorThem }) {
                           </div>
                         </ThemeProvider>
                       </div>
-
                     </div>
                   </div>
                 </div>

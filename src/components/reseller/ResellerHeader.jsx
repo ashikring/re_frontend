@@ -9,11 +9,12 @@ import { AppBar, Box, IconButton, Toolbar, Tooltip, Typography } from "@mui/mate
 import LogoutIcon from "@mui/icons-material/Logout";
 import NightlightIcon from '@mui/icons-material/Nightlight';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
-
+import CallIcon from "@mui/icons-material/Call";
 import '../../Switcher.scss';
 import Cps from "../../pages/Cps";
 import Cc from "../../pages/Cc";
 import { api } from "../../mockData";
+import LiveCall from "../../pages/LiveCall";
 
 function ResellerHeader({colorThem, handleClick}) {
  // console.log(colorThem)
@@ -118,7 +119,7 @@ function ResellerHeader({colorThem, handleClick}) {
       <Box sx={{ flexGrow: 1 }} className={`App ${colorThem} manage_boxx`}>
 
       
-        <AppBar position="static" className="manage_top_header">
+        <AppBar position="static" className="manage_top_header1">
 
         <Box className="manage_mobile_logo d-lg-none d-md-none d-sm-block d-block">
       <Typography
@@ -136,7 +137,7 @@ function ResellerHeader({colorThem, handleClick}) {
                 style={{cursor:"pointer"}}
               /></>) : (<>
                  <img
-                src="/img/logo-4-edit-1.png"
+                src="/img/logo_white11.png"
                 alt="Manage Logo"
                 className="img-fluid d-block"
                 style={{cursor:"pointer"}}
@@ -163,7 +164,7 @@ function ResellerHeader({colorThem, handleClick}) {
                 style={{cursor:"pointer"}}
               /></>) : (<>
                  <img
-                src="/img/logo-4-edit-1.png"
+                src="/img/logo_white11.png"
                 alt="Manage Logo"
                 className="img-fluid d-block admin_logo"
                 style={{cursor:"pointer"}}
@@ -182,6 +183,7 @@ function ResellerHeader({colorThem, handleClick}) {
             <div className="manage_rgiht_bdr d-flex align-items-center justify-content-between me-lg-0 me-md-0 m-auto">
 
             <Box className="header_cps">
+           
             <IconButton
                 size="large"
                 aria-label="account of current user"
@@ -189,23 +191,10 @@ function ResellerHeader({colorThem, handleClick}) {
                 aria-haspopup="true"
                 className="manage_call"
               >
-                {/* <LocalLibraryIcon className="call_icon" /> */}
+                <CallIcon className="call_icon" />
+                <LiveCall />
+                Live
                 {/* <LiveCall /> */}
-                CC &nbsp;
-                <Cc/>
-              </IconButton>
-              <IconButton
-                size="large"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                className="manage_call"
-                style={{borderRight:'0'}}
-              >
-                {/* <LocalLibraryIcon className="call_icon" /> */}
-                {/* <LiveCall /> */}
-                CPS &nbsp;
-                <Cps/>
               </IconButton>
               </Box>
 
@@ -217,8 +206,8 @@ function ResellerHeader({colorThem, handleClick}) {
            className={`${colorThem === 'theme_white' ? 'active' : ''}`}
             /></IconButton></Tooltip></>)
 
-         : (<><Tooltip title="Dark Theme" disableInteractive interactive><IconButton onClick={() => handleClick('theme_white')}> <NightlightIcon id="theme_blue"
-         className={`${colorThem === 'theme_white' ? 'active' : ''} fa-solid fa-moon`} 
+         : (<><Tooltip title="Dark Theme" disableInteractive interactive><IconButton onClick={() => handleClick('theme_white')}> <NightlightIcon id="theme_blue" style={{color:'#f5751D '}}
+         className={`${colorThem === 'theme_blue' ? 'active' : ''} fa-solid fa-moon`} 
          /></IconButton></Tooltip> </>)}
 
             

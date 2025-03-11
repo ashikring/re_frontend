@@ -68,9 +68,10 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { makeStyles } from "@mui/styles";
 import "../admin/adminstyle.css";
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import PauseIcon from '@mui/icons-material/Pause';
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import PauseIcon from "@mui/icons-material/Pause";
 import dayjs from "dayjs";
+import { StyledDataGrid } from "../../pages/CustomDataGrid";
 
 // import React from 'react'
 const drawerWidth = 240;
@@ -250,6 +251,7 @@ function ManageAddBuyer({ colorThem }) {
   const [redirectId, setRedirectId] = useState("");
   const [deleteRow, setDeleteRow] = useState("");
   const [fromDate, setFromDate] = useState(null);
+  const [ringTimeout, setRingTimeout] = useState(60);
   const [toDate, setToDate] = useState(null);
   const [followWorkTime, setFollowWorkTime] = useState(false);
   const [alertMessage, setAlertMessage] = useState(false);
@@ -257,6 +259,7 @@ function ManageAddBuyer({ colorThem }) {
   const [name, setName] = useState("");
   // State to manage the switch value
   const [isSwitchChecked, setIsSwitchChecked] = useState(false);
+  const [selectedRows, setSelectedRows] = useState([]);
 
   // Handler function for switch toggle
   const handleSwitchChange = (event) => {
@@ -277,6 +280,7 @@ function ManageAddBuyer({ colorThem }) {
     setFromDate(null);
     setToDate(null);
     setFollowWorkTime(false);
+    setRingTimeout(60);
   };
   const handleEditrOpen = () => setEdit(true);
   const handleEditClose = () => {
@@ -290,6 +294,11 @@ function ManageAddBuyer({ colorThem }) {
     setFromDate(null);
     setToDate(null);
     setFollowWorkTime(false);
+    setRingTimeout(60);
+  };
+
+  const handleSelectionChange = (selection) => {
+    setSelectedRows(selection);
   };
 
   const handleEdit = useCallback(
@@ -306,6 +315,7 @@ function ManageAddBuyer({ colorThem }) {
       setFromDate(data?.working_start_time);
       setToDate(data?.working_end_time);
       setFollowWorkTime(data?.follow_working_time === false ? "f" : "t");
+      setRingTimeout(data.ring_timeout);
     },
     [setFromDate, setToDate]
   );
@@ -367,6 +377,7 @@ function ManageAddBuyer({ colorThem }) {
       working_start_time: fromDate,
       working_end_time: toDate,
       follow_working_time: followWorkTime === false ? "f" : "t",
+      ring_timeout: JSON.parse(ringTimeout),
     });
     dispatch(createAdminAddBuyer(data, handleAddBuyerClose, setResponse));
   };
@@ -380,10 +391,10 @@ function ManageAddBuyer({ colorThem }) {
     [setName]
   ); // Memoize event handler
 
-  const handleDelete = useCallback(() => {
-    dispatch(deleteAdminAddBuyer(JSON.stringify({ id: id }), setResponse));
-    setAlertMessage(false);
-  }, [dispatch, setResponse, id]);
+  // const handleDelete = useCallback(() => {
+  //   dispatch(deleteAdminAddBuyer(JSON.stringify({ id: id }), setResponse));
+  //   setAlertMessage(false);
+  // }, [dispatch, setResponse, id]);
 
   const handleUpdate = (e) => {
     e.preventDefault();
@@ -399,6 +410,7 @@ function ManageAddBuyer({ colorThem }) {
       working_start_time: fromDate,
       working_end_time: toDate,
       follow_working_time: followWorkTime,
+      ring_timeout: JSON.parse(ringTimeout),
     });
     dispatch(updateAdminAddBuyer(data, handleEditClose, setResponse));
   };
@@ -437,12 +449,11 @@ function ManageAddBuyer({ colorThem }) {
     {
       field: "action",
       headerName: "Action",
-      width: 100,
       headerClassName: "custom-header",
       headerAlign: "center",
       align: "center",
       sortable: false,
-      width: 140,
+      width: 87,
       renderCell: (params) => {
         return (
           <div className="d-flex justify-content-between align-items-center">
@@ -455,23 +466,25 @@ function ManageAddBuyer({ colorThem }) {
               </IconButton>
             </Tooltip>
             {params.row.status === true ? (
-            <Tooltip title="Deactive" disableInteractive interactive>
-              <IconButton onClick={() => handleTrigger(params.row)}>
-                <PauseIcon style={{ cursor: "pointer", color: "#254336" }} />
-              </IconButton>
-            </Tooltip>
-             ) : (
+              <Tooltip title="Deactive" disableInteractive interactive>
+                <IconButton onClick={() => handleTrigger(params.row)}>
+                  <PauseIcon style={{ cursor: "pointer", color: "#254336" }} />
+                </IconButton>
+              </Tooltip>
+            ) : (
               <Tooltip title="Active" disableInteractive interactive>
-              <IconButton onClick={() => handleTrigger(params.row)}>
-                <PlayArrowIcon style={{ cursor: "pointer", color: "#ff7d00" }} />
-              </IconButton>
-            </Tooltip>
-             )}
-            <Tooltip title="Delete" disableInteractive interactive>
+                <IconButton onClick={() => handleTrigger(params.row)}>
+                  <PlayArrowIcon
+                    style={{ cursor: "pointer", color: "#ff7d00" }}
+                  />
+                </IconButton>
+              </Tooltip>
+            )}
+            {/* <Tooltip title="Delete" disableInteractive interactive>
               <IconButton onClick={() => handleMessage(params.row)}>
                 <Delete style={{ cursor: "pointer", color: "red" }} />
               </IconButton>
-            </Tooltip>
+            </Tooltip> */}
           </div>
         );
       },
@@ -512,7 +525,7 @@ function ManageAddBuyer({ colorThem }) {
     {
       field: "user_name",
       headerName: "User Name",
-      width: 100,
+      width: 160,
       headerClassName: "custom-header",
       headerAlign: "center",
       align: "center",
@@ -539,14 +552,13 @@ function ManageAddBuyer({ colorThem }) {
                     className="d-flex justify-content-between align-items-center"
                     style={{
                       color: "#254336",
-                      padding: "5px 12.5px",
+                      //padding: "5px 12.5px",
                       // borderRadius: "5px",
                       // background: "#254336",
                       // width: "65px",
                       // cursor: "pointer",
                       //transition: "background 0.3s, transform 0.2s",
                     }}
-                    
                   >
                     Active
                   </div>
@@ -560,7 +572,7 @@ function ManageAddBuyer({ colorThem }) {
                     style={{
                       color: "#ff7d00",
                       // border: "1px solid red",
-                      padding: "5px 4.5px",
+                      //padding: "5px 4.5px",
                       // borderRadius: "5px",
                       // width: "65px",
                       // background: "rgb(255 0 0)",
@@ -581,7 +593,7 @@ function ManageAddBuyer({ colorThem }) {
       headerName: "Forward Number",
       headerClassName: "custom-header",
       headerAlign: "center",
-      width: 140,
+      width: 150,
       align: "center",
     },
     {
@@ -589,16 +601,23 @@ function ManageAddBuyer({ colorThem }) {
       headerName: "CC",
       headerClassName: "custom-header",
       headerAlign: "center",
-      width: 50,
+      width: 65,
       align: "center",
     },
     {
       field: "current_cc",
-      headerName: "Live Call",
+      headerName: "Live Calls",
       headerClassName: "custom-header",
       headerAlign: "center",
-      width: 100,
+      width: 120,
       align: "center",
+      renderCell: ((params)=>{
+        return(
+          <span style={{fontWeight: "bold"}}>
+            {params.row.current_cc}
+          </span>
+        )
+      })
     },
 
     {
@@ -606,7 +625,7 @@ function ManageAddBuyer({ colorThem }) {
       headerName: "Daily Limit",
       headerClassName: "custom-header",
       headerAlign: "center",
-      width: 100,
+      width: 125,
       align: "center",
     },
     {
@@ -614,7 +633,7 @@ function ManageAddBuyer({ colorThem }) {
       headerName: "Current Daily Limit",
       headerClassName: "custom-header",
       headerAlign: "center",
-      width: 150,
+      width: 175,
       align: "center",
     },
     {
@@ -622,14 +641,22 @@ function ManageAddBuyer({ colorThem }) {
       headerName: "Weightage",
       headerClassName: "custom-header",
       headerAlign: "center",
-      width: 100,
+      width: 120,
+      align: "center",
+    },
+    {
+      field: "ring_timeout",
+      headerName: "Ring Timeout",
+      headerClassName: "custom-header",
+      headerAlign: "center",
+      width: 120,
       align: "center",
     },
 
     {
       field: "follow_working_time",
       headerName: "Follow Working Time",
-      width: 150,
+      width: 175,
       headerAlign: "center",
       align: "center",
       headerClassName: "custom-header",
@@ -671,13 +698,13 @@ function ManageAddBuyer({ colorThem }) {
       headerName: "Start Time",
       headerClassName: "custom-header",
       headerAlign: "center",
-      width: 90,
+      width: 115,
       align: "center",
     },
     {
       field: "working_end_time",
       headerName: "End Time",
-      width: 90,
+      width: 110,
       headerClassName: "custom-header",
       headerAlign: "center",
       align: "center",
@@ -703,10 +730,11 @@ function ManageAddBuyer({ colorThem }) {
             status: item.status,
             user_name: item.username,
             weightage: item.weightage,
-            createdAt: item.createdAt,
+            createdAt: item.created_at,
             follow_working_time: item.follow_working_time,
             working_end_time: item.working_end_time,
             working_start_time: item.working_start_time,
+            ring_timeout: item.ring_timeout,
           });
         }
       });
@@ -722,6 +750,28 @@ function ManageAddBuyer({ colorThem }) {
     // Navigate back
     navigate("/admin_portal/manage_campaign");
   };
+
+  const selectedCallerDataSet = new Set(); // Using Set to avoid duplicates
+
+  selectedRows.forEach((id) => {
+    const selectedRow = rows.find((row) => row.id === id);
+    if (selectedRow) {
+      selectedCallerDataSet.add(selectedRow.buyer_id); // Add only buyer_id
+    }
+  });
+
+  const selectedCallerData = Array.from(selectedCallerDataSet); // Convert to comma-separated string
+
+  const handleDelete = useCallback(() => {
+    dispatch(
+      deleteAdminAddBuyer(
+        JSON.stringify({ id: selectedCallerData }),
+        setResponse
+      )
+    );
+    setAlertMessage(false);
+    setSelectedRows([]);
+  }, [dispatch, setResponse, setSelectedRows, selectedCallerData]);
 
   return (
     <>
@@ -924,7 +974,7 @@ function ManageAddBuyer({ colorThem }) {
                                     margin: " 5px 0 5px 0",
                                   }}
                                   type="number"
-                                  label="Forword Number"
+                                  label="Forward Number"
                                   variant="outlined"
                                   name="forwardNumber"
                                   value={forwardNumber}
@@ -976,6 +1026,28 @@ function ManageAddBuyer({ colorThem }) {
                                     setDailyLimit(e.target.value);
                                   }}
                                 />
+                                <TextField
+                                  style={{
+                                    width: "100%",
+                                    margin: "7px 0",
+                                  }}
+                                  type="text"
+                                  label="Ring Timeout"
+                                  variant="outlined"
+                                  name="tfnNumber"
+                                  value={ringTimeout}
+                                  onChange={(e) => {
+                                    const numericValue = e.target.value.replace(
+                                      /[^0-9]/g,
+                                      ""
+                                    );
+                                    setRingTimeout(numericValue);
+                                  }}
+                                  inputProps={{
+                                    inputMode: "numeric",
+                                    // pattern: '[0-9]*',
+                                  }}
+                                />
                                 <FormControl
                                   fullWidth
                                   style={{ margin: " 5px 0 5px 0" }}
@@ -993,8 +1065,8 @@ function ManageAddBuyer({ colorThem }) {
                                       setFollowWorkTime(e.target.value)
                                     }
                                   >
-                                    <MenuItem value={true}>True</MenuItem>
-                                    <MenuItem value={false}>False</MenuItem>
+                                    <MenuItem value={true}>Yes</MenuItem>
+                                    <MenuItem value={false}>No</MenuItem>
                                   </Select>
                                 </FormControl>
                                 <LocalizationProvider
@@ -1210,7 +1282,7 @@ function ManageAddBuyer({ colorThem }) {
                                     margin: " 5px 0 5px 0",
                                   }}
                                   type="text"
-                                  label="Forword Number"
+                                  label="Forward Number"
                                   variant="outlined"
                                   name="forwardNumber"
                                   value={forwardNumber}
@@ -1255,7 +1327,28 @@ function ManageAddBuyer({ colorThem }) {
                                   value={dailyLimit}
                                   onChange={handleChange}
                                 />
-
+                                <TextField
+                                  style={{
+                                    width: "100%",
+                                    margin: "7px 0",
+                                  }}
+                                  type="text"
+                                  label="Ring Timeout"
+                                  variant="outlined"
+                                  name="tfnNumber"
+                                  value={ringTimeout}
+                                  onChange={(e) => {
+                                    const numericValue = e.target.value.replace(
+                                      /[^0-9]/g,
+                                      ""
+                                    );
+                                    setRingTimeout(numericValue);
+                                  }}
+                                  inputProps={{
+                                    inputMode: "numeric",
+                                    // pattern: '[0-9]*',
+                                  }}
+                                />
                                 <FormControl
                                   fullWidth
                                   style={{ margin: " 5px 0 5px 0" }}
@@ -1293,8 +1386,8 @@ function ManageAddBuyer({ colorThem }) {
                                       setFollowWorkTime(e.target.value)
                                     }
                                   >
-                                    <MenuItem value={"t"}>True</MenuItem>
-                                    <MenuItem value={"f"}>False</MenuItem>
+                                    <MenuItem value={"t"}>Yes</MenuItem>
+                                    <MenuItem value={"f"}>No</MenuItem>
                                   </Select>
                                 </FormControl>
 
@@ -1413,6 +1506,56 @@ function ManageAddBuyer({ colorThem }) {
                           </Dialog>
 
                           {/* -----   Edit Modal End   ----- */}
+
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              width: "100%",
+                            }}
+                          >
+                            <IconButton
+                              className="filter_block_btn"
+                              style={{
+                                marginLeft: "0 !important",
+                                background: selectedCallerData.length
+                                  ? "red"
+                                  : "grey",
+                                padding: "6px 10px !important",
+                                fontSize: "15px !important",
+                                marginBottom: "0.8rem",
+                              }}
+                              disabled={selectedCallerData.length === 0}
+                              onClick={handleMessage}
+                            >
+                              Delete &nbsp;
+                              <DeleteIcon />
+                            </IconButton>
+                            {/* <div>
+                              <FormControl>
+                                <RadioGroup
+                                  row
+                                  aria-labelledby="demo-row-radio-buttons-group-label"
+                                  name="row-radio-buttons-group"
+                                  value={radioValue} // Bind the selected value to state
+                                  onChange={(e) =>
+                                    setRadioValue(e.target.value)
+                                  } // Handle change event
+                                >
+                                  <FormControlLabel
+                                    value="n"
+                                    control={<Radio />}
+                                    label="New"
+                                  />
+                                  <FormControlLabel
+                                    value="o"
+                                    control={<Radio />}
+                                    label="Old"
+                                  />
+                                </RadioGroup>
+                              </FormControl>
+                            </div> */}
+                          </div>
                           {state?.getAdminAddBuyer?.AddBuyer === undefined ? (
                             <>
                               <Box
@@ -1430,7 +1573,7 @@ function ManageAddBuyer({ colorThem }) {
                             <>
                               <ThemeProvider theme={theme}>
                                 <div style={{ height: "100%", width: "100%" }}>
-                                  <DataGrid
+                                  <StyledDataGrid
                                     rows={rows}
                                     columns={columns}
                                     density="standard"
@@ -1439,6 +1582,12 @@ function ManageAddBuyer({ colorThem }) {
                                     //     ? "borderedGreen"
                                     //     : "borderedRed"
                                     // }
+                                    checkboxSelection
+                                    disableRowSelectionOnClick // Prevent row click from selecting checkbox
+                                    rowSelectionModel={selectedRows} // Bind selection model
+                                    onRowSelectionModelChange={
+                                      handleSelectionChange
+                                    } // Handle selection change
                                     components={{ Toolbar: GridToolbar }}
                                     slots={{
                                       toolbar: CustomToolbar,

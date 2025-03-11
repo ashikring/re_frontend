@@ -71,14 +71,20 @@ import SessionExpired from "../pages/SessionExpired";
 import AdminAclHistory from "../components/admin/AdminAclHistory";
 import AdminProduct from "../components/admin/AdminProduct";
 import AdminInvoice from "../components/admin/AdminInvoice";
-
-
+import AdminPromotional from "../components/admin/AdminPromotional";
+import ErrorBoundary from "../pages/ErrorBoundaries";
 
 Chart.register(CategoryScale);
 function PrivateRoute() {
   const user = JSON.parse(localStorage.getItem("admin"));
   const reseller = JSON.parse(localStorage.getItem("reseller"));
   const current_user = localStorage.getItem("current_user");
+  const [open, setOpen] = useState(false);
+
+  // toggle 
+  const toggleDrawer = (newOpen) => () => {
+    setOpen(newOpen);
+  };
 
   const yValues = [
     "Jan",
@@ -102,7 +108,7 @@ function PrivateRoute() {
   const usercolor = localStorage.getItem("user-color");
 
   const [colorThem, setColorTheme] = useState(color);
-  const [userThem, setUserThem] = useState(usercolor); 
+  const [userThem, setUserThem] = useState(usercolor);
 
   //effect
   useEffect(() => {
@@ -113,14 +119,12 @@ function PrivateRoute() {
       setColorTheme(currentThemeColor);
     }
 
-
-     //check for selected the ///localstorage value
-     const currentUserThemeColor = localStorage.getItem("user-color");
-     //if found set selected theme value in state
-     if (currentUserThemeColor) {
+    //check for selected the ///localstorage value
+    const currentUserThemeColor = localStorage.getItem("user-color");
+    //if found set selected theme value in state
+    if (currentUserThemeColor) {
       setUserThem(currentUserThemeColor);
-     }
-
+    }
   }, []);
 
   const handleClick = (theme) => {
@@ -132,10 +136,6 @@ function PrivateRoute() {
     setUserThem(usertheme);
     localStorage.setItem("user-color", usertheme);
   };
-
-
-
-
 
   const [chartData, setChartData] = useState({
     type: "line",
@@ -168,13 +168,11 @@ function PrivateRoute() {
     ],
   });
 
-
   return (
     <>
       {/* <Sidebar/> */}
       <Switch>
-        
-        {user !==  null ? (
+        {user !== null ? (
           <>
             <Route
               path={Router.ADMIN_DASHBOARD}
@@ -192,10 +190,10 @@ function PrivateRoute() {
               />
               <Route
                 path={Router.ADMIN_MANAGE_CAMPAIGN}
-                element={<Manage_Campaign colorThem={colorThem} />}
+                element={<ErrorBoundary><Manage_Campaign colorThem={colorThem} /></ErrorBoundary>}
               />
               <Route
-                path="/admin_portal/viewbuyer"
+                path={Router.ADMIN_BUYER}
                 element={<ManageAddBuyer colorThem={colorThem} />}
               />
               <Route
@@ -210,12 +208,12 @@ function PrivateRoute() {
                 path={Router.ADMIN_EXTENSION}
                 element={<AdminExtension colorThem={colorThem} />}
               />
-             
+
               <Route
                 path={Router.ADMIN_CALL_ACTIVE}
                 element={<AdminCallActive colorThem={colorThem} />}
               />
-              
+
               <Route
                 path={Router.ADMIN_QUEUE_CALLS}
                 element={<AdminQueueCalls colorThem={colorThem} />}
@@ -225,7 +223,7 @@ function PrivateRoute() {
                 element={<AdminCallBlock colorThem={colorThem} />}
               />
 
-<Route
+              <Route
                 path={Router.ADMIN_SERVER_STATS}
                 element={<ServerStats colorThem={colorThem} />}
               />
@@ -249,7 +247,7 @@ function PrivateRoute() {
                 path={Router.ADMIN_MDR}
                 element={<AdminMDR colorThem={colorThem} />}
               />
-<Route
+              <Route
                 path={Router.ADMIN_PRODUCT}
                 element={<AdminProduct colorThem={colorThem} />}
               />
@@ -271,18 +269,15 @@ function PrivateRoute() {
                 path={Router.AdminMOH}
                 element={<AdminMOH colorThem={colorThem} />}
               />
-
-
-           
               <Route
                 path={Router.ADMIN_CARRIER}
                 element={<AdminCarrier colorThem={colorThem} />}
               />
-                <Route
+              <Route
                 path={Router.ADMIN_VIEW}
                 element={<AdminView colorThem={colorThem} />}
               />
-               <Route
+              <Route
                 path={Router.ADMIN_LIVE_EXTENSION}
                 element={<AdminLiveExtension colorThem={colorThem} />}
               />
@@ -290,7 +285,7 @@ function PrivateRoute() {
                 path={Router.ADMIN_HISTORY}
                 element={<AdminHistory colorThem={colorThem} />}
               />
-                <Route
+              <Route
                 path={Router.ADMIN_PERMISSIONS_ACCESS}
                 element={<AdminPermission colorThem={colorThem} />}
               />
@@ -302,14 +297,15 @@ function PrivateRoute() {
                 path={Router.ADMIN_ACL_HISTORY}
                 element={<AdminAclHistory colorThem={colorThem} />}
               />
-               <Route
+              <Route
                 path={Router.ADMIN_TFN_ASSISTANT}
                 element={<AdminAssistant colorThem={colorThem} />}
               />
-
-            
+              <Route
+                path={Router.ADMIN_PROMOTION}
+                element={<ErrorBoundary><AdminPromotional colorThem={colorThem} /></ErrorBoundary>}
+              />
             </Route>
-            
           </>
         ) : (
           <>
@@ -317,13 +313,15 @@ function PrivateRoute() {
           </>
         )}
 
-
-{reseller !==  null ? (
+        {reseller !== null ? (
           <>
             <Route
               path={Router.RESELLER_DASHBOARD}
               element={
-                <ResellerLayout colorThem={colorThem} handleClick={handleClick} />
+                <ResellerLayout
+                  colorThem={colorThem}
+                  handleClick={handleClick}
+                />
               }
             >
               <Route
@@ -354,12 +352,12 @@ function PrivateRoute() {
                 path={Router.RESELLER_EXTENSION}
                 element={<ResellerExtension colorThem={colorThem} />}
               />
-             
+
               <Route
                 path={Router.RESELLER_CALL_ACTIVE}
                 element={<ResellerCallActive colorThem={colorThem} />}
               />
-              
+
               <Route
                 path={Router.RESELLER_QUEUE_CALLS}
                 element={<ResellerQueueCalls colorThem={colorThem} />}
@@ -369,7 +367,7 @@ function PrivateRoute() {
                 element={<ResellerCallBlock colorThem={colorThem} />}
               />
 
-<Route
+              <Route
                 path={Router.RESELLER_SERVER_STATS}
                 element={<ResellerServerStats colorThem={colorThem} />}
               />
@@ -390,7 +388,6 @@ function PrivateRoute() {
                 element={<ResellerMinutes colorThem={colorThem} />}
               />
 
-
               <Route
                 path={Router.RESELLER_AUDIT_LOGS}
                 element={<ResellerAuditLogs colorThem={colorThem} />}
@@ -405,17 +402,15 @@ function PrivateRoute() {
                 element={<ResellerMOH colorThem={colorThem} />}
               />
 
-
-           
               <Route
                 path={Router.RESELLER_CARRIER}
                 element={<ResellerCarrier colorThem={colorThem} />}
               />
-                <Route
+              <Route
                 path={Router.RESELLER_VIEW}
                 element={<ResellerView colorThem={colorThem} />}
               />
-               <Route
+              <Route
                 path={Router.RESELLER_LIVE_EXTENSION}
                 element={<ResellerLiveExtension colorThem={colorThem} />}
               />
@@ -423,7 +418,7 @@ function PrivateRoute() {
                 path={Router.RESELLER_HISTORY}
                 element={<ResellerHistory colorThem={colorThem} />}
               />
-                <Route
+              <Route
                 path={Router.RESELLER_PERMISSIONS_ACCESS}
                 element={<ResellerPermission colorThem={colorThem} />}
               />
@@ -431,40 +426,67 @@ function PrivateRoute() {
                 path={Router.RESELLER_ACL}
                 element={<ResellerACL colorThem={colorThem} />}
               />
-               <Route
+              <Route
                 path={Router.RESELLER_TFN_ASSISTANT}
                 element={<ResellerAssistant colorThem={colorThem} />}
               />
-
-            
             </Route>
-            
           </>
         ) : (
           <>
             <Route path="*" element={<SessionExpired />} />
           </>
         )}
- {current_user !== null ? (
+        {current_user !== null ? (
           <>
-<Route path={Router.REDIRECT_DASHBOARD} element={<Layout userThem={userThem} handleClickUser={handleClickUser}/>}>
-          <Route index element={<Dashboard chartData={chartData} userThem={userThem} />} />
-          <Route path={Router.REDIRECT_CAMPAIGNS} element={<Campaigns userThem={userThem} />} />
-          <Route path={Router.REDIRECT_DESTINATION} element={<Destination userThem={userThem} />} />
-          <Route path={Router.REDIRECT_CALL_ACTIVE} element={<CallActive userThem={userThem} />} />
-          <Route path={Router.REDIRECT_XML_CDR} element={<XmlCdr userThem={userThem}/>} />
-          <Route path={Router.REDIRECT_CALL_BLOCK} element={<CallBlock userThem={userThem}/>} />
-          <Route path={Router.REDIRECT_MINUTES_LOG} element={<MinutesLog userThem={userThem}/>} />
-          <Route path={Router.REDIRECT_BUYER_VIEW} element={<BuyerView userThem={userThem}/>} />
-          <Route path="*" element={<NoPage />} />
-        </Route>
-        </>
+            <Route
+              path={Router.REDIRECT_DASHBOARD}
+              element={
+                <Layout userThem={userThem} handleClickUser={handleClickUser} toggleDrawer={toggleDrawer} open={open} setOpen={setOpen}/>
+              }
+            >
+              <Route
+                index
+                element={
+                  <Dashboard chartData={chartData} userThem={userThem} />
+                }
+              />
+              <Route
+                path={Router.REDIRECT_CAMPAIGNS}
+                element={<Campaigns userThem={userThem} />}
+              />
+              <Route
+                path={Router.REDIRECT_DESTINATION}
+                element={<Destination userThem={userThem} />}
+              />
+              <Route
+                path={Router.REDIRECT_CALL_ACTIVE}
+                element={<CallActive userThem={userThem} />}
+              />
+              <Route
+                path={Router.REDIRECT_XML_CDR}
+                element={<XmlCdr userThem={userThem} />}
+              />
+              <Route
+                path={Router.REDIRECT_CALL_BLOCK}
+                element={<CallBlock userThem={userThem} />}
+              />
+              <Route
+                path={Router.REDIRECT_MINUTES_LOG}
+                element={<MinutesLog userThem={userThem} />}
+              />
+              <Route
+                path={Router.REDIRECT_BUYER_VIEW}
+                element={<BuyerView userThem={userThem} />}
+              />
+              <Route path="*" element={<NoPage />} />
+            </Route>
+          </>
         ) : (
           <>
             <Route path="*" element={<SessionExpired />} />
           </>
         )}
-     
       </Switch>
     </>
   );
