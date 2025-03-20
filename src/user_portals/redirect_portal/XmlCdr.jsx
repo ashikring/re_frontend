@@ -155,11 +155,11 @@ const array = [
   "ANSWER",
   "FASTAGI_DOWN",
 ];
+
 const CustomToolbar = () => (
   <GridToolbarContainer>
     {/* <GridToolbarColumnsButton/> */}
     <GridToolbarDensitySelector />
-
     {/* <GridToolbarFilterButton/> */}
   </GridToolbarContainer>
 );
@@ -1073,7 +1073,7 @@ function XmlCdr({ userThem }) {
                                   components={{ Toolbar: CustomToolbar }}
                                   autoHeight
                                   disableColumnResize={false}
-                                  hideFooterPagination={window.innerWidth < 600}
+                                  //hideFooterPagination={window.innerWidth < 600}
                                   sx={{
                                     "& .MuiDataGrid-cell": {
                                       fontSize: {

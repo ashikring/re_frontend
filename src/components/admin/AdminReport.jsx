@@ -43,7 +43,7 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import "../../Switcher.scss";
-
+import Datetime from "react-datetime";
 import { makeStyles } from "@mui/styles";
 import dayjs from "dayjs";
 import { getAllUsers } from "../../redux/actions/userAction";
@@ -172,13 +172,6 @@ function AdminReport({ colorThem }) {
   const dispatch = useDispatch();
   const [currentAudio, setCurrentAudio] = useState(null);
   const [userId, setUserId] = useState("");
-  const railwayZone = "Asia/Kolkata"; // Replace with your desired timezone
-  const [fromDate, setFromDate] = useState(
-    dayjs().tz(railwayZone).startOf("day").format("DD/MM/YYYY HH:mm")
-  );
-  const [toDate, setToDate] = useState(
-    dayjs().tz(railwayZone).endOf("day").format("DD/MM/YYYY HH:mm") // Default to 23:59
-  );
   const [callDirection, setCallDirection] = useState("");
   const [didNumber, setDidNumber] = useState("");
   const [destination, setDestination] = useState("");
@@ -191,30 +184,53 @@ function AdminReport({ colorThem }) {
   const [selectedRows, setSelectedRows] = useState([]);
   const [radioValue, setRadioValue] = useState("n");
 
+  // Get today's date with time set to 00:00
+  const getTodayWithMidnight = () => dayjs().startOf("day").toDate();
+  // Get today's date with 23:59 time
+  const getTodayWithEndOfDay = () =>
+    dayjs().endOf("day").format("DD/MM/YYYY HH:mm");
+
+  // Use this in your state
+  const [toDate, setToDate] = useState(getTodayWithEndOfDay());
+  const [fromDate, setFromDate] = useState(getTodayWithMidnight());
+
+  // Disable past dates for `toDate`
+  const disablePastDates = (current) => {
+    return current.isSameOrAfter(dayjs().startOf("day"));
+  };
+
+  // Disable future dates for `fromDate`
+  const disableFutureDates = (current) => {
+    return current.isSameOrBefore(dayjs().endOf("day"));
+  };
+
+  const handleFromDateChange = (date) => {
+    if (date) {
+      const formattedDate = dayjs(date).format("DD/MM/YYYY HH:mm");
+      setFromDate(date);
+    }
+  };
+
+  const handleToDateChange = (date) => {
+    if (date) {
+      const formattedDate = dayjs(date).format("DD/MM/YYYY HH:mm");
+      setToDate(date);
+    }
+  };
+
   const handleSelectionChange = (selection) => {
     setSelectedRows(selection);
   };
 
   const classes = useStyles();
-  const handleFromDateChange = (date) => {
-    if (dayjs(date, "DD/MM/YYYY HH:mm", true).isValid()) {
-      setFromDate(dayjs(date).tz(railwayZone).format("DD/MM/YYYY HH:mm"));
-    } else {
-      setFromDate(null);
-    }
-  };
-
-  const handleToDateChange = (date) => {
-    if (dayjs(date, "DD/MM/YYYY HH:mm", true).isValid()) {
-      setToDate(dayjs(date).tz(railwayZone).format("DD/MM/YYYY HH:mm"));
-    } else {
-      setToDate(null);
-    }
-  };
   useEffect(() => {
     let data = JSON.stringify({
-      from_date: dayjs().startOf("day").format("YYYY-MM-DD HH:mm"),
-      to_date: dayjs().format("YYYY-MM-DD HH:mm"),
+      from_date: dayjs(fromDate).isValid()
+        ? dayjs(fromDate).format("YYYY-MM-DD HH:mm")
+        : "",
+      to_date: dayjs(toDate).isValid()
+        ? dayjs(toDate).format("YYYY-MM-DD HH:mm")
+        : "",
     });
     dispatch(getReport(data));
     dispatch(getAllUsers(""));
@@ -234,18 +250,15 @@ function AdminReport({ colorThem }) {
   }, [state?.getAdminUsersList?.userList]);
 
   const handleSearch = (e) => {
-    // Convert fromDate and toDate to YYYY-MM-DD format
-    const formattedFromDate = fromDate
-      ? dayjs(fromDate, "DD/MM/YYYY HH:mm").format("YYYY-MM-DD HH:mm")
-      : null;
-    const formattedToDate = toDate
-      ? dayjs(toDate, "DD/MM/YYYY HH:mm").format("YYYY-MM-DD HH:mm")
-      : null;
     let data = JSON.stringify({
       caller_id: callerId,
       user_id: userId,
-      from_date: formattedFromDate,
-      to_date: formattedToDate,
+      from_date: dayjs(fromDate).isValid()
+        ? dayjs(fromDate).format("YYYY-MM-DD HH:mm")
+        : "",
+      to_date: dayjs(toDate).isValid()
+        ? dayjs(toDate).format("YYYY-MM-DD HH:mm")
+        : "",
       call_direction: callDirection,
       didnumber: didNumber,
       forward_number: destination,
@@ -256,8 +269,8 @@ function AdminReport({ colorThem }) {
   };
 
   const handleReset = (e) => {
-    setFromDate(null);
-    setToDate(null);
+    setFromDate(getTodayWithMidnight());
+    setToDate(getTodayWithEndOfDay());
     setUserId("");
     setCallDirection("");
     setDidNumber("");
@@ -313,17 +326,17 @@ function AdminReport({ colorThem }) {
   const CallStatusTooltip = ({ statusKey }) => {
     const isMobile = useMediaQuery("(max-width:600px)"); // Detect mobile
     const [anchorEl, setAnchorEl] = useState(null);
-  
+
     const handleClick = (event) => {
       if (isMobile) {
         setAnchorEl(event.currentTarget); // Open Popover on click
       }
     };
-  
+
     const handleClose = () => {
       setAnchorEl(null);
     };
-  
+
     return (
       <>
         {isMobile ? (
@@ -343,7 +356,7 @@ function AdminReport({ colorThem }) {
             >
               {statusKey}
             </span>
-  
+
             {/* Popover for Mobile */}
             <Popover
               open={Boolean(anchorEl)}
@@ -384,7 +397,6 @@ function AdminReport({ colorThem }) {
       </>
     );
   };
-  
 
   const columns = [
     {
@@ -445,9 +457,7 @@ function AdminReport({ colorThem }) {
           <>
             <span>
               {params.row.call_status === "ANSWERED" ? (
-                <span style={{ color: "green" }}>
-                  {params.row.call_status}
-                </span>
+                <span style={{ color: "green" }}>{params.row.call_status}</span>
               ) : (
                 <span style={{ color: "red" }}>{params.row.call_status}</span>
               )}
@@ -489,7 +499,6 @@ function AdminReport({ colorThem }) {
       align: "center",
       headerClassName: "custom-header",
     },
-
     {
       field: "billsec",
       headerName: "Bill Sec",
@@ -506,7 +515,6 @@ function AdminReport({ colorThem }) {
       align: "center",
       headerClassName: "custom-header",
     },
-   
 
     {
       field: "recording_path",
@@ -1122,9 +1130,9 @@ function AdminReport({ colorThem }) {
                             sm={12}
                             xs={12}
                             style={{ display: "flex", alignItems: "center" }}
-                           
+                            className="pe-lg-2 pe-md-3 pe-sm-0 pe-xs-0 pe-0 px-lg-0 px-md-0 px-sm-1 px-xs-1 px-1"
                           >
-                            <LocalizationProvider
+                            {/* <LocalizationProvider
                               dateAdapter={AdapterDayjs}
                               className={classes.formControl}
                             >
@@ -1149,7 +1157,24 @@ function AdminReport({ colorThem }) {
                                   minutesStep={1}
                                 />
                               </DemoContainer>
-                            </LocalizationProvider>
+                            </LocalizationProvider> */}
+                            <label style={{ fontSize: "14px" }}>
+                              From Date:
+                            </label>
+                            <Datetime
+                              style={{
+                                width: "100%",
+                                margin: " 5px 0 5px 0",
+                                border: "none !important",
+                                background: "transparent !important",
+                              }}
+                              className="datefield_select frm_date"
+                              value={fromDate}
+                              onChange={handleFromDateChange}
+                              dateFormat="DD/MM/YYYY" // Date format
+                              timeFormat="HH:mm" // 24-hour time format (Railway Time)
+                              isValidDate={disableFutureDates}
+                            />
                           </Grid>
                           <Grid
                             xl={3}
@@ -1157,10 +1182,15 @@ function AdminReport({ colorThem }) {
                             md={3}
                             sm={12}
                             xs={12}
-                            style={{ display: "flex", alignItems: "center" }}
-                            className="mt-xxl-0 mt-xl-0 mt-lg-0 mt-md-0 mt-sm-1 mt-xs-1 mt-1"
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "space-between",
+                              // padding: "0 5px",
+                            }}
+                            className="mt-xxl-0 mt-xl-0 mt-lg-0 mt-md-0 mt-sm-1 mt-xs-1 mt-1 px-lg-0 px-md-0 px-sm-1 px-xs-1 px-1"
                           >
-                            <LocalizationProvider
+                            {/* <LocalizationProvider
                               dateAdapter={AdapterDayjs}
                               className={classes.formControl}
                             >
@@ -1185,7 +1215,29 @@ function AdminReport({ colorThem }) {
                                   minutesStep={1} // Show all minutes (no step increment)
                                 />
                               </DemoContainer>
-                            </LocalizationProvider>
+                            </LocalizationProvider> */}
+                            <label
+                              style={{ fontSize: "14px", marginRight: "20px" }}
+                            >
+                              To <br />
+                              Date:
+                            </label>
+                            <Datetime
+                              style={{
+                                width: "100%",
+                                margin: " 5px 0 5px 0",
+                                border: "none !important",
+                                background: "transparent !important",
+                                marginRight: "7px",
+                              }}
+                              className="datefield_select new_input"
+                              value={toDate}
+                              label="To Date"
+                              onChange={handleToDateChange}
+                              dateFormat="DD/MM/YYYY" // Date format
+                              timeFormat="HH:mm" // 24-hour time format (Railway Time)
+                              isValidDate={disablePastDates} // Disables past dates
+                            />
                           </Grid>
 
                           <Grid
@@ -1285,7 +1337,9 @@ function AdminReport({ colorThem }) {
                                   checkboxSelection
                                   disableRowSelectionOnClick
                                   rowSelectionModel={selectedRows} // Bind selection model
-                                  onRowSelectionModelChange={handleSelectionChange} // Handle selection change
+                                  onRowSelectionModelChange={
+                                    handleSelectionChange
+                                  } // Handle selection change
                                 />
                               </div>
                             </ThemeProvider>

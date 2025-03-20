@@ -28,11 +28,7 @@ import {
   GridToolbarDensitySelector,
   GridToolbarFilterButton,
 } from "@mui/x-data-grid";
-import {
-  Edit,
-  Close,
-  AccessTime as AccessTimeIcon,
-} from "@mui/icons-material";
+import { Edit, Close, AccessTime as AccessTimeIcon } from "@mui/icons-material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { styled } from "@mui/material/styles";
 import FormGroup from "@mui/material/FormGroup";
@@ -339,7 +335,7 @@ function BuyerView({ userThem }) {
     const { name, value } = event.target;
     setBuyerData((prevData) => ({
       ...prevData,
-       [name]: name === "forwardNumber" ? value.trim() : value,
+      [name]: name === "forwardNumber" ? value.trim() : value,
     }));
   };
 
@@ -514,13 +510,13 @@ function BuyerView({ userThem }) {
       headerAlign: "center",
       width: 150,
       align: "center",
-      renderCell: ((params)=>{
-        return(
-          <span style={{fontWeight: "bold"}}>
+      renderCell: (params) => {
+        return (
+          <span style={{ fontWeight: "bold" }}>
             {params.row.forward_number}
           </span>
-        )
-      })
+        );
+      },
     },
     {
       field: "cc",
@@ -537,13 +533,11 @@ function BuyerView({ userThem }) {
       headerAlign: "center",
       width: 110,
       align: "center",
-      renderCell: ((params)=>{
-        return(
-          <span style={{fontWeight: "bold"}}>
-            {params.row.current_cc}
-          </span>
-        )
-      })
+      renderCell: (params) => {
+        return (
+          <span style={{ fontWeight: "bold" }}>{params.row.current_cc}</span>
+        );
+      },
     },
     {
       field: "daily_limit",
@@ -560,13 +554,13 @@ function BuyerView({ userThem }) {
       headerAlign: "center",
       width: 165,
       align: "center",
-      renderCell: ((params)=>{
-        return(
-          <span style={{fontWeight: "bold"}}>
+      renderCell: (params) => {
+        return (
+          <span style={{ fontWeight: "bold" }}>
             {params.row.current_daily_limit}
           </span>
-        )
-      })
+        );
+      },
     },
     {
       field: "weightage",
@@ -602,7 +596,7 @@ function BuyerView({ userThem }) {
             style={{
               color: params.row.status === true ? "#254336" : "#ff7d00",
               padding: "5px 4.5px",
-              fontWeight: "bold"
+              fontWeight: "bold",
             }}
           >
             {params.row.status === true ? "Active" : "Deactivated"}
@@ -647,6 +641,7 @@ function BuyerView({ userThem }) {
     },
   ];
 
+  let totalCC = 0;
   const mockDataTeam = [];
   state?.getRedirectBuyer?.RedirectBuyer?.data &&
     state?.getRedirectBuyer?.RedirectBuyer?.data?.forEach((item, index) => {
@@ -672,6 +667,7 @@ function BuyerView({ userThem }) {
           ring_timeout: item.ring_timeout,
         });
       }
+      totalCC += item.current_cc;
     });
 
   const selectedCallerDataSet = new Set(); // Using Set to avoid duplicates
@@ -782,89 +778,87 @@ function BuyerView({ userThem }) {
                                   <ArrowBackIcon style={{ fontSize: "24px" }} />
                                 </IconButton> */}
 
-<div
-                              style={{
-                                display: "flex",
-                                justifyContent: "space-between",
-                                alignItems: "end",
-                                marginBottom: "10px",
-                              }}
-                            >
-                              <p style={{ fontSize: "17px", color: "#000" }}>
-                                <b className="fnt_bld"> Campaign Name:</b>{" "}
-                                {location.state.data.group_name}
-                                {campaignNumbers[0] ? (
-                                  <>
-                                    <PopupState
-                                      variant="popover"
-                                      popupId="demo-popup-menu"
-                                      className="d-xxl-block d-xl-block d-lg-block d-md-block d-sm-none d-none"
-                                    >
-                                      {(popupState) => (
-                                        <React.Fragment>
-                                          <Button
-                                            variant="contained"
-                                            {...bindTrigger(popupState)}
-                                            className="mt-lg-0 mt-md-0 mt-sm-2 mt-2 ms-xxl-3 ms-xl-3 ms-lg-3 ms-md-3 ms-sm-0 ms-0"
-                                            endIcon={<KeyboardArrowDownIcon />}
-                                            style={{
-                                              marginLeft: "0px",
-                                              background: "transparent",
-                                              color: "black",
-                                            }}
-                                          >
-                                            Campaign Number
-                                          </Button>
-                                          <Menu {...bindMenu(popupState)}>
-                                            {campaignNumbers?.map(
-                                              (item, index) => (
-                                                <MenuItem
-                                                  key={index}
-                                                  style={{
-                                                    cursor: "context-menu",
-                                                  }}
-                                                >
-                                                  {item}
-                                                </MenuItem>
-                                              )
-                                            )}
-                                          </Menu>
-                                        </React.Fragment>
-                                      )}
-                                    </PopupState>
-                                  </>
-                                ) : (
-                                  <></>
-                                )}
-                              </p>
-
-                            
-                            </div>
-
-
-                                <div>
-                                <IconButton
+                                <div
                                   style={{
-                                    padding: "10px",
-                                    fontSize: "15px",
-                                    borderRadius: "5px",
-                                    border: "none",
-                                    color: "#fff",
-                                    marginRight: "0px",
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    alignItems: "end",
+                                    marginBottom: "10px",
                                   }}
-                                  className="redirect_all_button_clr "
-                                  onClick={handleAddBuyerOpen}
                                 >
-                                  Add
-                                  <AddOutlinedIcon />
-                                </IconButton>
+                                  <p
+                                    style={{ fontSize: "17px", color: "#000" }}
+                                  >
+                                    <b className="fnt_bld"> Campaign Name:</b>{" "}
+                                    {location.state.data.group_name}
+                                    {campaignNumbers[0] ? (
+                                      <>
+                                        <PopupState
+                                          variant="popover"
+                                          popupId="demo-popup-menu"
+                                          className="d-xxl-block d-xl-block d-lg-block d-md-block d-sm-none d-none"
+                                        >
+                                          {(popupState) => (
+                                            <React.Fragment>
+                                              <Button
+                                                variant="contained"
+                                                {...bindTrigger(popupState)}
+                                                className="mt-lg-0 mt-md-0 mt-sm-2 mt-2 ms-xxl-3 ms-xl-3 ms-lg-3 ms-md-3 ms-sm-0 ms-0"
+                                                endIcon={
+                                                  <KeyboardArrowDownIcon />
+                                                }
+                                                style={{
+                                                  marginLeft: "0px",
+                                                  background: "transparent",
+                                                  color: "black",
+                                                }}
+                                              >
+                                                Campaign Number
+                                              </Button>
+                                              <Menu {...bindMenu(popupState)}>
+                                                {campaignNumbers?.map(
+                                                  (item, index) => (
+                                                    <MenuItem
+                                                      key={index}
+                                                      style={{
+                                                        cursor: "context-menu",
+                                                      }}
+                                                    >
+                                                      {item}
+                                                    </MenuItem>
+                                                  )
+                                                )}
+                                              </Menu>
+                                            </React.Fragment>
+                                          )}
+                                        </PopupState>
+                                      </>
+                                    ) : (
+                                      <></>
+                                    )}
+                                  </p>
                                 </div>
 
-                               
+                                <div>
+                                  <IconButton
+                                    style={{
+                                      padding: "10px",
+                                      fontSize: "15px",
+                                      borderRadius: "5px",
+                                      border: "none",
+                                      color: "#fff",
+                                      marginRight: "0px",
+                                    }}
+                                    className="redirect_all_button_clr "
+                                    onClick={handleAddBuyerOpen}
+                                  >
+                                    Add
+                                    <AddOutlinedIcon />
+                                  </IconButton>
+                                </div>
                               </div>
                             </div>
 
-                           
                             <Dialog
                               open={open}
                               onClose={handleAddBuyerClose}
@@ -1513,8 +1507,9 @@ function BuyerView({ userThem }) {
                             <div
                               style={{
                                 display: "flex",
-                                justifyContent: "space-between",
+                                //justifyContent: "space-between",
                                 width: "100%",
+                                alignItems: "baseline",
                               }}
                             >
                               <IconButton
@@ -1534,6 +1529,15 @@ function BuyerView({ userThem }) {
                                 Delete &nbsp;
                                 <DeleteIcon />
                               </IconButton>
+                              <label
+                                style={{
+                                  fontSize: "large",
+                                  fontWeight: "bold",
+                                }}
+                              >
+                                Total Calls:
+                                <span>&nbsp;{totalCC}</span>
+                              </label>
                             </div>
 
                             <ThemeProvider theme={theme}>

@@ -32,7 +32,7 @@
 
 @media (max-width: 576px) {
   .frm_date {
-    margin-right: 7px;
+    margin-right: 9px !important;
 }
     
   .custom-header .MuiDataGrid-columnHeaderDraggableContainer .MuiDataGrid-columnHeaderTitleContainer .MuiDataGrid-columnHeaderTitleContainerContent
@@ -237,10 +237,9 @@
   border-radius: 4px !important;
  } */
 
- /* .css-1x5jdmq{
-  border-radius: 4px !important;
-  border: 1px solid #fff !important;
- } */
+ .MuiInputBase-input .MuiOutlinedInput-input .css-1x5jdmq{
+  padding: 3.5px 14px !important;
+ }
 
 /* ====Start_admin_dashboard_card_css==== */
 /* .invoice_download {
@@ -1518,6 +1517,7 @@ li.nav-item.dsbrd-tbs button {
 }
 .css-1uvydh2 {
   font-size: 14px !important;
+  padding: 12.5px 0px 12.5px 14px !important;
 }
 .css-vubbuv {
   font-size: 22px !important;
